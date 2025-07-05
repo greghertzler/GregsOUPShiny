@@ -18,3 +18,16 @@ Excel user-defined functions, Visual Basic for Applications code, R6 objects and
 
 Help:
 Ribbon Help--context-sensitive help for Excel workbooks, the R app and a website.
+
+Deploy Shiny App using RStudio and shinyapps.io<br>
+1. Create shinyapps.io account on their website.<br>
+2. Follow the instructions for Tokens and Secrets to link with RStudio.<br>
+3. In RStudio, from a blank console, install GregsOUPR6 package in your default library,<br>
+    devtools::install_github("greghertzler/GregsOUPR6",force=TRUE)<br>
+4. In GitHub Desktop, clone the repo "greghertzler/GregsOUPShiny"<br>
+5. In RStudio, open the "ui.R" and "server.R" files and the "www" folder.<br>
+6. In the upper right of the screen "RunApp" to make sure it works locally.<br>
+7. Also in the upper right, "Publish" to push it to shinyapps.io<br>
+8. Keep trying, it will eventually work.
+
+I failed to publish GregsOUP with both R6 and Shiny in one package.  That's why they are split.
