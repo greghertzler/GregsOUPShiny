@@ -28,6 +28,6 @@ Deploy Shiny App using RStudio and shinyapps.io<br>
 5. In RStudio, open the "ui.R" and "server.R" files and the "www" folder.<br>
 6. In the upper right of the screen "RunApp" to make sure it works locally.<br>
 7. Also in the upper right, "Publish" to push it to shinyapps.io<br>
-8. Keep trying, it will eventually work.
+8. Repeat 7 until it works.
 
 I failed to publish GregsOUP with both R6 and Shiny in one package.  That's why they are split.
