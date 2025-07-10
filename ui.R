@@ -33,6 +33,7 @@ shinyUI(
           tabPanel("Data and Estimates",
             # file, time and state
             fixedRow(
+              column(actionButton("fileinfoRODataOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
               column(selectInput("filesRODataOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeRODataOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateRODataOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1259,6 +1260,7 @@ shinyUI(
           tabPanel("Data",
             # file, time and state
             fixedRow(
+              column(actionButton("fileinfoMLDataOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
               column(selectInput("filesMLDataOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLDataOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLDataOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1291,6 +1293,7 @@ shinyUI(
           tabPanel("Log Likelihood",
             # file, time and state
             fixedRow(
+              column(actionButton("fileinfoMLLikelihoodOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
               column(selectInput("filesMLLikelihoodOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLLikelihoodOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLLikelihoodOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1322,6 +1325,7 @@ shinyUI(
           tabPanel("Estimates",
             # file, time and state
             fixedRow(
+              column(actionButton("fileinfoMLEstimatesOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
               column(selectInput("filesMLEstimatesOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLEstimatesOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLEstimatesOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1348,6 +1352,7 @@ shinyUI(
           tabPanel("Goodness-of-Fit",
             # file, time and state
             fixedRow(
+              column(actionButton("fileinfoMLGoodnessOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
               column(selectInput("filesMLGoodnessOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLGoodnessOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLGoodnessOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1375,6 +1380,7 @@ shinyUI(
           tabPanel("Likelihood Ratio Test",
             # file, time and state
             fixedRow(
+              column(actionButton("fileinfoMLRatioOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
               column(selectInput("filesMLRatioOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLRatioOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLRatioOUP",label="State",choices=""),title="state variable",width=3)

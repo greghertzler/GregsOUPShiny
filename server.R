@@ -1,5 +1,7 @@
 library(shiny)
 library(plotly)
+library(tools)
+library(rvest)
 library(GregsOUPR6)
 
 # server ----
@@ -14,7 +16,13 @@ MC <- OUP$get_MonteCarlo()
 A$set_plot_info(theme="light",opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
 datadir <- paste(sep="",system.file("data",package="GregsOUPR6"),"/")
-filelist <- list.files(datadir,pattern=".csv")
+# filelist <- file_path_sans_ext(list.files(datadir,pattern=".csv"))
+agrlist <- file_path_sans_ext(list.files(datadir,pattern="Agric"))
+clilist <- file_path_sans_ext(list.files(datadir,pattern="Climate"))
+ecolist <- file_path_sans_ext(list.files(datadir,pattern="Ecosys"))
+finlist <- file_path_sans_ext(list.files(datadir,pattern="Finance"))
+ouplist <- file_path_sans_ext(list.files(datadir,pattern="OUP"))
+filelist <- list("Default",`Ornstein-Uhlenbeck Process`=ouplist,Agriculture=agrlist,Climate=clilist,Ecosystems=ecolist,Finance=finlist)
 df <- NULL
 framenames <- NULL
 nrows <- NULL
@@ -51,10 +59,10 @@ LRT_params <- c(NA,NA,NA)
             if(first)
             {
 # message("first")
-              filename <- paste(sep="",datadir,filelist[1])
+              filename <- paste(sep="",datadir,"Default.csv")
               df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[6] <<- filelist[1]
+              dname[6] <<- "Default"
               tname[6] <<- framenames[1]
               sname[6] <<- framenames[2]
               nrows <<- nrow(df)
@@ -130,7 +138,7 @@ LRT_params <- c(NA,NA,NA)
               if(dname[6] != input$filesRODataOUP)
               {
 # message(dname[6],", ",input$filesRODataOUP)
-                filename <- paste(sep="",datadir,input$filesRODataOUP)
+                filename <- paste(sep="",datadir,input$filesRODataOUP,".csv")
                 df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
                 dname[6] <<- input$filesRODataOUP
@@ -300,6 +308,25 @@ LRT_params <- c(NA,NA,NA)
             })
             output$plotlyRODataOUP <- renderPlotly({ ML$PlotEstimates() })
           }) %>% bindEvent(input$resetRODataOUP,input$plotRODataOUP)
+          # User clicks ? ----
+          observe({
+            filename <- paste(sep="",input$filesRODataOUP,".html")
+            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            halo <- input$filesRODataOUP
+            body <- html_element(rawtext,"body")
+            gen1 <- html_children(body)
+            gen2 <- html_children(gen1)
+            m <- length(gen2)-2
+            soul <- as.character(gen2[2:m])
+            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+            showModal(modalDialog(
+              title=div(img(src="Roar32x32.png"),halo),
+              HTML(paste(sep="",style,soul)),
+              easyClose = TRUE,
+              footer = modalButton("Close"),
+              size = "l"
+            ))
+          }) %>% bindEvent(input$fileinfoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # User clicks info ----
           observe({
             showModal(modalDialog(
@@ -6720,10 +6747,10 @@ LRT_params <- c(NA,NA,NA)
             if(first)
             {
 # message("first")
-              filename <- paste(sep="",datadir,filelist[1])
+              filename <- paste(sep="",datadir,"Default.csv")
               df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[1] <<- filelist[1]
+              dname[1] <<- "Default"
               tname[1] <<- framenames[1]
               sname[1] <<- framenames[2]
               nrows <<- nrow(df)
@@ -6802,7 +6829,7 @@ LRT_params <- c(NA,NA,NA)
               if(dname[1] != input$filesMLDataOUP)
               {
 # message(dname[1],", ",input$filesMLDataOUP)
-                filename <- paste(sep="",datadir,input$filesMLDataOUP)
+                filename <- paste(sep="",datadir,input$filesMLDataOUP,".csv")
                 df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
                 dname[1] <<- input$filesMLDataOUP
@@ -6942,6 +6969,25 @@ LRT_params <- c(NA,NA,NA)
             endInput(FALSE)
             output$plotlyMLDataOUP <- renderPlotly({ ML$PlotTimeSeries() })
           }) %>% bindEvent(input$resetMLDataOUP,input$plotMLDataOUP)
+          # User clicks ? ----
+          observe({
+            filename <- paste(sep="",input$filesMLDataOUP,".html")
+            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            halo <- input$filesMLDataOUP
+            body <- html_element(rawtext,"body")
+            gen1 <- html_children(body)
+            gen2 <- html_children(gen1)
+            m <- length(gen2)-2
+            soul <- as.character(gen2[2:m])
+            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+            showModal(modalDialog(
+              title=div(img(src="Roar32x32.png"),halo),
+              HTML(paste(sep="",style,soul)),
+              easyClose = TRUE,
+              footer = modalButton("Close"),
+              size = "l"
+            ))
+          }) %>% bindEvent(input$fileinfoMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # User clicks info ----
           observe({
             showModal(modalDialog(
@@ -7008,11 +7054,11 @@ LRT_params <- c(NA,NA,NA)
 # message("Likelihood FromR6toUI")
             if(first)
             {
-message("first")
-              filename <- paste(sep="",datadir,filelist[1])
+# message("first")
+              filename <- paste(sep="","Default.csv")
               df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[2] <<- filelist[1]
+              dname[2] <<- "Default"
               tname[2] <<- framenames[1]
               sname[2] <<- framenames[2]
               nrows <<- nrow(df)
@@ -7092,7 +7138,7 @@ message("first")
               if(dname[2] != input$filesMLLikelihoodOUP)
               {
 # message(dname[2],", ",input$filesMLLikelihoodOUP)
-                filename <- paste(sep="",datadir,input$filesMLLikelihoodOUP)
+                filename <- paste(sep="",datadir,input$filesMLLikelihoodOUP,".csv")
                 df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
                 dname[2] <<- input$filesMLLikelihoodOUP
@@ -7321,6 +7367,25 @@ message("first")
             })
             output$plotlyMLLikelihoodOUP <- renderPlotly({ ML$PlotEstimates() })
           }) %>% bindEvent(input$resetMLLikelihoodOUP,input$plotMLLikelihoodOUP)
+          # User clicks ? ----
+          observe({
+            filename <- paste(sep="",input$filesMLLikelihoodOUP,".html")
+            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            halo <- input$filesMLLikelihoodOUP
+            body <- html_element(rawtext,"body")
+            gen1 <- html_children(body)
+            gen2 <- html_children(gen1)
+            m <- length(gen2)-2
+            soul <- as.character(gen2[2:m])
+            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+            showModal(modalDialog(
+              title=div(img(src="Roar32x32.png"),halo),
+              HTML(paste(sep="",style,soul)),
+              easyClose = TRUE,
+              footer = modalButton("Close"),
+              size = "l"
+            ))
+          }) %>% bindEvent(input$fileinfoMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # User clicks info ----
           observe({
             showModal(modalDialog(
@@ -7360,10 +7425,10 @@ message("first")
             if(first)
             {
 # message("first")
-              filename <- paste(sep="",datadir,filelist[1])
+              filename <- paste(sep="",datadir,"Default.csv")
               df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[3] <<- filelist[1]
+              dname[3] <<- "Default"
               tname[3] <<- framenames[1]
               sname[3] <<- framenames[2]
               nrows <<- nrow(df)
@@ -7439,7 +7504,7 @@ message("first")
               if(dname[3] != input$filesMLEstimatesOUP)
               {
 # message(dname[3],", ",input$filesMLEstimatesOUP)
-                filename <- paste(sep="",datadir,input$filesMLEstimatesOUP)
+                filename <- paste(sep="",datadir,input$filesMLEstimatesOUP,".csv")
                 df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
                 dname[3] <<- input$filesMLEstimatesOUP
@@ -7621,6 +7686,25 @@ message("first")
             })
             output$plotlyMLEstimatesOUP <- renderPlotly({ ML$PlotEstimates() })
           }) %>% bindEvent(input$resetMLEstimatesOUP,input$plotMLEstimatesOUP)
+          # User clicks ? ----
+          observe({
+            filename <- paste(sep="",input$filesMLEstimatesOUP,".html")
+            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            halo <- input$filesMLEstimatesOUP
+            body <- html_element(rawtext,"body")
+            gen1 <- html_children(body)
+            gen2 <- html_children(gen1)
+            m <- length(gen2)-2
+            soul <- as.character(gen2[2:m])
+            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+            showModal(modalDialog(
+              title=div(img(src="Roar32x32.png"),halo),
+              HTML(paste(sep="",style,soul)),
+              easyClose = TRUE,
+              footer = modalButton("Close"),
+              size = "l"
+            ))
+          }) %>% bindEvent(input$fileinfoMLEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # User clicks info ----
           observe({
             showModal(modalDialog(
@@ -7830,10 +7914,10 @@ message("first")
             if(first)
             {
 # message("first")
-              filename <<- paste(sep="",datadir,filelist[1])
+              filename <<- paste(sep="",datadir,"Default.csv")
               df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[4] <<- filelist[1]
+              dname[4] <<- "Default"
               tname[4] <<- framenames[1]
               sname[4] <<- framenames[2]
               nrows <<- nrow(df)
@@ -7909,7 +7993,7 @@ message("first")
               if(dname[4] != input$filesMLGoodnessOUP)
               {
 # message(dname[4],", ",input$filesMLGoodnessOUP)
-                filename <- paste(sep="",datadir,input$filesMLGoodnessOUP)
+                filename <- paste(sep="",datadir,input$filesMLGoodnessOUP,".csv")
                 df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
                 dname[4] <<- input$filesMLGoodnessOUP
@@ -8007,6 +8091,25 @@ message("first")
           observe({
             Go()
           }) %>% bindEvent(input$plotMLGoodnessOUP)
+          # User clicks ? ----
+          observe({
+            filename <- paste(sep="",input$filesMLGoodnessOUP,".html")
+            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            halo <- input$filesMLGoodnessOUP
+            body <- html_element(rawtext,"body")
+            gen1 <- html_children(body)
+            gen2 <- html_children(gen1)
+            m <- length(gen2)-2
+            soul <- as.character(gen2[2:m])
+            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+            showModal(modalDialog(
+              title=div(img(src="Roar32x32.png"),halo),
+              HTML(paste(sep="",style,soul)),
+              easyClose = TRUE,
+              footer = modalButton("Close"),
+              size = "l"
+            ))
+          }) %>% bindEvent(input$fileinfoMLGoodnessOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # User clicks info ----
           observe({
             showModal(modalDialog(
@@ -8061,10 +8164,10 @@ message("first")
             if(first)
             {
 # message("first")
-              filename <- paste(sep="",datadir,filelist[1])
+              filename <- paste(sep="",datadir,"Default.csv")
               df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[5] <<- filelist[1]
+              dname[5] <<- "Default"
               tname[5] <<- framenames[1]
               sname[5] <<- framenames[2]
               nrows <<- nrow(df)
@@ -8141,7 +8244,7 @@ message("first")
               if(dname[5] != input$filesMLRatioOUP)
               {
 # message(dname[5],", ",input$filesMLRatioOUP)
-                filename <- paste(sep="",datadir,input$filesMLRatioOUP)
+                filename <- paste(sep="",datadir,input$filesMLRatioOUP,".csv")
                 df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
                 dname[5] <<- input$filesMLRatioOUP
@@ -8384,6 +8487,25 @@ message("first")
               ))
             })
           }) %>% bindEvent(input$resetMLRatioOUP,input$plotMLRatioOUP)
+          # User clicks ? ----
+          observe({
+            filename <- paste(sep="",input$filesMLRatioOUP,".html")
+            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            halo <- input$filesMLRatioOUP
+            body <- html_element(rawtext,"body")
+            gen1 <- html_children(body)
+            gen2 <- html_children(gen1)
+            m <- length(gen2)-2
+            soul <- as.character(gen2[2:m])
+            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+            showModal(modalDialog(
+              title=div(img(src="Roar32x32.png"),halo),
+              HTML(paste(sep="",style,soul)),
+              easyClose = TRUE,
+              footer = modalButton("Close"),
+              size = "l"
+            ))
+          }) %>% bindEvent(input$fileinfoMLRatioOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # User clicks info ----
           observe({
             showModal(modalDialog(
