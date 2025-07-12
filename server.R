@@ -15,14 +15,14 @@ ML <- OUP$get_MaximumLikelihood()
 MC <- OUP$get_MonteCarlo()
 A$set_plot_info(theme="light",opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
-libpath <- system.file(package="GregsOUPR6")
-datadir <- paste(sep="",libpath,"/data/")
-htmldir <- paste(sep="",libpath,"/html/")
-agrlist <- file_path_sans_ext(list.files(htmldir,pattern="Agric_"))
-clilist <- file_path_sans_ext(list.files(htmldir,pattern="Climate_"))
-ecolist <- file_path_sans_ext(list.files(htmldir,pattern="Ecosys_"))
-finlist <- file_path_sans_ext(list.files(htmldir,pattern="Finance_"))
-ouplist <- file_path_sans_ext(list.files(htmldir,pattern="OUP_"))
+libdir <- system.file(package="GregsOUPR6")
+datadir <- paste(sep="",libdir,"/data/")
+htmldir <- paste(sep="",getwd(),"/www/html/")
+agrlist <- file_path_sans_ext(list.files(datadir,pattern="Agric_"))
+clilist <- file_path_sans_ext(list.files(datadir,pattern="Climate_"))
+ecolist <- file_path_sans_ext(list.files(datadir,pattern="Ecosys_"))
+finlist <- file_path_sans_ext(list.files(datadir,pattern="Finance_"))
+ouplist <- file_path_sans_ext(list.files(datadir,pattern="OUP_"))
 filelist <- list("Default",`Ornstein-Uhlenbeck Process`=ouplist,Agriculture=agrlist,Climate=clilist,Ecosystems=ecolist,Finance=finlist)
 df <- NULL
 framenames <- NULL
@@ -311,8 +311,8 @@ LRT_params <- c(NA,NA,NA)
           }) %>% bindEvent(input$resetRODataOUP,input$plotRODataOUP)
           # User clicks ? ----
           observe({
-            filename <- paste(sep="",input$filesRODataOUP,".html")
-            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
+            rawtext <- read_html(filename)
             halo <- input$filesRODataOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -323,6 +323,7 @@ LRT_params <- c(NA,NA,NA)
             showModal(modalDialog(
               title=div(img(src="Roar32x32.png"),halo),
               HTML(paste(sep="",style,soul)),
+              HTML(soul),
               easyClose = TRUE,
               footer = modalButton("Close"),
               size = "l"
@@ -6972,8 +6973,8 @@ LRT_params <- c(NA,NA,NA)
           }) %>% bindEvent(input$resetMLDataOUP,input$plotMLDataOUP)
           # User clicks ? ----
           observe({
-            filename <- paste(sep="",input$filesMLDataOUP,".html")
-            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
+            rawtext <- read_html(filename)
             halo <- input$filesMLDataOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -7370,8 +7371,8 @@ LRT_params <- c(NA,NA,NA)
           }) %>% bindEvent(input$resetMLLikelihoodOUP,input$plotMLLikelihoodOUP)
           # User clicks ? ----
           observe({
-            filename <- paste(sep="",input$filesMLLikelihoodOUP,".html")
-            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
+            rawtext <- read_html(filename)
             halo <- input$filesMLLikelihoodOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -7689,8 +7690,8 @@ LRT_params <- c(NA,NA,NA)
           }) %>% bindEvent(input$resetMLEstimatesOUP,input$plotMLEstimatesOUP)
           # User clicks ? ----
           observe({
-            filename <- paste(sep="",input$filesMLEstimatesOUP,".html")
-            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
+            rawtext <- read_html(filename)
             halo <- input$filesMLEstimatesOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -8094,8 +8095,8 @@ LRT_params <- c(NA,NA,NA)
           }) %>% bindEvent(input$plotMLGoodnessOUP)
           # User clicks ? ----
           observe({
-            filename <- paste(sep="",input$filesMLGoodnessOUP,".html")
-            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
+            rawtext <- read_html(filename)
             halo <- input$filesMLGoodnessOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -8490,8 +8491,8 @@ LRT_params <- c(NA,NA,NA)
           }) %>% bindEvent(input$resetMLRatioOUP,input$plotMLRatioOUP)
           # User clicks ? ----
           observe({
-            filename <- paste(sep="",input$filesMLRatioOUP,".html")
-            rawtext <- read_html(file.path(find.package("GregsOUPR6"),"html",filename))
+            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
+            rawtext <- read_html(filename)
             halo <- input$filesMLRatioOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)

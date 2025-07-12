@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Observation intervals and the Ornstein-Uhlenbeck Process</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for OUP_ObservationInterval {GregsOUPR6}"><tr><td>OUP_ObservationInterval {GregsOUPR6}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Observation intervals and the Ornstein-Uhlenbeck Process</h2>
+
+<h3>Description</h3>
+
+<p>Monte-Carlo simulation to demonstrate the effect of the observation interval on the
+rate of convergence, rho, and the scale, sigma.
+</p>
+
+
+<h3>Format</h3>
+
+<p>csv file with 201 rows and 4 columns
+</p>
+
+
+<h3>Details</h3>
+
+
+<ul>
+<li><p> year 1: time variable in annual increments
+</p>
+</li>
+<li><p> z rho 0.5: sample paths with annual time increments and a rate of convergence of 0.5
+</p>
+</li>
+<li><p> year 0.05: time variable in increments of 1/20 year
+</p>
+</li>
+<li><p> z rho 10: sample paths with time increments of 1/20 year and a rate of convergence of 10
+</p>
+</li></ul>
+
+<p>This data has two sample paths.  Within a sample path, observation intervals are
+of equal length.  Between sample paths the observation intervals are of unequal
+lengths.  Otherwise, the sample paths have the same shocks and give equivalent
+estimates of the parameters.
+</p>
+<p>Both sets of estimates have the same rho(t-s), where t-s is the observation interval.
+A common example is annual versus daily intervals; t-s=1 and rho=1/2 is equivalent to
+t-s=1/365 and rho=365/2.  Location parameter, mu, is the same in both sets of estimates,
+but scale parameter, sigma, is larger if rho is larger because the asymptotic variance,
+sigma^2/2rho, is the same in both sets of estimates.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>GregsOUPR6</em> version 1.3.5.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

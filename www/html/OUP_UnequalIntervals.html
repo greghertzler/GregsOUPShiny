@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Unequal observation intervals and the Ornstein-Uhlenbeck...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for OUP_UnequalIntervals {GregsOUPR6}"><tr><td>OUP_UnequalIntervals {GregsOUPR6}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Unequal observation intervals and the Ornstein-Uhlenbeck Process</h2>
+
+<h3>Description</h3>
+
+<p>Simulated data to demonstrate that observations are never 'missing'.
+</p>
+
+
+<h3>Format</h3>
+
+<p>csv file with 151 rows and 4 columns
+</p>
+
+
+<h3>Details</h3>
+
+
+<ul>
+<li><p> year 1: time variable in annual increments
+</p>
+</li>
+<li><p> z rho 0.5: sample paths with annual time increments or longer and a rate of convergence of 0.5
+</p>
+</li>
+<li><p> year 0.05: time variable in increments of 1/20 year
+</p>
+</li>
+<li><p> z rho 10: sample paths with time increments of 1/20 year or longer and a rate of convergence of 10
+</p>
+</li></ul>
+
+<p>An observation consists of the initial state, the initial time, the terminal state
+and the terminal time.  The terminal time minus the initial time can differ among
+observations because each observation has its own mean and variance.  Longer
+observation intervals have smaller means and larger variances but, otherwise,
+parameters estimated from unequal observation intervals are statistically
+equivalent to parameters estimated from equal intervals.
+</p>
+<p>The usual time-series methods are special cases of estimating the Ornstein-Uhlenbeck
+Process.  They estimate location, mu, and scale, sigma, but not the rate of
+convergence, rho.  They eliminate rho by assuming weak stationarity.  The mean of
+each observation is assumed to have converged and lost its connection to its
+initial state.  The variance of each observation does not depend upon an initial
+state and may still be converging.  Observations will have equal variances if
+observation intervals are equal.
+</p>
+<p>For the Ornstein-Uhlenbeck Process, variances converge twice as fast as means.
+If variances are still converging, so are means.  Observations over equal time
+intervals will have equal variances but different means.  In other words, weak
+stationarity does not exist.  Any assumption of stationarity is strong stationarity
+in which both the means and variances have converged.
+</p>
+<p>Stationarity is an hypothesis to test, not an assumption to impose.  Goodness
+of fit for the Ornstein-Uhlenbeck Process tests for stationarity, and also
+for the other extreme of Brownian Motion.
+</p>
+<p>If you have a time series with measurements at sporadic times, don't fill in for
+observations that aren't missing.  If you must, first estimate the parameters.
+Then use the parameters to calculate means for the times of your choosing.
+Means are the maximum likelihood estimates of unobserved states of nature.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>GregsOUPR6</em> version 1.3.5.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

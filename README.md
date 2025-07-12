@@ -25,9 +25,12 @@ Deploy Shiny App using RStudio and shinyapps.io<br>
 3. In RStudio, from a blank console, install GregsOUPR6 package in your default library,<br>
     devtools::install_github("greghertzler/GregsOUPR6",force=TRUE)<br>
 4. In GitHub Desktop, clone the repo "greghertzler/GregsOUPShiny"<br>
-5. In RStudio, open the "ui.R" and "server.R" files and the "www" folder.<br>
+5. In RStudio, go to the Session menu Set Working Directory and choose GregsOUPShiny<br>
 6. In the upper right of the screen "RunApp" to make sure it works locally.<br>
 7. Also in the upper right, "Publish" to push it to shinyapps.io<br>
-8. Repeat 7 until it works.
+8. Repeat 6 and 7 until it works.
 
 I failed to publish GregsOUP with both R6 and Shiny in one package.  That's why they are split.
+
+The roxygen markdown gets converted to html and put in the /html directory when GregsOUPR6 is built.  The /data directory of GregsOUPR6 is accessible in shinyapps.io, but the /html directory seems to disappear.  The /html directory and files describing the data were copied from GregsOUPR6 to the /www directory in GregsOUPShiny and the directory was set to htmldir <- paste(sep='',getwd(),'/www/html/')
+ at the top of the server.  The absolute path seems to be required by the read_html function that is used to put the html files onto a modal dialog.  Thus the html files are accessible in shinyapps.io.

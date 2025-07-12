@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Smoothed sample paths for the Ornstein-Uhlenbeck Process</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for OUP_SmoothedData {GregsOUPR6}"><tr><td>OUP_SmoothedData {GregsOUPR6}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Smoothed sample paths for the Ornstein-Uhlenbeck Process</h2>
+
+<h3>Description</h3>
+
+<p>Simulated and smoothed data to demonstrate the effect of smoothing on
+parameter estimates.
+</p>
+
+
+<h3>Format</h3>
+
+<p>csv file with 177 rows and 11 columns
+</p>
+
+
+<h3>Details</h3>
+
+
+<ul>
+<li><p> year: time variable in annual increments
+</p>
+</li>
+<li><p> Data: simulated sample path
+</p>
+</li>
+<li><p> G uno-G diez: ten successively smoother paths
+</p>
+</li></ul>
+
+<p>Simulated data is smoothed ten times.  First, the parameters are estimated
+and the means calculated for each observation. Then the calculated means
+are used, as if they are data, in a subsequent estimation. Means are
+calculated again and used in the next estimation and so on ten times.
+The true rate of convergence, rho, and location, mu, are recovered from
+each estimation, but the scale, sigma, goes toward zero.
+</p>
+<p>By the ninth smoothing, the log of the likelihood becomes positive. Hence,
+the likelihood, as the anti-log, becomes greater than one. In other words,
+if the ninth and tenth smoothings were real samples, the probability of
+observing them would be greater than 100%. Further smoothings would increase
+this probability.  A small sigma is a tell-tale sign the data has been smoothed.
+A positive log likelihood is a sure sign.
+</p>
+<p>This is the best possible smoothing method. The model used for the smoothing
+is consistent with the data. Surprisingly, hypothesis tests and decision
+thresholds are not greatly affected.  However, passage times are calculated
+to be much larger and are completely unreliable.
+</p>
+<p>The best possible smoothing is unlikely. Any model used to smooth the data is
+probably not the Ornstein-Uhlenbeck Process.  The estimates will be wrong
+and the actual system will be much more uncertain. How much more uncertain
+is uncertain.
+</p>
+<p>Always use the raw data.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>GregsOUPR6</em> version 1.3.5.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>

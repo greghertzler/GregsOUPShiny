@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Sample sizes for the Ornstein-Uhlenbeck Process</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
+
+<table width="100%" summary="page for OUP_SampleSize {GregsOUPR6}"><tr><td>OUP_SampleSize {GregsOUPR6}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Sample sizes for the Ornstein-Uhlenbeck Process</h2>
+
+<h3>Description</h3>
+
+<p>Monte-Carlo simulation to demonstrate the effect of sample size on hypothesis tests
+for the Ornstein-Uhlenbeck Process.
+</p>
+
+
+<h3>Format</h3>
+
+<p>csv file with 4736 rows and 6 columns
+</p>
+
+
+<h3>Details</h3>
+
+
+<ul>
+<li><p> year: time variable in annual increments for all sample paths
+</p>
+</li>
+<li><p> xsmall: sample with 37 measurements or 36 observations
+</p>
+</li>
+<li><p> small: sample with 2 x 37 measurements or 73 observations
+</p>
+</li>
+<li><p> medium: sample with 8 x 37 measurements or 295 observations
+</p>
+</li>
+<li><p> large: sample with 32 x 37 measurements or 1183 observations
+</p>
+</li>
+<li><p> xlarge: sample with 128 x 37 measurements or 4735 observations
+</p>
+</li></ul>
+
+<p>This data starts with a very small sample and then replicates it.  Larger
+samples contain no more information than smaller samples and hypothesis
+tests for the Ornstein-Uhlenbeck Process do not change with the sample size.
+The usual Chi^2 tests, however, will reject all null hypotheses for medium
+to large sample sizes.
+</p>
+<p>If larger samples contain more information, hypothesis tests for the
+Ornstein-Uhlenbeck Process will reject more null hypotheses, but not all
+hypotheses as do Chi^2 tests.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>GregsOUPR6</em> version 1.3.5.0 <a href="00Index.html">Index</a>]</div>
+</div></body></html>
