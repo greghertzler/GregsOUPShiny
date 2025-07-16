@@ -15,15 +15,16 @@ ML <- OUP$get_MaximumLikelihood()
 MC <- OUP$get_MonteCarlo()
 A$set_plot_info(theme="light",opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
-libdir <- system.file(package="GregsOUPR6")
-datadir <- paste(sep="",libdir,"/data/")
-htmldir <- paste(sep="",getwd(),"/www/html/")
-agrlist <- file_path_sans_ext(list.files(datadir,pattern="Agric_"))
-clilist <- file_path_sans_ext(list.files(datadir,pattern="Climate_"))
-ecolist <- file_path_sans_ext(list.files(datadir,pattern="Ecosys_"))
-finlist <- file_path_sans_ext(list.files(datadir,pattern="Finance_"))
-ouplist <- file_path_sans_ext(list.files(datadir,pattern="OUP_"))
-filelist <- list("Default",`Ornstein-Uhlenbeck Process`=ouplist,Agriculture=agrlist,Climate=clilist,Ecosystems=ecolist,Finance=finlist)
+datapath <- paste(sep="",system.file(package="GregsOUPR6"),"/data/")
+htmlpath <- paste(sep="",getwd(),"/www/html/")
+uploadname <- "MyData"
+uploadpath <- paste(sep="",datapath,"MyData.csv")
+agrlist <- file_path_sans_ext(list.files(datapath,pattern="Agric_"))
+clilist <- file_path_sans_ext(list.files(datapath,pattern="Climate_"))
+ecolist <- file_path_sans_ext(list.files(datapath,pattern="Ecosys_"))
+finlist <- file_path_sans_ext(list.files(datapath,pattern="Finance_"))
+ouplist <- file_path_sans_ext(list.files(datapath,pattern="OUP_"))
+filelist <- list(uploadname,`Ornstein-Uhlenbeck Process`=ouplist,Agriculture=agrlist,Climate=clilist,Ecosystems=ecolist,Finance=finlist)
 df <- NULL
 framenames <- NULL
 nrows <- NULL
@@ -35,11 +36,11 @@ Ixbeg <- NULL
 end <- NULL
 Ixend <- NULL
 first <- TRUE
-initialize <- c(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)
+initialize <- c(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)
 bounce <- c(0,0,0)
-dname <- c("data","data","data","data","data","data")
-tname <- c("tau","tau","tau","tau","tau","tau")
-sname <- c("z","z","z","z","z","z")
+dname <- c("data","data","data","data","data","data","data")
+tname <- c("tau","tau","tau","tau","tau","tau","tau")
+sname <- c("z","z","z","z","z","z","z")
 lnL_params <- c(0,0,0)
 LRT_params <- c(NA,NA,NA)
 
@@ -50,22 +51,44 @@ LRT_params <- c(NA,NA,NA)
     {
       # tabROUP
       observeEvent(input$navROOUP,{
-        # Data and Estimates ----
+        # Data ----
         if(input$navROOUP == "RODataOUP")
         {
-          # define set function ----
+          # Define set functions ----
+          DataInfo <- function()
+          {
+            output$descrRODataOUP <- renderUI({
+              HTML(paste(sep="",
+                "<table align='center'>
+                  <tr>
+                    <th style='text-align: right; padding: 2px; border-bottom: 1px solid grey;'>First</th>
+                    <th style='text-align: right; padding: 2px; border-bottom: 1px solid grey;'>Last</th>
+                    <th style='text-align: right; padding: 2px;>&emsp;'</th>
+                    <th style='text-align: right; padding: 2px; border-bottom: 1px solid grey;'>Rows</th>
+                    <th style='text-align: right; padding: 2px; border-bottom: 1px solid grey;'>Cols</th>
+                  </tr>
+                  <tr>
+                    <td style='text-align: right; padding: 8px;'>",nfirst,"</td>
+                    <td style='text-align: right; padding: 8px;'>",nlast,"</td>
+                    <td style='text-align: right; padding: 8px;'>&emsp;</td>
+                    <td style='text-align: right; padding: 8px;'>",nrows,"</td>
+                    <td style='text-align: right; padding: 8px;'>",ncols,"</td>
+                  </tr>
+                </table>"
+              ))
+            })
+          }
           FromR6toUI <- function()
           {
-# message("Data and Estimates FromR6toUI")
+# message("Data FromR6toUI")
             if(first)
             {
 # message("first")
-              filename <- paste(sep="",datadir,"Default.csv")
-              df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+              df <<- read.csv(uploadpath,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[6] <<- "Default"
-              tname[6] <<- framenames[1]
-              sname[6] <<- framenames[2]
+              dname[1] <<- uploadname
+              tname[1] <<- framenames[1]
+              sname[1] <<- framenames[2]
               nrows <<- nrow(df)
               ncols <<- ncol(df)
               nfirst <<- df[1,1]
@@ -76,12 +99,13 @@ LRT_params <- c(NA,NA,NA)
               if(Ixend > 200) { Ixbeg <<- Ixend-200 }
               else { Ixbeg <<- 1 }
               beg <<- series[Ixbeg,1]
-              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[6],timename=tname[6],statename=sname[6],NULL)
+              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[1],timename=tname[1],statename=sname[1],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-              updateSelectInput(session,"filesRODataOUP",choices=filelist,selected=dname[6])
-              updateSelectInput(session,"timeRODataOUP",choices=framenames,selected=tname[6])
-              updateSelectInput(session,"stateRODataOUP",choices=framenames,selected=sname[6])
+              updateSelectInput(session,"filesRODataOUP",choices=filelist,selected=dname[1])
+              updateSelectInput(session,"timeRODataOUP",choices=framenames,selected=tname[1])
+              updateSelectInput(session,"stateRODataOUP",choices=framenames,selected=sname[1])
+              DataInfo()
               first <<- FALSE
               initialize[6] <<- FALSE
               bounce[1] <<- 1
@@ -92,12 +116,13 @@ LRT_params <- c(NA,NA,NA)
             {
 # message("initialize")
               df_info <- ML$get_timeseries_info()
-              dname[6] <<- df_info[[5]]
-              tname[6] <<- df_info[[6]]
-              sname[6] <<- df_info[[7]]
-              updateSelectInput(session,"filesRODataOUP",choices=filelist,selected=dname[6])
-              updateSelectInput(session,"timeRODataOUP",choices=framenames,selected=tname[6])
-              updateSelectInput(session,"stateRODataOUP",choices=framenames,selected=sname[6])
+              dname[1] <<- df_info[[5]]
+              tname[1] <<- df_info[[6]]
+              sname[1] <<- df_info[[7]]
+              updateSelectInput(session,"filesRODataOUP",choices=filelist,selected=dname[1])
+              updateSelectInput(session,"timeRODataOUP",choices=framenames,selected=tname[1])
+              updateSelectInput(session,"stateRODataOUP",choices=framenames,selected=sname[1])
+              DataInfo()
               initialize[6] <<- FALSE
               bounce[1] <<- 1
               bounce[2] <<- 1
@@ -110,18 +135,19 @@ LRT_params <- c(NA,NA,NA)
               dataname <- df_info[[5]]
               timename <- df_info[[6]]
               statename <- df_info[[7]]
-              if(dataname != dname[6] | timename != tname[6] | statename != sname[6])
+              if(dataname != dname[1] | timename != tname[1] | statename != sname[1])
               {
-# message(dataname,", ",dname[6],", ",timename,", ",tname[6],", ",statename,", ",sname[6])
+# message(dataname,", ",dname[1],", ",timename,", ",tname[1],", ",statename,", ",sname[1])
                 updateSelectInput(session,"filesRODataOUP",choices=filelist,selected=dataname)
                 updateSelectInput(session,"timeRODataOUP",choices=framenames,selected=timename)
                 updateSelectInput(session,"stateRODataOUP",choices=framenames,selected=statename)
+                DataInfo()
                 bounce[1] <<- 1
                 bounce[2] <<- 1
                 bounce[3] <<- 1
-                dname[6] <<- dataname
-                tname[6] <<- timename
-                sname[6] <<- statename
+                dname[1] <<- dataname
+                tname[1] <<- timename
+                sname[1] <<- statename
               }
             }
             updateNumericInput(session,"begRODataOUP",value=beg)
@@ -131,20 +157,21 @@ LRT_params <- c(NA,NA,NA)
           FromR6toUI()
           # select ----
           observe({
-# message("Data and Estimates observe file")
+# message("Data observe file")
 # message(bounce[1])
             if(bounce[1] > 0) { bounce[1] <<- bounce[1]-1 }
             else
             {
-              if(dname[6] != input$filesRODataOUP)
+              if(dname[1] != input$filesRODataOUP)
               {
-# message(dname[6],", ",input$filesRODataOUP)
-                filename <- paste(sep="",datadir,input$filesRODataOUP,".csv")
-                df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+# message(dname[1],", ",input$filesRODataOUP)
+                dname[1] <<- input$filesRODataOUP
+                if(dname[1] == uploadname) { filepath <- uploadpath }
+                else { filepath <- paste(sep="",datapath,input$filesRODataOUP,".csv")  }
+                df <<- read.csv(filepath,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
-                dname[6] <<- input$filesRODataOUP
-                tname[6] <<- framenames[1]
-                sname[6] <<- framenames[2]
+                tname[1] <<- framenames[1]
+                sname[1] <<- framenames[2]
                 nrows <<- nrow(df)
                 ncols <<- ncol(df)
                 nfirst <<- df[1,1]
@@ -155,43 +182,41 @@ LRT_params <- c(NA,NA,NA)
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[6],timename=tname[6],statename=sname[6])
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[1],timename=tname[1],statename=sname[1],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-                updateSelectInput(session,"timeRODataOUP",choices=framenames,selected=tname[6])
-                updateSelectInput(session,"stateRODataOUP",choices=framenames,selected=sname[6])
+                updateSelectInput(session,"timeRODataOUP",choices=framenames,selected=tname[1])
+                updateSelectInput(session,"stateRODataOUP",choices=framenames,selected=sname[1])
                 updateNumericInput(session,"begRODataOUP",value=beg)
                 updateNumericInput(session,"endRODataOUP",value=end)
+                DataInfo()
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
-                LRT_params[1] <<- NA
-                LRT_params[2] <<- NA
-                LRT_params[3] <<- NA
                 bounce[2] <<- bounce[2]+1
                 bounce[3] <<- bounce[3]+1
               }
             }
           }) %>% bindEvent(input$filesRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
-# message("Estimates observe time")
+# message("Data observe time")
 # message(bounce[2])
             if(bounce[2] > 0) { bounce[2] <<- bounce[2]-1 }
             else
             {
-              if(tname[6] != input$timeRODataOUP)
+              if(tname[1] != input$timeRODataOUP)
               {
-# message(tname[6],", ",input$timeRODataOUP)
-                tname[6] <<- input$timeRODataOUP
-                taucol <- match(tname[6],framenames)
-                zcol <- match(sname[6],framenames)
+# message(tname[1],", ",input$timeRODataOUP)
+                tname[1] <<- input$timeRODataOUP
+                taucol <- match(tname[1],framenames)
+                zcol <- match(sname[1],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[6],timename=tname[6],statename=sname[6],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[1],timename=tname[1],statename=sname[1],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"begRODataOUP",value=beg)
@@ -199,43 +224,49 @@ LRT_params <- c(NA,NA,NA)
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
-                LRT_params[1] <<- NA
-                LRT_params[2] <<- NA
-                LRT_params[3] <<- NA
               }
             }
           }) %>% bindEvent(input$timeRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
-# message("Estimates observe state")
+# message("Data observe state")
 # message(bounce[3])
             if(bounce[3] > 0) { bounce[3] <<- bounce[3]-1 }
             else
             {
-              if(sname[6] != input$stateRODataOUP)
+              if(sname[1] != input$stateRODataOUP)
               {
-# message(sname[6],", ",input$stateRODataOUP)
-                sname[6] <<- input$stateRODataOUP
-                taucol <- match(tname[6],framenames)
-                zcol <- match(sname[6],framenames)
+# message(sname[1],", ",input$stateRODataOUP)
+                sname[1] <<- input$stateRODataOUP
+                taucol <- match(tname[1],framenames)
+                zcol <- match(sname[1],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[6],timename=tname[6],statename=sname[6],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[1],timename=tname[1],statename=sname[1],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
+                updateNumericInput(session,"begRODataOUP",value=beg)
+                updateNumericInput(session,"endRODataOUP",value=end)
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
-                LRT_params[1] <<- NA
-                LRT_params[2] <<- NA
-                LRT_params[3] <<- NA
               }
             }
           }) %>% bindEvent(input$stateRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # observe reset, begin and end ----
+          # upload ----
+          observe({
+            uploadname <<- file_path_sans_ext(input$filesROUploadOUP$name)
+            uploadpath <<- input$filesROUploadOUP$datapath
+            filelist[1] <<- uploadname
+# message(uploadname)
+# print(filelist)
+            first <<- TRUE
+            FromR6toUI()
+          }) %>% bindEvent(input$filesROUploadOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # Observe reset, begin and end ----
           resetButton <- reactiveVal(FALSE)
           beginInput <- reactiveVal(FALSE)
           endInput <- reactiveVal(FALSE)
@@ -248,17 +279,18 @@ LRT_params <- c(NA,NA,NA)
           observe({
             endInput(TRUE)
           }) %>% bindEvent(input$endRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # go ----
+          # plot ----
           observe({
+# message("plot")
             if(resetButton())
             {
               begin <- -Inf
               endin <- Inf
-              timeseries_info <- ML$set_timeseries_info(tbeg=begin,tend=endin,NULL,NULL,NULL,NULL)
-              updateNumericInput(session,"begRODataOUP",value=timeseries_info$tbeg)
-              updateNumericInput(session,"endRODataOUP",value=timeseries_info$tend)
-              beg[6] <<- timeseries_info$tbeg
-              end[6] <<- timeseries_info$tend
+              df_info <- ML$set_timeseries_info(tbeg=begin,tend=endin,NULL,NULL,NULL,NULL)
+              updateNumericInput(session,"begRODataOUP",value=df_info$tbeg)
+              updateNumericInput(session,"endRODataOUP",value=df_info$tend)
+              beg <<- df_info$tbeg
+              end <<- df_info$tend
             }
             else
             {
@@ -282,6 +314,317 @@ LRT_params <- c(NA,NA,NA)
             resetButton(FALSE)
             beginInput(FALSE)
             endInput(FALSE)
+            output$plotlyRODataOUP <- renderPlotly({ ML$PlotTimeSeries() })
+          }) %>% bindEvent(input$resetRODataOUP,input$plotRODataOUP)
+          # User clicks i ----
+          observe({
+            htmlname <- paste(sep="",htmlpath,input$filesRODataOUP,".html")
+            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
+            rawtext <- read_html(htmlname)
+            halo <- input$filesRODataOUP
+            body <- html_element(rawtext,"body")
+            gen1 <- html_children(body)
+            gen2 <- html_children(gen1)
+            m <- length(gen2)-2
+            soul <- as.character(gen2[2:m])
+            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+            showModal(modalDialog(
+              title=div(img(src="Roar32x32.png"),halo),
+              HTML(paste(sep="",style,soul)),
+              easyClose = TRUE,
+              footer = modalButton("Close"),
+              size = "l"
+            ))
+          }) %>% bindEvent(input$fileinfoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # User clicks info ----
+          observe({
+            showModal(modalDialog(
+              title=div(img(src="Roar32x32.png"),"Data"),
+              HTML("The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
+              Data must be a time-series, with observations of times and states of nature.  Within the time-series, each observation has its own initial time and state, and its own terminal time and state.  Typically, the terminal time and state of one observation will be the initial time and state of the next observation.  Therefore, if measurements are taken at <i>m</i>  times, there will be <i>m</i>-1 observations.<br><br>
+              Data is read from 'csv' (comma separated value) files.  Typically the files would be organized as in this table.
+              <table style='margin-left: 60px;'>
+                <tr>
+                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+                  <td style='padding: 0px 4px 0px 4px;'><i>tau</i></td>
+                  <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>1</sub></td>
+                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+                  <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>n</sub></td>
+                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style='border-left: solid silver'>&nbsp;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>1</td>
+                  <td style='padding: 0px 4px 0px 4px;'>16.3</td>
+                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>12.7</td>
+                  <td style='border-right: solid silver'>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style='border-left: solid silver'>&nbsp;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>2</td>
+                  <td style='padding: 0px 4px 0px 4px;'>5.1</td>
+                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>13.9</td>
+                  <td style='border-right: solid silver'>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style='border-left: solid silver'>&nbsp;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>&nbsp;&vellip;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+                  <td style='border-right: solid silver'>&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+                  <td style='padding: 0px 4px 0px 4px;'><i>m</i></td>
+                  <td style='padding: 0px 4px 0px 4px;'>14.3</td>
+                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+                  <td style='padding: 0px 4px 0px 4px;'>8.9</td>
+                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+                  <td style='padding-left: 2px;'>;</td>
+                </tr>
+              </table>
+              Names are in the first row.  Numbers start in the second row.  Time is in the first column and states start in the second column.  There can be more than one time column.  There must be <i>m</i>+1 rows in all columns, but there can be blank elements if there is no measurment at that time.  Data is sorted by time and time intervals can be unequal.  Indeed, unequal time intervals seem to improve the estimation.<br><br>
+              How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."),
+              easyClose = TRUE,
+              footer = modalButton("Close")
+            ))
+          }) %>% bindEvent(input$infoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+        }
+        # Estimates ----
+        if(input$navROOUP == "ROEstimatesOUP")
+        {
+          # define set function ----
+          FromR6toUI <- function()
+          {
+# message("Estimates FromR6toUI")
+            if(first)
+            {
+# message("first")
+              df <<- read.csv(uploadpath,fileEncoding="UTF-8-BOM")
+              framenames <<- colnames(df)
+              dname[2] <<- uploadname
+              tname[2] <<- framenames[1]
+              sname[2] <<- framenames[2]
+              nrows <<- nrow(df)
+              ncols <<- ncol(df)
+              nfirst <<- df[1,1]
+              nlast <<- df[nrows,1]
+              series <- ML$set_timeseries(df=df,taucol=1,zcol=2)
+              Ixend <<- nrow(series)
+              end <<- series[Ixend,1]
+              if(Ixend > 200) { Ixbeg <<- Ixend-200 }
+              else { Ixbeg <<- 1 }
+              beg <<- series[Ixbeg,1]
+              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2],NULL)
+# df_info <- ML$get_timeseries_info()
+# message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
+              updateSelectInput(session,"filesROEstimatesOUP",choices=filelist,selected=dname[2])
+              updateSelectInput(session,"timeROEstimatesOUP",choices=framenames,selected=tname[2])
+              updateSelectInput(session,"stateROEstimatesOUP",choices=framenames,selected=sname[2])
+              first <<- FALSE
+              initialize[7] <<- FALSE
+              bounce[1] <<- 1
+              bounce[2] <<- 1
+              bounce[3] <<- 1
+            }
+            else if(initialize[7])
+            {
+# message("initialize")
+              df_info <- ML$get_timeseries_info()
+              dname[2] <<- df_info[[5]]
+              tname[2] <<- df_info[[6]]
+              sname[2] <<- df_info[[7]]
+              updateSelectInput(session,"filesROEstimatesOUP",choices=filelist,selected=dname[2])
+              updateSelectInput(session,"timeROEstimatesOUP",choices=framenames,selected=tname[2])
+              updateSelectInput(session,"stateROEstimatesOUP",choices=framenames,selected=sname[2])
+              initialize[7] <<- FALSE
+              bounce[1] <<- 1
+              bounce[2] <<- 1
+              bounce[3] <<- 1
+            }
+            else
+            {
+# message("else")
+              df_info <- ML$get_timeseries_info()
+              dataname <- df_info[[5]]
+              timename <- df_info[[6]]
+              statename <- df_info[[7]]
+              if(dataname != dname[2] | timename != tname[2] | statename != sname[2])
+              {
+# message(dataname,", ",dname[2],", ",timename,", ",tname[2],", ",statename,", ",sname[2])
+                updateSelectInput(session,"filesROEstimatesOUP",choices=filelist,selected=dataname)
+                updateSelectInput(session,"timeROEstimatesOUP",choices=framenames,selected=timename)
+                updateSelectInput(session,"stateROEstimatesOUP",choices=framenames,selected=statename)
+                bounce[1] <<- 1
+                bounce[2] <<- 1
+                bounce[3] <<- 1
+                dname[2] <<- dataname
+                tname[2] <<- timename
+                sname[2] <<- statename
+              }
+            }
+            updateNumericInput(session,"begROEstimatesOUP",value=beg)
+            updateNumericInput(session,"endROEstimatesOUP",value=end)
+          }
+          # initialize ----
+          FromR6toUI()
+          # select ----
+          observe({
+# message("Data and Estimates observe file")
+# message(bounce[1])
+            if(bounce[1] > 0) { bounce[1] <<- bounce[1]-1 }
+            else
+            {
+              if(dname[2] != input$filesROEstimatesOUP)
+              {
+# message(dname[2],", ",input$filesROEstimatesOUP)
+                dname[2] <<- input$filesROEstimatesOUP
+                if(dname[2] == uploadname) { filepath <- uploadpath }
+                else { filepath <- paste(sep="",datapath,input$filesROEstimatesOUP,".csv")  }
+                df <<- read.csv(filepath,fileEncoding="UTF-8-BOM")
+                framenames <<- colnames(df)
+                tname[2] <<- framenames[1]
+                sname[2] <<- framenames[2]
+                nrows <<- nrow(df)
+                ncols <<- ncol(df)
+                nfirst <<- df[1,1]
+                nlast <<- df[nrows,1]
+                series <- ML$set_timeseries(df=df,taucol=1,zcol=2)
+                Ixend <<- nrow(series)
+                end <<- series[Ixend,1]
+                if(Ixend > 200) { Ixbeg <<- Ixend-200 }
+                else { Ixbeg <<- 1 }
+                beg <<- series[Ixbeg,1]
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2])
+# df_info <- ML$get_timeseries_info()
+# message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
+                updateSelectInput(session,"timeROEstimatesOUP",choices=framenames,selected=tname[2])
+                updateSelectInput(session,"stateROEstimatesOUP",choices=framenames,selected=sname[2])
+                updateNumericInput(session,"begROEstimatesOUP",value=beg)
+                updateNumericInput(session,"endROEstimatesOUP",value=end)
+                lnL_params[1] <<- 0
+                lnL_params[2] <<- 0
+                lnL_params[3] <<- 0
+                LRT_params[1] <<- NA
+                LRT_params[2] <<- NA
+                LRT_params[3] <<- NA
+                bounce[2] <<- bounce[2]+1
+                bounce[3] <<- bounce[3]+1
+              }
+            }
+          }) %>% bindEvent(input$filesROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+# message("Estimates observe time")
+# message(bounce[2])
+            if(bounce[2] > 0) { bounce[2] <<- bounce[2]-1 }
+            else
+            {
+              if(tname[2] != input$timeROEstimatesOUP)
+              {
+# message(tname[2],", ",input$timeROEstimatesOUP)
+                tname[2] <<- input$timeROEstimatesOUP
+                taucol <- match(tname[2],framenames)
+                zcol <- match(sname[2],framenames)
+                series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
+                Ixend <<- nrow(series)
+                end <<- series[Ixend,1]
+                if(Ixend > 200) { Ixbeg <<- Ixend-200 }
+                else { Ixbeg <<- 1 }
+                beg <<- series[Ixbeg,1]
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2],NULL)
+# df_info <- ML$get_timeseries_info()
+# message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
+                updateNumericInput(session,"begROEstimatesOUP",value=beg)
+                updateNumericInput(session,"endROEstimatesOUP",value=end)
+                lnL_params[1] <<- 0
+                lnL_params[2] <<- 0
+                lnL_params[3] <<- 0
+                LRT_params[1] <<- NA
+                LRT_params[2] <<- NA
+                LRT_params[3] <<- NA
+              }
+            }
+          }) %>% bindEvent(input$timeROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+# message("Estimates observe state")
+# message(bounce[3])
+            if(bounce[3] > 0) { bounce[3] <<- bounce[3]-1 }
+            else
+            {
+              if(sname[2] != input$stateROEstimatesOUP)
+              {
+# message(sname[2],", ",input$stateROEstimatesOUP)
+                sname[2] <<- input$stateROEstimatesOUP
+                taucol <- match(tname[2],framenames)
+                zcol <- match(sname[2],framenames)
+                series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
+                Ixend <<- nrow(series)
+                end <<- series[Ixend,1]
+                if(Ixend > 200) { Ixbeg <<- Ixend-200 }
+                else { Ixbeg <<- 1 }
+                beg <<- series[Ixbeg,1]
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2],NULL)
+# df_info <- ML$get_timeseries_info()
+# message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
+                lnL_params[1] <<- 0
+                lnL_params[2] <<- 0
+                lnL_params[3] <<- 0
+                LRT_params[1] <<- NA
+                LRT_params[2] <<- NA
+                LRT_params[3] <<- NA
+              }
+            }
+          }) %>% bindEvent(input$stateROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # observe reset, begin and end ----
+          resetButton <- reactiveVal(FALSE)
+          beginInput <- reactiveVal(FALSE)
+          endInput <- reactiveVal(FALSE)
+          observe({
+            resetButton(TRUE)
+          }) %>% bindEvent(input$resetROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            beginInput(TRUE)
+          }) %>% bindEvent(input$begROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            endInput(TRUE)
+          }) %>% bindEvent(input$endROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # go ----
+          observe({
+            if(resetButton())
+            {
+              begin <- -Inf
+              endin <- Inf
+              timeseries_info <- ML$set_timeseries_info(tbeg=begin,tend=endin,NULL,NULL,NULL,NULL)
+              updateNumericInput(session,"begROEstimatesOUP",value=timeseries_info$tbeg)
+              updateNumericInput(session,"endROEstimatesOUP",value=timeseries_info$tend)
+              beg <<- timeseries_info$tbeg
+              end <<- timeseries_info$tend
+            }
+            else
+            {
+              if(beginInput())
+              {
+                begin <- input$begROEstimatesOUP
+                if(!is.numeric(begin)) { begin <- -Inf }
+                df_info <- ML$set_timeseries_info(tbeg=begin,NULL,NULL,NULL,NULL,NULL)
+                updateNumericInput(session,"begROEstimatesOUP",value=df_info$tbeg)
+                beg <<- df_info$tbeg
+              }
+              if(endInput())
+              {
+                endin <- input$endROEstimatesOUP
+                if(!is.numeric(endin)) { endin <- Inf }
+                df_info <- ML$set_timeseries_info(NULL,tend=endin,NULL,NULL,NULL,NULL)
+                updateNumericInput(session,"endROEstimatesOUP",value=df_info$tend)
+                end <<- df_info$tend
+              }
+            }
+            resetButton(FALSE)
+            beginInput(FALSE)
+            endInput(FALSE)
             est <- ML$Estimates(plotit=FALSE)
             rho <- format(est[[1]],digits=6)
             mu <- format(est[[2]],digits=6)
@@ -289,7 +632,7 @@ LRT_params <- c(NA,NA,NA)
             lnL_params[1] <<- est[[1]]
             lnL_params[2] <<- est[[2]]
             lnL_params[3] <<- est[[3]]
-            output$paramRODataOUP <- renderUI({
+            output$paramROEstimatesOUP <- renderUI({
               HTML(paste(sep="",
                 "<table align='center'>
                   <tr style='border-bottom: 1px solid grey;'>
@@ -307,13 +650,14 @@ LRT_params <- c(NA,NA,NA)
                 </table>"
               ))
             })
-            output$plotlyRODataOUP <- renderPlotly({ ML$PlotEstimates() })
-          }) %>% bindEvent(input$resetRODataOUP,input$plotRODataOUP)
-          # User clicks ? ----
+            output$plotlyROEstimatesOUP <- renderPlotly({ ML$PlotEstimates() })
+          }) %>% bindEvent(input$resetROEstimatesOUP,input$plotROEstimatesOUP)
+          # User clicks i ----
           observe({
-            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
-            rawtext <- read_html(filename)
-            halo <- input$filesRODataOUP
+            htmlname <- paste(sep="",htmlpath,input$filesROEstimatesOUP,".html")
+            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
+            rawtext <- read_html(htmlname)
+            halo <- input$filesROEstimatesOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
             gen2 <- html_children(gen1)
@@ -323,19 +667,16 @@ LRT_params <- c(NA,NA,NA)
             showModal(modalDialog(
               title=div(img(src="Roar32x32.png"),halo),
               HTML(paste(sep="",style,soul)),
-              HTML(soul),
               easyClose = TRUE,
               footer = modalButton("Close"),
               size = "l"
             ))
-          }) %>% bindEvent(input$fileinfoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          }) %>% bindEvent(input$fileinfoROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # User clicks info ----
           observe({
             showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Data and Estimates"),
-              HTML("If you know the parameters of the Ornstein-Uhlenbeck Process, you can enter them directly.  If you have data, you can use it to estimate the parameters.<br><br>
-              Data must be a time-series, with observations of times and states of nature.  This tab contains several examples for you to try.<br><br>
-              Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Likelihood of observing the data as a random sample.<br><br>
+              title=div(img(src="Roar32x32.png"),"Estimates"),
+              HTML("If you know the parameters of the Ornstein-Uhlenbeck Process, you can enter them directly.  If you have data, you can use it to estimate the parameters.  Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Likelihood of observing the data as a random sample.<br><br>
               &emsp;&emsp;Arguments:<br>
               &emsp;&emsp;&emsp;<i>tau</i> are times;<br>
               &emsp;&emsp;&emsp;<i>z</i> are states.<br>
@@ -344,14 +685,14 @@ LRT_params <- c(NA,NA,NA)
               &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
               &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter."),
               easyClose = TRUE,
-              footer = tagList(actionButton("moreRODataOUP","More",class="btn-primary",title="Maximum Likelihood Data"),modalButton("Close")),
+              footer = tagList(actionButton("moreROEstimatesOUP","More",class="btn-primary",title="Maximum Likelihood Data"),modalButton("Close")),
             ))
-          }) %>% bindEvent(input$infoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          }) %>% bindEvent(input$infoROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             removeModal()
             updateTabsetPanel(session,"navBar",selected="tabMLOUP")
             updateTabsetPanel(session,"navMLOUP",selected="MLEstimatesOUP")
-          }) %>% bindEvent(input$moreRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          }) %>% bindEvent(input$moreROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Regime ----
         else if(input$navROOUP == "RORegimeOUP")
@@ -6694,49 +7035,21 @@ LRT_params <- c(NA,NA,NA)
           # Define set functions ----
           DataInfo <- function()
           {
-            output$firstMLDataOUP <- renderUI({
+            output$descrMLDataOUP <- renderUI({
               HTML(paste(sep="",
                 "<table align='center'>
-                  <tr style='border-bottom: 1px solid grey;'>
-                    <th style='text-align: center; padding: 2px 14px 2px 14px;'>First</th>
+                  <tr>
+                    <th style='text-align: right; padding: 2px; border-bottom: 1px solid grey;'>First</th>
+                    <th style='text-align: right; padding: 2px; border-bottom: 1px solid grey;'>Last</th>
+                    <th style='text-align: right; padding: 2px;>&emsp;'</th>
+                    <th style='text-align: right; padding: 2px; border-bottom: 1px solid grey;'>Rows</th>
+                    <th style='text-align: right; padding: 2px; border-bottom: 1px solid grey;'>Cols</th>
                   </tr>
                   <tr>
                     <td style='text-align: right; padding: 8px;'>",nfirst,"</td>
-                  </tr>
-                </table>"
-              ))
-            })
-            output$lastMLDataOUP <- renderUI({
-              HTML(paste(sep="",
-                "<table align='center'>
-                  <tr style='border-bottom: 1px solid grey;'>
-                    <th style='text-align: ceenter; padding: 2px 16px 2px 16px;'>Last</th>
-                  </tr>
-                  <tr>
                     <td style='text-align: right; padding: 8px;'>",nlast,"</td>
-                  </tr>
-                </table>"
-              ))
-            })
-            output$rowsMLDataOUP <- renderUI({
-              HTML(paste(sep="",
-                "<table align='center'>
-                  <tr style='border-bottom: 1px solid grey;'>
-                    <th style='text-align: center; padding: 2px 12px 2px 12px;'>Rows</th>
-                  </tr>
-                  <tr>
+                    <td style='text-align: right; padding: 8px;'>&emsp;</td>
                     <td style='text-align: right; padding: 8px;'>",nrows,"</td>
-                  </tr>
-                </table>"
-              ))
-            })
-            output$colsMLDataOUP <- renderUI({
-              HTML(paste(sep="",
-                "<table align='center'>
-                  <tr style='border-bottom: 1px solid grey;'>
-                    <th style='text-align: center; padding: 2px 0px 2px 0px;'>Columns</th>
-                  </tr>
-                  <tr>
                     <td style='text-align: right; padding: 8px;'>",ncols,"</td>
                   </tr>
                 </table>"
@@ -6749,12 +7062,11 @@ LRT_params <- c(NA,NA,NA)
             if(first)
             {
 # message("first")
-              filename <- paste(sep="",datadir,"Default.csv")
-              df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+              df <<- read.csv(uploadpath,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[1] <<- "Default"
-              tname[1] <<- framenames[1]
-              sname[1] <<- framenames[2]
+              dname[3] <<- uploadname
+              tname[3] <<- framenames[1]
+              sname[3] <<- framenames[2]
               nrows <<- nrow(df)
               ncols <<- ncol(df)
               nfirst <<- df[1,1]
@@ -6765,12 +7077,12 @@ LRT_params <- c(NA,NA,NA)
               if(Ixend > 200) { Ixbeg <<- Ixend-200 }
               else { Ixbeg <<- 1 }
               beg <<- series[Ixbeg,1]
-              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[1],timename=tname[1],statename=sname[1],NULL)
+              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[3],timename=tname[3],statename=sname[3],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-              updateSelectInput(session,"filesMLDataOUP",choices=filelist,selected=dname[1])
-              updateSelectInput(session,"timeMLDataOUP",choices=framenames,selected=tname[1])
-              updateSelectInput(session,"stateMLDataOUP",choices=framenames,selected=sname[1])
+              updateSelectInput(session,"filesMLDataOUP",choices=filelist,selected=dname[3])
+              updateSelectInput(session,"timeMLDataOUP",choices=framenames,selected=tname[3])
+              updateSelectInput(session,"stateMLDataOUP",choices=framenames,selected=sname[3])
               DataInfo()
               first <<- FALSE
               initialize[1] <<- FALSE
@@ -6782,12 +7094,12 @@ LRT_params <- c(NA,NA,NA)
             {
 # message("initialize")
               df_info <- ML$get_timeseries_info()
-              dname[1] <<- df_info[[5]]
-              tname[1] <<- df_info[[6]]
-              sname[1] <<- df_info[[7]]
-              updateSelectInput(session,"filesMLDataOUP",choices=filelist,selected=dname[1])
-              updateSelectInput(session,"timeMLDataOUP",choices=framenames,selected=tname[1])
-              updateSelectInput(session,"stateMLDataOUP",choices=framenames,selected=sname[1])
+              dname[3] <<- df_info[[5]]
+              tname[3] <<- df_info[[6]]
+              sname[3] <<- df_info[[7]]
+              updateSelectInput(session,"filesMLDataOUP",choices=filelist,selected=dname[3])
+              updateSelectInput(session,"timeMLDataOUP",choices=framenames,selected=tname[3])
+              updateSelectInput(session,"stateMLDataOUP",choices=framenames,selected=sname[3])
               DataInfo()
               initialize[1] <<- FALSE
               bounce[1] <<- 1
@@ -6801,9 +7113,9 @@ LRT_params <- c(NA,NA,NA)
               dataname <- df_info[[5]]
               timename <- df_info[[6]]
               statename <- df_info[[7]]
-              if(dataname != dname[1] | timename != tname[1] | statename != sname[1])
+              if(dataname != dname[3] | timename != tname[3] | statename != sname[3])
               {
-# message(dataname,", ",dname[1],", ",timename,", ",tname[1],", ",statename,", ",sname[1])
+# message(dataname,", ",dname[3],", ",timename,", ",tname[3],", ",statename,", ",sname[3])
                 updateSelectInput(session,"filesMLDataOUP",choices=filelist,selected=dataname)
                 updateSelectInput(session,"timeMLDataOUP",choices=framenames,selected=timename)
                 updateSelectInput(session,"stateMLDataOUP",choices=framenames,selected=statename)
@@ -6811,9 +7123,9 @@ LRT_params <- c(NA,NA,NA)
                 bounce[1] <<- 1
                 bounce[2] <<- 1
                 bounce[3] <<- 1
-                dname[1] <<- dataname
-                tname[1] <<- timename
-                sname[1] <<- statename
+                dname[3] <<- dataname
+                tname[3] <<- timename
+                sname[3] <<- statename
               }
             }
             updateNumericInput(session,"begMLDataOUP",value=beg)
@@ -6828,15 +7140,16 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[1] > 0) { bounce[1] <<- bounce[1]-1 }
             else
             {
-              if(dname[1] != input$filesMLDataOUP)
+              if(dname[3] != input$filesMLDataOUP)
               {
-# message(dname[1],", ",input$filesMLDataOUP)
-                filename <- paste(sep="",datadir,input$filesMLDataOUP,".csv")
-                df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+# message(dname[3],", ",input$filesMLDataOUP)
+                dname[3] <<- input$filesMLDataOUP
+                if(dname[3] == uploadname) { filepath <- uploadpath }
+                else { filepath <- paste(sep="",datapath,input$filesMLDataOUP,".csv")  }
+                df <<- read.csv(filepath,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
-                dname[1] <<- input$filesMLDataOUP
-                tname[1] <<- framenames[1]
-                sname[1] <<- framenames[2]
+                tname[3] <<- framenames[1]
+                sname[3] <<- framenames[2]
                 nrows <<- nrow(df)
                 ncols <<- ncol(df)
                 nfirst <<- df[1,1]
@@ -6847,11 +7160,11 @@ LRT_params <- c(NA,NA,NA)
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[1],timename=tname[1],statename=sname[1],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[3],timename=tname[3],statename=sname[3],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-                updateSelectInput(session,"timeMLDataOUP",choices=framenames,selected=tname[1])
-                updateSelectInput(session,"stateMLDataOUP",choices=framenames,selected=sname[1])
+                updateSelectInput(session,"timeMLDataOUP",choices=framenames,selected=tname[3])
+                updateSelectInput(session,"stateMLDataOUP",choices=framenames,selected=sname[3])
                 updateNumericInput(session,"begMLDataOUP",value=beg)
                 updateNumericInput(session,"endMLDataOUP",value=end)
                 DataInfo()
@@ -6869,19 +7182,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[2] > 0) { bounce[2] <<- bounce[2]-1 }
             else
             {
-              if(tname[1] != input$timeMLDataOUP)
+              if(tname[3] != input$timeMLDataOUP)
               {
-# message(tname[1],", ",input$timeMLDataOUP)
-                tname[1] <<- input$timeMLDataOUP
-                taucol <- match(tname[1],framenames)
-                zcol <- match(sname[1],framenames)
+# message(tname[3],", ",input$timeMLDataOUP)
+                tname[3] <<- input$timeMLDataOUP
+                taucol <- match(tname[3],framenames)
+                zcol <- match(sname[3],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[1],timename=tname[1],statename=sname[1],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[3],timename=tname[3],statename=sname[3],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"begMLDataOUP",value=beg)
@@ -6898,19 +7211,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[3] > 0) { bounce[3] <<- bounce[3]-1 }
             else
             {
-              if(sname[1] != input$stateMLDataOUP)
+              if(sname[3] != input$stateMLDataOUP)
               {
-# message(sname[1],", ",input$stateMLDataOUP)
-                sname[1] <<- input$stateMLDataOUP
-                taucol <- match(tname[1],framenames)
-                zcol <- match(sname[1],framenames)
+# message(sname[3],", ",input$stateMLDataOUP)
+                sname[3] <<- input$stateMLDataOUP
+                taucol <- match(tname[3],framenames)
+                zcol <- match(sname[3],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[1],timename=tname[1],statename=sname[1],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[3],timename=tname[3],statename=sname[3],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"begMLDataOUP",value=beg)
@@ -6921,6 +7234,16 @@ LRT_params <- c(NA,NA,NA)
               }
             }
           }) %>% bindEvent(input$stateMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # upload ----
+          observe({
+            uploadname <<- file_path_sans_ext(input$filesMLUploadOUP$name)
+            uploadpath <<- input$filesMLUploadOUP$datapath
+            filelist[1] <<- uploadname
+# message(uploadname)
+# print(filelist)
+            first <<- TRUE
+            FromR6toUI()
+          }) %>% bindEvent(input$filesMLUploadOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # Observe reset, begin and end ----
           resetButton <- reactiveVal(FALSE)
           beginInput <- reactiveVal(FALSE)
@@ -6971,10 +7294,11 @@ LRT_params <- c(NA,NA,NA)
             endInput(FALSE)
             output$plotlyMLDataOUP <- renderPlotly({ ML$PlotTimeSeries() })
           }) %>% bindEvent(input$resetMLDataOUP,input$plotMLDataOUP)
-          # User clicks ? ----
+          # User clicks i ----
           observe({
-            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
-            rawtext <- read_html(filename)
+            htmlname <- paste(sep="",htmlpath,input$filesMLDataOUP,".html")
+            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
+            rawtext <- read_html(htmlname)
             halo <- input$filesMLDataOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -7057,12 +7381,11 @@ LRT_params <- c(NA,NA,NA)
             if(first)
             {
 # message("first")
-              filename <- paste(sep="","Default.csv")
-              df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+              df <<- read.csv(uploadpath,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[2] <<- "Default"
-              tname[2] <<- framenames[1]
-              sname[2] <<- framenames[2]
+              dname[4] <<- uploadname
+              tname[4] <<- framenames[1]
+              sname[4] <<- framenames[2]
               nrows <<- nrow(df)
               ncols <<- ncol(df)
               nfirst <<- df[1,1]
@@ -7073,12 +7396,12 @@ LRT_params <- c(NA,NA,NA)
               if(Ixend > 200) { Ixbeg <<- Ixend-200 }
               else { Ixbeg <<- 1 }
               beg <<- series[Ixbeg,1]
-              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2],NULL)
+              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[4],timename=tname[4],statename=sname[4],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-              updateSelectInput(session,"filesMLLikelihoodOUP",choices=filelist,selected=dname[2])
-              updateSelectInput(session,"timeMLLikelihoodOUP",choices=framenames,selected=tname[2])
-              updateSelectInput(session,"stateMLLikelihoodOUP",choices=framenames,selected=sname[2])
+              updateSelectInput(session,"filesMLLikelihoodOUP",choices=filelist,selected=dname[4])
+              updateSelectInput(session,"timeMLLikelihoodOUP",choices=framenames,selected=tname[4])
+              updateSelectInput(session,"stateMLLikelihoodOUP",choices=framenames,selected=sname[4])
               first <<- FALSE
               initialize[2] <<- FALSE
               bounce[1] <<- 1
@@ -7089,12 +7412,12 @@ LRT_params <- c(NA,NA,NA)
             {
 # message("initialize")
               df_info <- ML$get_timeseries_info()
-              dname[2] <<- df_info[[5]]
-              tname[2] <<- df_info[[6]]
-              sname[2] <<- df_info[[7]]
-              updateSelectInput(session,"filesMLLikelihoodOUP",choices=filelist,selected=dname[2])
-              updateSelectInput(session,"timeMLLikelihoodOUP",choices=framenames,selected=tname[2])
-              updateSelectInput(session,"stateMLLikelihoodOUP",choices=framenames,selected=sname[2])
+              dname[4] <<- df_info[[5]]
+              tname[4] <<- df_info[[6]]
+              sname[4] <<- df_info[[7]]
+              updateSelectInput(session,"filesMLLikelihoodOUP",choices=filelist,selected=dname[4])
+              updateSelectInput(session,"timeMLLikelihoodOUP",choices=framenames,selected=tname[4])
+              updateSelectInput(session,"stateMLLikelihoodOUP",choices=framenames,selected=sname[4])
               initialize[2] <<- FALSE
               bounce[1] <<- 1
               bounce[2] <<- 1
@@ -7107,18 +7430,18 @@ LRT_params <- c(NA,NA,NA)
               dataname <- df_info[[5]]
               timename <- df_info[[6]]
               statename <- df_info[[7]]
-              if(dataname != dname[2] | timename != tname[2] | statename != sname[2])
+              if(dataname != dname[4] | timename != tname[4] | statename != sname[4])
               {
-# message(dataname,", ",dname[2],", ",timename,", ",tname[2],", ",statename,", ",sname[2])
+# message(dataname,", ",dname[4],", ",timename,", ",tname[4],", ",statename,", ",sname[4])
                 updateSelectInput(session,"filesMLLikelihoodOUP",choices=filelist,selected=dataname)
                 updateSelectInput(session,"timeMLLikelihoodOUP",choices=framenames,selected=timename)
                 updateSelectInput(session,"stateMLLikelihoodOUP",choices=framenames,selected=statename)
                 bounce[1] <<- 1
                 bounce[2] <<- 1
                 bounce[3] <<- 1
-                dname[2] <<- dataname
-                tname[2] <<- timename
-                sname[2] <<- statename
+                dname[4] <<- dataname
+                tname[4] <<- timename
+                sname[4] <<- statename
               }
             }
             updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
@@ -7137,15 +7460,16 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[1] > 0) { bounce[1] <<- bounce[1]-1 }
             else
             {
-              if(dname[2] != input$filesMLLikelihoodOUP)
+              if(dname[4] != input$filesMLLikelihoodOUP)
               {
-# message(dname[2],", ",input$filesMLLikelihoodOUP)
-                filename <- paste(sep="",datadir,input$filesMLLikelihoodOUP,".csv")
-                df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+# message(dname[4],", ",input$filesMLLikelihoodOUP)
+                dname[4] <<- input$filesMLLikelihoodOUP
+                if(dname[4] == uploadname) { filepath <- uploadpath }
+                else { filepath <- paste(sep="",datapath,input$filesMLLikelihoodOUP,".csv")  }
+                df <<- read.csv(filepath,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
-                dname[2] <<- input$filesMLLikelihoodOUP
-                tname[2] <<- framenames[1]
-                sname[2] <<- framenames[2]
+                tname[4] <<- framenames[1]
+                sname[4] <<- framenames[2]
                 nrows <<- nrow(df)
                 ncols <<- ncol(df)
                 nfirst <<- df[1,1]
@@ -7156,11 +7480,11 @@ LRT_params <- c(NA,NA,NA)
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2])
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[4],timename=tname[4],statename=sname[4])
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-                updateSelectInput(session,"timeMLLikelihoodOUP",choices=framenames,selected=tname[2])
-                updateSelectInput(session,"stateMLLikelihoodOUP",choices=framenames,selected=sname[2])
+                updateSelectInput(session,"timeMLLikelihoodOUP",choices=framenames,selected=tname[4])
+                updateSelectInput(session,"stateMLLikelihoodOUP",choices=framenames,selected=sname[4])
                 updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
                 updateNumericInput(session,"endMLLikelihoodOUP",value=end)
                 updateNumericInput(session,"lnLMLLikelihoodOUP",value=NaN)
@@ -7184,19 +7508,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[2] > 0) { bounce[2] <<- bounce[2]-1 }
             else
             {
-              if(tname[2] != input$timeMLLikelihoodOUP)
+              if(tname[4] != input$timeMLLikelihoodOUP)
               {
-# message(tname[2],", ",input$timeMLLikelihoodOUP)
-                tname[2] <<- input$timeMLLikelihoodOUP
-                taucol <- match(tname[2],framenames)
-                zcol <- match(sname[2],framenames)
+# message(tname[4],", ",input$timeMLLikelihoodOUP)
+                tname[4] <<- input$timeMLLikelihoodOUP
+                taucol <- match(tname[4],framenames)
+                zcol <- match(sname[4],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[4],timename=tname[4],statename=sname[4],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
@@ -7220,19 +7544,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[3] > 0) { bounce[3] <<- bounce[3]-1 }
             else
             {
-              if(sname[2] != input$stateMLLikelihoodOUP)
+              if(sname[4] != input$stateMLLikelihoodOUP)
               {
-# message(sname[2],", ",input$stateMLLikelihoodOUP)
-                sname[2] <<- input$stateMLLikelihoodOUP
-                taucol <- match(tname[2],framenames)
-                zcol <- match(sname[2],framenames)
+# message(sname[4],", ",input$stateMLLikelihoodOUP)
+                sname[4] <<- input$stateMLLikelihoodOUP
+                taucol <- match(tname[4],framenames)
+                zcol <- match(sname[4],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[4],timename=tname[4],statename=sname[4],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
@@ -7369,10 +7693,11 @@ LRT_params <- c(NA,NA,NA)
             })
             output$plotlyMLLikelihoodOUP <- renderPlotly({ ML$PlotEstimates() })
           }) %>% bindEvent(input$resetMLLikelihoodOUP,input$plotMLLikelihoodOUP)
-          # User clicks ? ----
+          # User clicks i ----
           observe({
-            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
-            rawtext <- read_html(filename)
+            htmlname <- paste(sep="",htmlpath,input$filesMLLikelihoodOUP,".html")
+            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
+            rawtext <- read_html(htmlname)
             halo <- input$filesMLLikelihoodOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -7427,12 +7752,11 @@ LRT_params <- c(NA,NA,NA)
             if(first)
             {
 # message("first")
-              filename <- paste(sep="",datadir,"Default.csv")
-              df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+              df <<- read.csv(uploadpath,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[3] <<- "Default"
-              tname[3] <<- framenames[1]
-              sname[3] <<- framenames[2]
+              dname[5] <<- uploadname
+              tname[5] <<- framenames[1]
+              sname[5] <<- framenames[2]
               nrows <<- nrow(df)
               ncols <<- ncol(df)
               nfirst <<- df[1,1]
@@ -7443,12 +7767,12 @@ LRT_params <- c(NA,NA,NA)
               if(Ixend > 200) { Ixbeg <<- Ixend-200 }
               else { Ixbeg <<- 1 }
               beg <<- series[Ixbeg,1]
-              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[3],timename=tname[3],statename=sname[3],NULL)
+              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-              updateSelectInput(session,"filesMLEstimatesOUP",choices=filelist,selected=dname[3])
-              updateSelectInput(session,"timeMLEstimatesOUP",choices=framenames,selected=tname[3])
-              updateSelectInput(session,"stateMLEstimatesOUP",choices=framenames,selected=sname[3])
+              updateSelectInput(session,"filesMLEstimatesOUP",choices=filelist,selected=dname[5])
+              updateSelectInput(session,"timeMLEstimatesOUP",choices=framenames,selected=tname[5])
+              updateSelectInput(session,"stateMLEstimatesOUP",choices=framenames,selected=sname[5])
               first <<- FALSE
               initialize[3] <<- FALSE
               bounce[1] <<- 1
@@ -7459,12 +7783,12 @@ LRT_params <- c(NA,NA,NA)
             {
 # message("initialize")
               df_info <- ML$get_timeseries_info()
-              dname[3] <<- df_info[[5]]
-              tname[3] <<- df_info[[6]]
-              sname[3] <<- df_info[[7]]
-              updateSelectInput(session,"filesMLEstimatesOUP",choices=filelist,selected=dname[3])
-              updateSelectInput(session,"timeMLEstimatesOUP",choices=framenames,selected=tname[3])
-              updateSelectInput(session,"stateMLEstimatesOUP",choices=framenames,selected=sname[3])
+              dname[5] <<- df_info[[5]]
+              tname[5] <<- df_info[[6]]
+              sname[5] <<- df_info[[7]]
+              updateSelectInput(session,"filesMLEstimatesOUP",choices=filelist,selected=dname[5])
+              updateSelectInput(session,"timeMLEstimatesOUP",choices=framenames,selected=tname[5])
+              updateSelectInput(session,"stateMLEstimatesOUP",choices=framenames,selected=sname[5])
               initialize[3] <<- FALSE
               bounce[1] <<- 1
               bounce[2] <<- 1
@@ -7477,18 +7801,18 @@ LRT_params <- c(NA,NA,NA)
               dataname <- df_info[[5]]
               timename <- df_info[[6]]
               statename <- df_info[[7]]
-              if(dataname != dname[3] | timename != tname[3] | statename != sname[3])
+              if(dataname != dname[5] | timename != tname[5] | statename != sname[5])
               {
-# message(dataname,", ",dname[3],", ",timename,", ",tname[3],", ",statename,", ",sname[3])
+# message(dataname,", ",dname[5],", ",timename,", ",tname[5],", ",statename,", ",sname[5])
                 updateSelectInput(session,"filesMLEstimatesOUP",choices=filelist,selected=dataname)
                 updateSelectInput(session,"timeMLEstimatesOUP",choices=framenames,selected=timename)
                 updateSelectInput(session,"stateMLEstimatesOUP",choices=framenames,selected=statename)
                 bounce[1] <<- 1
                 bounce[2] <<- 1
                 bounce[3] <<- 1
-                dname[3] <<- dataname
-                tname[3] <<- timename
-                sname[3] <<- statename
+                dname[5] <<- dataname
+                tname[5] <<- timename
+                sname[5] <<- statename
               }
             }
             updateNumericInput(session,"begMLEstimatesOUP",value=beg)
@@ -7503,15 +7827,16 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[1] > 0) { bounce[1] <<- bounce[1]-1 }
             else
             {
-              if(dname[3] != input$filesMLEstimatesOUP)
+              if(dname[5] != input$filesMLEstimatesOUP)
               {
-# message(dname[3],", ",input$filesMLEstimatesOUP)
-                filename <- paste(sep="",datadir,input$filesMLEstimatesOUP,".csv")
-                df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+# message(dname[5],", ",input$filesMLEstimatesOUP)
+                dname[5] <<- input$filesMLEstimatesOUP
+                if(dname[5] == uploadname) { filepath <- uploadpath }
+                else { filepath <- paste(sep="",datapath,input$filesMLEstimatesOUP,".csv")  }
+                df <<- read.csv(filepath,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
-                dname[3] <<- input$filesMLEstimatesOUP
-                tname[3] <<- framenames[1]
-                sname[3] <<- framenames[2]
+                tname[5] <<- framenames[1]
+                sname[5] <<- framenames[2]
                 nrows <<- nrow(df)
                 ncols <<- ncol(df)
                 nfirst <<- df[1,1]
@@ -7522,11 +7847,11 @@ LRT_params <- c(NA,NA,NA)
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[3],timename=tname[3],statename=sname[3])
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5])
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-                updateSelectInput(session,"timeMLEstimatesOUP",choices=framenames,selected=tname[3])
-                updateSelectInput(session,"stateMLEstimatesOUP",choices=framenames,selected=sname[3])
+                updateSelectInput(session,"timeMLEstimatesOUP",choices=framenames,selected=tname[5])
+                updateSelectInput(session,"stateMLEstimatesOUP",choices=framenames,selected=sname[5])
                 updateNumericInput(session,"begMLEstimatesOUP",value=beg)
                 updateNumericInput(session,"endMLEstimatesOUP",value=end)
                 lnL_params[1] <<- 0
@@ -7546,19 +7871,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[2] > 0) { bounce[2] <<- bounce[2]-1 }
             else
             {
-              if(tname[3] != input$timeMLEstimatesOUP)
+              if(tname[5] != input$timeMLEstimatesOUP)
               {
-# message(tname[3],", ",input$timeMLEstimatesOUP)
-                tname[3] <<- input$timeMLEstimatesOUP
-                taucol <- match(tname[3],framenames)
-                zcol <- match(sname[3],framenames)
+# message(tname[5],", ",input$timeMLEstimatesOUP)
+                tname[5] <<- input$timeMLEstimatesOUP
+                taucol <- match(tname[5],framenames)
+                zcol <- match(sname[5],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[3],timename=tname[3],statename=sname[3],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"begMLEstimatesOUP",value=beg)
@@ -7578,19 +7903,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[3] > 0) { bounce[3] <<- bounce[3]-1 }
             else
             {
-              if(sname[3] != input$stateMLEstimatesOUP)
+              if(sname[5] != input$stateMLEstimatesOUP)
               {
-# message(sname[3],", ",input$stateMLEstimatesOUP)
-                sname[3] <<- input$stateMLEstimatesOUP
-                taucol <- match(tname[3],framenames)
-                zcol <- match(sname[3],framenames)
+# message(sname[5],", ",input$stateMLEstimatesOUP)
+                sname[5] <<- input$stateMLEstimatesOUP
+                taucol <- match(tname[5],framenames)
+                zcol <- match(sname[5],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[3],timename=tname[3],statename=sname[3],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 lnL_params[1] <<- 0
@@ -7624,8 +7949,8 @@ LRT_params <- c(NA,NA,NA)
               timeseries_info <- ML$set_timeseries_info(tbeg=begin,tend=endin,NULL,NULL,NULL,NULL)
               updateNumericInput(session,"begMLEstimatesOUP",value=timeseries_info$tbeg)
               updateNumericInput(session,"endMLEstimatesOUP",value=timeseries_info$tend)
-              beg[3] <<- timeseries_info$tbeg
-              end[3] <<- timeseries_info$tend
+              beg <<- timeseries_info$tbeg
+              end <<- timeseries_info$tend
             }
             else
             {
@@ -7688,10 +8013,11 @@ LRT_params <- c(NA,NA,NA)
             })
             output$plotlyMLEstimatesOUP <- renderPlotly({ ML$PlotEstimates() })
           }) %>% bindEvent(input$resetMLEstimatesOUP,input$plotMLEstimatesOUP)
-          # User clicks ? ----
+          # User clicks i ----
           observe({
-            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
-            rawtext <- read_html(filename)
+            htmlname <- paste(sep="",htmlpath,input$filesMLEstimatesOUP,".html")
+            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
+            rawtext <- read_html(htmlname)
             halo <- input$filesMLEstimatesOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -7916,12 +8242,11 @@ LRT_params <- c(NA,NA,NA)
             if(first)
             {
 # message("first")
-              filename <<- paste(sep="",datadir,"Default.csv")
-              df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+              df <<- read.csv(uploadpath,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[4] <<- "Default"
-              tname[4] <<- framenames[1]
-              sname[4] <<- framenames[2]
+              dname[6] <<- uploadname
+              tname[6] <<- framenames[1]
+              sname[6] <<- framenames[2]
               nrows <<- nrow(df)
               ncols <<- ncol(df)
               nfirst <<- df[1,1]
@@ -7932,12 +8257,12 @@ LRT_params <- c(NA,NA,NA)
               if(Ixend > 200) { Ixbeg <<- Ixend-200 }
               else { Ixbeg <<- 1 }
               beg <<- series[Ixbeg,1]
-              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[4],timename=tname[4],statename=sname[4],NULL)
+              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[6],timename=tname[6],statename=sname[6],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-              updateSelectInput(session,"filesMLGoodnessOUP",choices=filelist,selected=dname[4])
-              updateSelectInput(session,"timeMLGoodnessOUP",choices=framenames,selected=tname[4])
-              updateSelectInput(session,"stateMLGoodnessOUP",choices=framenames,selected=sname[4])
+              updateSelectInput(session,"filesMLGoodnessOUP",choices=filelist,selected=dname[6])
+              updateSelectInput(session,"timeMLGoodnessOUP",choices=framenames,selected=tname[6])
+              updateSelectInput(session,"stateMLGoodnessOUP",choices=framenames,selected=sname[6])
               first <<- FALSE
               initialize[4] <<- FALSE
               bounce[1] <<- 1
@@ -7948,12 +8273,12 @@ LRT_params <- c(NA,NA,NA)
             {
 # message("initialize")
               df_info <- ML$get_timeseries_info()
-              dname[4] <<- df_info[[5]]
-              tname[4] <<- df_info[[6]]
-              sname[4] <<- df_info[[7]]
-              updateSelectInput(session,"filesMLGoodnessOUP",choices=filelist,selected=dname[4])
-              updateSelectInput(session,"timeMLGoodnessOUP",choices=framenames,selected=tname[4])
-              updateSelectInput(session,"stateMLGoodnessOUP",choices=framenames,selected=sname[4])
+              dname[6] <<- df_info[[5]]
+              tname[6] <<- df_info[[6]]
+              sname[6] <<- df_info[[7]]
+              updateSelectInput(session,"filesMLGoodnessOUP",choices=filelist,selected=dname[6])
+              updateSelectInput(session,"timeMLGoodnessOUP",choices=framenames,selected=tname[6])
+              updateSelectInput(session,"stateMLGoodnessOUP",choices=framenames,selected=sname[6])
               initialize[4] <<- FALSE
               bounce[1] <<- 1
               bounce[2] <<- 1
@@ -7966,9 +8291,9 @@ LRT_params <- c(NA,NA,NA)
               dataname <- df_info[[5]]
               timename <- df_info[[6]]
               statename <- df_info[[7]]
-              if(dataname != dname[4] | timename != tname[4] | statename != sname[4])
+              if(dataname != dname[6] | timename != tname[6] | statename != sname[6])
               {
-# message(dataname,", ",dname[4],", ",timename,", ",tname[4],", ",statename,", ",sname[4])
+# message(dataname,", ",dname[6],", ",timename,", ",tname[6],", ",statename,", ",sname[6])
                 updateSelectInput(session,"filesMLGoodnessOUP",choices=filelist,selected=dataname)
                 updateSelectInput(session,"timeMLGoodnessOUP",choices=framenames,selected=timename)
                 updateSelectInput(session,"stateMLGoodnessOUP",choices=framenames,selected=statename)
@@ -7976,9 +8301,9 @@ LRT_params <- c(NA,NA,NA)
                 bounce[1] <<- 1
                 bounce[2] <<- 1
                 bounce[3] <<- 1
-                dname[4] <<- dataname
-                tname[4] <<- timename
-                sname[4] <<- statename
+                dname[6] <<- dataname
+                tname[6] <<- timename
+                sname[6] <<- statename
               }
             }
           }
@@ -7992,15 +8317,16 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[1] > 0) { bounce[1] <<- bounce[1]-1 }
             else
             {
-              if(dname[4] != input$filesMLGoodnessOUP)
+              if(dname[6] != input$filesMLGoodnessOUP)
               {
-# message(dname[4],", ",input$filesMLGoodnessOUP)
-                filename <- paste(sep="",datadir,input$filesMLGoodnessOUP,".csv")
-                df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+# message(dname[6],", ",input$filesMLGoodnessOUP)
+                dname[6] <<- input$filesMLGoodnessOUP
+                if(dname[6] == uploadname) { filepath <- uploadpath }
+                else { filepath <- paste(sep="",datapath,input$filesMLGoodnessOUP,".csv")  }
+                df <<- read.csv(filepath,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
-                dname[4] <<- input$filesMLGoodnessOUP
-                tname[4] <<- framenames[1]
-                sname[4] <<- framenames[2]
+                tname[6] <<- framenames[1]
+                sname[6] <<- framenames[2]
                 nrows <<- nrow(df)
                 ncols <<- ncol(df)
                 nfirst <<- df[1,1]
@@ -8011,11 +8337,11 @@ LRT_params <- c(NA,NA,NA)
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[4],timename=tname[4],statename=sname[4])
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[6],timename=tname[6],statename=sname[6])
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-                updateSelectInput(session,"timeMLGoodnessOUP",choices=framenames,selected=tname[4])
-                updateSelectInput(session,"stateMLGoodnessOUP",choices=framenames,selected=sname[4])
+                updateSelectInput(session,"timeMLGoodnessOUP",choices=framenames,selected=tname[6])
+                updateSelectInput(session,"stateMLGoodnessOUP",choices=framenames,selected=sname[6])
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
@@ -8033,19 +8359,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[2] > 0) { bounce[2] <<- bounce[2]-1 }
             else
             {
-              if(tname[4] != input$timeMLGoodnessOUP)
+              if(tname[6] != input$timeMLGoodnessOUP)
               {
-# message(tname[4],", ",input$timeMLGoodnessOUP)
-                tname[4] <<- input$timeMLGoodnessOUP
-                taucol <- match(tname[4],framenames)
-                zcol <- match(sname[4],framenames)
+# message(tname[6],", ",input$timeMLGoodnessOUP)
+                tname[6] <<- input$timeMLGoodnessOUP
+                taucol <- match(tname[6],framenames)
+                zcol <- match(sname[6],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[4],timename=tname[4],statename=sname[4],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[6],timename=tname[6],statename=sname[6],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"begMLGoodnessOUP",value=beg)
@@ -8065,19 +8391,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[3] > 0) { bounce[3] <<- bounce[3]-1 }
             else
             {
-              if(sname[4] != input$stateMLGoodnessOUP)
+              if(sname[6] != input$stateMLGoodnessOUP)
               {
-# message(sname[4],", ",input$stateMLGoodnessOUP)
-                sname[4] <<- input$stateMLGoodnessOUP
-                taucol <- match(tname[4],framenames)
-                zcol <- match(sname[4],framenames)
+# message(sname[6],", ",input$stateMLGoodnessOUP)
+                sname[6] <<- input$stateMLGoodnessOUP
+                taucol <- match(tname[6],framenames)
+                zcol <- match(sname[6],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[4],timename=tname[4],statename=sname[4],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[6],timename=tname[6],statename=sname[6],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 lnL_params[1] <<- 0
@@ -8093,10 +8419,11 @@ LRT_params <- c(NA,NA,NA)
           observe({
             Go()
           }) %>% bindEvent(input$plotMLGoodnessOUP)
-          # User clicks ? ----
+          # User clicks i ----
           observe({
-            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
-            rawtext <- read_html(filename)
+            htmlname <- paste(sep="",htmlpath,input$filesMLGoodnessOUP,".html")
+            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
+            rawtext <- read_html(htmlname)
             halo <- input$filesMLGoodnessOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)
@@ -8166,12 +8493,11 @@ LRT_params <- c(NA,NA,NA)
             if(first)
             {
 # message("first")
-              filename <- paste(sep="",datadir,"Default.csv")
-              df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+              df <<- read.csv(uploadpath,fileEncoding="UTF-8-BOM")
               framenames <<- colnames(df)
-              dname[5] <<- "Default"
-              tname[5] <<- framenames[1]
-              sname[5] <<- framenames[2]
+              dname[7] <<- uploadname
+              tname[7] <<- framenames[1]
+              sname[7] <<- framenames[2]
               nrows <<- nrow(df)
               ncols <<- ncol(df)
               nfirst <<- df[1,1]
@@ -8182,12 +8508,12 @@ LRT_params <- c(NA,NA,NA)
               if(Ixend > 200) { Ixbeg <<- Ixend-200 }
               else { Ixbeg <<- 1 }
               beg <<- series[Ixbeg,1]
-              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5],NULL)
+              ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[7],timename=tname[7],statename=sname[7],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-              updateSelectInput(session,"filesMLRatioOUP",choices=filelist,selected=dname[5])
-              updateSelectInput(session,"timeMLRatioOUP",choices=framenames,selected=tname[5])
-              updateSelectInput(session,"stateMLRatioOUP",choices=framenames,selected=sname[5])
+              updateSelectInput(session,"filesMLRatioOUP",choices=filelist,selected=dname[7])
+              updateSelectInput(session,"timeMLRatioOUP",choices=framenames,selected=tname[7])
+              updateSelectInput(session,"stateMLRatioOUP",choices=framenames,selected=sname[7])
               first <<- FALSE
               initialize[5] <<- FALSE
               bounce[1] <<- 1
@@ -8198,12 +8524,12 @@ LRT_params <- c(NA,NA,NA)
             {
 # message("initialize")
               df_info <- ML$get_timeseries_info()
-              dname[5] <<- df_info[[5]]
-              tname[5] <<- df_info[[6]]
-              sname[5] <<- df_info[[7]]
-              updateSelectInput(session,"filesMLRatioOUP",choices=filelist,selected=dname[5])
-              updateSelectInput(session,"timeMLRatioOUP",choices=framenames,selected=tname[5])
-              updateSelectInput(session,"stateMLRatioOUP",choices=framenames,selected=sname[5])
+              dname[7] <<- df_info[[5]]
+              tname[7] <<- df_info[[6]]
+              sname[7] <<- df_info[[7]]
+              updateSelectInput(session,"filesMLRatioOUP",choices=filelist,selected=dname[7])
+              updateSelectInput(session,"timeMLRatioOUP",choices=framenames,selected=tname[7])
+              updateSelectInput(session,"stateMLRatioOUP",choices=framenames,selected=sname[7])
               initialize[5] <<- FALSE
               bounce[1] <<- 1
               bounce[2] <<- 1
@@ -8216,18 +8542,18 @@ LRT_params <- c(NA,NA,NA)
               dataname <- df_info[[5]]
               timename <- df_info[[6]]
               statename <- df_info[[7]]
-              if(dataname != dname[5] | timename != tname[5] | statename != sname[5])
+              if(dataname != dname[7] | timename != tname[7] | statename != sname[7])
               {
-# message(dataname,", ",dname[5],", ",timename,", ",tname[5],", ",statename,", ",sname[5])
+# message(dataname,", ",dname[7],", ",timename,", ",tname[7],", ",statename,", ",sname[7])
                 updateSelectInput(session,"filesMLRatioOUP",choices=filelist,selected=dataname)
                 updateSelectInput(session,"timeMLRatioOUP",choices=framenames,selected=timename)
                 updateSelectInput(session,"stateMLRatioOUP",choices=framenames,selected=statename)
                 bounce[1] <<- 1
                 bounce[2] <<- 1
                 bounce[3] <<- 1
-                dname[5] <<- dataname
-                tname[5] <<- timename
-                sname[5] <<- statename
+                dname[7] <<- dataname
+                tname[7] <<- timename
+                sname[7] <<- statename
               }
               updateNumericInput(session,"rhorMLRatioOUP",value=LRT_params[1])
               updateNumericInput(session,"murMLRatioOUP",value=LRT_params[2])
@@ -8243,15 +8569,16 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[1] > 0) { bounce[1] <<- bounce[1]-1 }
             else
             {
-              if(dname[5] != input$filesMLRatioOUP)
+              if(dname[7] != input$filesMLRatioOUP)
               {
-# message(dname[5],", ",input$filesMLRatioOUP)
-                filename <- paste(sep="",datadir,input$filesMLRatioOUP,".csv")
-                df <<- read.csv(filename,fileEncoding="UTF-8-BOM")
+# message(dname[7],", ",input$filesMLRatioOUP)
+                dname[7] <<- input$filesMLRatioOUP
+                if(dname[7] == uploadname) { filepath <- uploadpath }
+                else { filepath <- paste(sep="",datapath,input$filesMLRatioOUP,".csv")  }
+                df <<- read.csv(filepath,fileEncoding="UTF-8-BOM")
                 framenames <<- colnames(df)
-                dname[5] <<- input$filesMLRatioOUP
-                tname[5] <<- framenames[1]
-                sname[5] <<- framenames[2]
+                tname[7] <<- framenames[1]
+                sname[7] <<- framenames[2]
                 nrows <<- nrow(df)
                 ncols <<- ncol(df)
                 nfirst <<- df[1,1]
@@ -8262,11 +8589,11 @@ LRT_params <- c(NA,NA,NA)
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5])
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[7],timename=tname[7],statename=sname[7])
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-                updateSelectInput(session,"timeMLRatioOUP",choices=framenames,selected=tname[5])
-                updateSelectInput(session,"stateMLRatioOUP",choices=framenames,selected=sname[5])
+                updateSelectInput(session,"timeMLRatioOUP",choices=framenames,selected=tname[7])
+                updateSelectInput(session,"stateMLRatioOUP",choices=framenames,selected=sname[7])
                 updateNumericInput(session,"rhorMLRatioOUP",value=NA)
                 updateNumericInput(session,"murMLRatioOUP",value=NA)
                 updateNumericInput(session,"sigmarMLRatioOUP",value=NA)
@@ -8287,19 +8614,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[2] > 0) { bounce[2] <<- bounce[2]-1 }
             else
             {
-              if(tname[5] != input$timeMLRatioOUP)
+              if(tname[7] != input$timeMLRatioOUP)
               {
-# message(tname[5],", ",input$timeMLRatioOUP)
-                tname[5] <<- input$timeMLRatioOUP
-                taucol <- match(tname[5],framenames)
-                zcol <- match(sname[5],framenames)
+# message(tname[7],", ",input$timeMLRatioOUP)
+                tname[7] <<- input$timeMLRatioOUP
+                taucol <- match(tname[7],framenames)
+                zcol <- match(sname[7],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[7],timename=tname[7],statename=sname[7],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"rhorMLRatioOUP",value=NA)
@@ -8320,19 +8647,19 @@ LRT_params <- c(NA,NA,NA)
             if(bounce[3] > 0) { bounce[3] <<- bounce[3]-1 }
             else
             {
-              if(sname[5] != input$stateMLRatioOUP)
+              if(sname[7] != input$stateMLRatioOUP)
               {
-# message(sname[5],", ",input$stateMLRatioOUP)
-                sname[5] <<- input$stateMLRatioOUP
-                taucol <- match(tname[5],framenames)
-                zcol <- match(sname[5],framenames)
+# message(sname[7],", ",input$stateMLRatioOUP)
+                sname[7] <<- input$stateMLRatioOUP
+                taucol <- match(tname[7],framenames)
+                zcol <- match(sname[7],framenames)
                 series <- ML$set_timeseries(df=df,taucol=taucol,zcol=zcol)
                 Ixend <<- nrow(series)
                 end <<- series[Ixend,1]
                 if(Ixend > 200) { Ixbeg <<- Ixend-200 }
                 else { Ixbeg <<- 1 }
                 beg <<- series[Ixbeg,1]
-                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5],NULL)
+                ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[7],timename=tname[7],statename=sname[7],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateNumericInput(session,"rhorMLRatioOUP",value=NA)
@@ -8489,10 +8816,11 @@ LRT_params <- c(NA,NA,NA)
               ))
             })
           }) %>% bindEvent(input$resetMLRatioOUP,input$plotMLRatioOUP)
-          # User clicks ? ----
+          # User clicks i ----
           observe({
-            filename <- paste(sep="",htmldir,input$filesRODataOUP,".html")
-            rawtext <- read_html(filename)
+            htmlname <- paste(sep="",htmlpath,input$filesMLRatioOUP,".html")
+            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
+            rawtext <- read_html(htmlname)
             halo <- input$filesMLRatioOUP
             body <- html_element(rawtext,"body")
             gen1 <- html_children(body)

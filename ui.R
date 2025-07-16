@@ -29,33 +29,63 @@ shinyUI(
         add_busy_spinner(spin="swapping-squares",color="rgb(115,33,38)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
         # end ----
         navlistPanel(
-          # Data and Estimates ----
-          tabPanel("Data and Estimates",
+          # Data ----
+          tabPanel("Data",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoRODataOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
-              column(selectInput("filesRODataOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
-              column(selectInput("timeRODataOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
-              column(selectInput("stateRODataOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
+              column(actionButton("fileinfoRODataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(selectInput("filesRODataOUP",label="File",choices=""),title="data files",width=5),
+              column(selectInput("timeRODataOUP",label="Time",choices=""),title="time variable",width=3),
+              column(selectInput("stateRODataOUP",label="State",choices=""),title="state variable",width=3)
             ),
-            # parameters
-              column(width=2),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 80%;",uiOutput("paramRODataOUP")),width=10),
+            # first and last times, number of rows and columns in data
+            fixedRow(
+              column(fileInput("filesROUploadOUP",NULL,multiple=FALSE,accept=".csv",buttonLabel="...",placeholder="Select a file to upload..."),title="upload a data file",style="padding-top: 24px;",width=6),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("descrRODataOUP")),style="padding-top: 24px;",width=6)
+            ),
             # buttons, begin and end dates
             fixedRow(
               column(actionButton("resetRODataOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 25px;",width=2),
               column(numericInput("begRODataOUP",label="Begin",value="",step="any",width="100%"),title="time to begin plot",width=3),
               column(numericInput("endRODataOUP",label="End",value="",step="any",width="100%"),title="time to end plot",width=3),
-              column(actionButton("plotRODataOUP","Go",width="100%",class="btn-success"),title="estimate and plot",style="padding-top: 25px;",width=2),
-              column(actionButton("infoRODataOUP","Info",width="100%",class="btn-primary"),title="about Data and Estimates",style="padding-top: 25px;",width=2)
+              column(actionButton("plotRODataOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 25px;",width=2),
+              column(actionButton("infoRODataOUP","Info",width="100%",class="btn-primary"),title="about Data",style="padding-top: 25px;",width=2)
             ),
             # plot
             wellPanel(class="wellPlotOUP",
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyRODataOUP")
             ),
-            # tab id
+            #tab id
             value="RODataOUP"
+          ),
+          # Estimates ----
+          tabPanel("Estimates",
+            # file, time and state
+            fixedRow(
+              column(actionButton("fileinfoROEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(selectInput("filesROEstimatesOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
+              column(selectInput("timeROEstimatesOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
+              column(selectInput("stateROEstimatesOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
+            ),
+            # parameters
+              column(width=2),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 80%;",uiOutput("paramROEstimatesOUP")),width=10),
+            # buttons, begin and end dates
+            fixedRow(
+              column(actionButton("resetROEstimatesOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 25px;",width=2),
+              column(numericInput("begROEstimatesOUP",label="Begin",value="",step="any",width="100%"),title="time to begin plot",width=3),
+              column(numericInput("endROEstimatesOUP",label="End",value="",step="any",width="100%"),title="time to end plot",width=3),
+              column(actionButton("plotROEstimatesOUP","Go",width="100%",class="btn-success"),title="estimate and plot",style="padding-top: 25px;",width=2),
+              column(actionButton("infoROEstimatesOUP","Info",width="100%",class="btn-primary"),title="about Data and Estimates",style="padding-top: 25px;",width=2)
+            ),
+            # plot
+            wellPanel(class="wellPlotOUP",
+              style="margin-top: 18px; height: 402px; width: 580px;",
+              plotlyOutput("plotlyROEstimatesOUP")
+            ),
+            # tab id
+            value="ROEstimatesOUP"
           ),
           # Regime ----
           tabPanel("Regime",
@@ -69,7 +99,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoRORegimeOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoRORegimeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muRORegimeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaRORegimeOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
@@ -111,14 +141,14 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoRODecisionOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoRODecisionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muRODecisionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaRODecisionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
             fixedRow(
               column(width=2),
               column(numericInput("yRODecisionOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
-              column(numericInput("rRODecisionOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
+              column(numericInput("rRODecisionOUP",label="r",value="",step="any",width="100%"),title="discount rate of convergence",width=2),
               column(numericInput("phiRODecisionOUP",label="phi",value="",step="any",width="100%"),title="exit or entry option",width=2),
               column(numericInput("bRODecisionOUP",label="b",value="",step="any",width="100%"),title="entry benefit",width=2),
               column(numericInput("cRODecisionOUP",label="c",value="",step="any",width="100%"),title="exit cost",width=2)
@@ -153,7 +183,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoROPassageTimeOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoROPassageTimeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muROPassageTimeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaROPassageTimeOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
@@ -230,7 +260,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoADriftOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoADriftOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADriftOUP",label="mu",value="",step="any",width="100%"),title="location",width=2)
             ),
             # User action
@@ -260,7 +290,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoADiffusionOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoADiffusionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADiffusionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaADiffusionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
@@ -295,7 +325,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAMeanOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAMeanOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAMeanOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAMeanOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("pmaxAMeanOUP",label="p max",value="",step="any",width="100%"),title="maximum density",width=2),
@@ -340,7 +370,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAMeanCOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAMeanCOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(width=2),
               column(width=2),
               column(width=2),
@@ -383,7 +413,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAVarianceOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAVarianceOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAVarianceOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAVarianceOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("pmaxAVarianceOUP",label="p max",value="",step="any",width="100%"),title="maximum density",width=2),
@@ -428,7 +458,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAVarianceCOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAVarianceCOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(width=2),
               column(numericInput("sigmaAVarianceCOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(width=2),
@@ -470,7 +500,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoADensityOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoADensityOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADensityOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaADensityOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("pmaxADensityOUP",label="p max",value="",step="any",width="100%"),title="maximum density",width=2),
@@ -515,7 +545,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAProbabilityOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAProbabilityOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAProbabilityOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAProbabilityOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(width=2),
@@ -560,7 +590,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoADoubleOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoADoubleOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADoubleOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaADoubleOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(width=2),
@@ -605,7 +635,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAOptionOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAOptionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAOptionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAOptionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(width=2),
@@ -614,7 +644,7 @@ shinyUI(
             fixedRow(
               column(numericInput("tAOptionOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("yAOptionOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
-              column(numericInput("rAOptionOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
+              column(numericInput("rAOptionOUP",label="r",value="",step="any",width="100%"),title="discount rate of convergence",width=2),
               column(numericInput("phiAOptionOUP",label="phi",value="",step="any",width="100%"),title="exit or entry option",width=2),
               column(numericInput("bcAOptionOUP",label="~",value="",step="any",width="100%"),title="exit cost or entry benefit",width=2),
               column(numericInput("sFromAOptionOUP",label="s:From",value="",step="any",width="100%"),title="variable times",width=2)
@@ -650,7 +680,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAEnvelopeOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAEnvelopeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAEnvelopeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAEnvelopeOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(width=2),
@@ -694,7 +724,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoADecisionOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoADecisionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADecisionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaADecisionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
@@ -734,7 +764,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAObligationOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAObligationOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAObligationOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(width=2),
               column(width=2),
@@ -779,7 +809,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAPTModeMedianMeanOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAPTModeMedianMeanOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTModeMedianMeanOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAPTModeMedianMeanOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("ptmaxAPTModeMedianMeanOUP",label="pt max",value="",step="any",width="100%"),title="maximum density",width=2),
@@ -823,7 +853,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAPTVarianceOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAPTVarianceOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTVarianceOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAPTVarianceOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
@@ -864,7 +894,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAPTPercentilesOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAPTPercentilesOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTPercentilesOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAPTPercentilesOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("ptmaxAPTPercentilesOUP",label="pt max",value="",step="any",width="100%"),title="maximum density",width=2),
@@ -909,7 +939,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAPTDensityOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAPTDensityOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTDensityOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAPTDensityOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("ptmaxAPTDensityOUP",label="pt max",value="",step="any",width="100%"),title="maximum density",width=2),
@@ -954,7 +984,7 @@ shinyUI(
             ),
             fixedRow(
               column(width=2),
-              column(numericInput("rhoAPTProbabilityOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoAPTProbabilityOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTProbabilityOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAPTProbabilityOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(width=2),
@@ -1021,7 +1051,7 @@ shinyUI(
               column(numericInput("xByFDDriftOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
             fixedRow(
-              column(numericInput("rhoFDDriftOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoFDDriftOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDDriftOUP",label="mu",value="",step="any",width="100%"),title="location",width=2)
             ),
             # User action
@@ -1051,7 +1081,7 @@ shinyUI(
               column(numericInput("xByFDDiffusionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
             fixedRow(
-              column(numericInput("rhoFDDiffusionOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoFDDiffusionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDDiffusionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaFDDiffusionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
@@ -1116,7 +1146,7 @@ shinyUI(
               column(numericInput("sByFDOptionOUP",label="s:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
             fixedRow(
-              column(numericInput("rhoFDOptionOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoFDOptionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDOptionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaFDOptionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("rFDOptionOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
@@ -1160,7 +1190,7 @@ shinyUI(
               column(numericInput("sByFDEnvelopeOUP",label="s:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
             fixedRow(
-              column(numericInput("rhoFDEnvelopeOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoFDEnvelopeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDEnvelopeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaFDEnvelopeOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("rFDEnvelopeOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
@@ -1203,7 +1233,7 @@ shinyUI(
               column(numericInput("xByFDDecisionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
             fixedRow(
-              column(numericInput("rhoFDDecisionOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoFDDecisionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDDecisionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaFDDecisionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("rFDDecisionOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
@@ -1260,18 +1290,15 @@ shinyUI(
           tabPanel("Data",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLDataOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
-              column(selectInput("filesMLDataOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
-              column(selectInput("timeMLDataOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
-              column(selectInput("stateMLDataOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
+              column(actionButton("fileinfoMLDataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(selectInput("filesMLDataOUP",label="File",choices=""),title="data files",width=5),
+              column(selectInput("timeMLDataOUP",label="Time",choices=""),title="time variable",width=3),
+              column(selectInput("stateMLDataOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # first and last times, number of rows and columns in data
             fixedRow(
-              column(width=2),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("firstMLDataOUP")),width=3),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("lastMLDataOUP")),width=3),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("rowsMLDataOUP")),width=2),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("colsMLDataOUP")),width=2)
+              column(fileInput("filesMLUploadOUP",NULL,multiple=FALSE,accept=".csv",buttonLabel="...",placeholder="Select a file to upload..."),title="upload a data file",style="padding-top: 24px;",width=6),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("descrMLDataOUP")),style="padding-top: 24px;",width=6)
             ),
             # buttons, begin and end dates
             fixedRow(
@@ -1293,14 +1320,14 @@ shinyUI(
           tabPanel("Log Likelihood",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLLikelihoodOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLLikelihoodOUP","...",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
               column(selectInput("filesMLLikelihoodOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLLikelihoodOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLLikelihoodOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
             ),
             # parameters and Likelihood
             fixedRow(
-              column(numericInput("rhoMLLikelihoodOUP",label="rho",value="",step="any",width="100%"),title="rate",width=2),
+              column(numericInput("rhoMLLikelihoodOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muMLLikelihoodOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaMLLikelihoodOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("lnLMLLikelihoodOUP")),width=3)
@@ -1325,7 +1352,7 @@ shinyUI(
           tabPanel("Estimates",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLEstimatesOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLEstimatesOUP","...",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
               column(selectInput("filesMLEstimatesOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLEstimatesOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLEstimatesOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1352,7 +1379,7 @@ shinyUI(
           tabPanel("Goodness-of-Fit",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLGoodnessOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLGoodnessOUP","...",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
               column(selectInput("filesMLGoodnessOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLGoodnessOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLGoodnessOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1380,7 +1407,7 @@ shinyUI(
           tabPanel("Likelihood Ratio Test",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLRatioOUP","?",width="100%",class="btn-primary"),title="File info",style="padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLRatioOUP","...",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
               column(selectInput("filesMLRatioOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLRatioOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLRatioOUP",label="State",choices=""),title="state variable",width=3)
@@ -1509,7 +1536,7 @@ shinyUI(
               activeEl=document.activeElement;
               if(activeEl.tagName == "INPUT")
               {
-                if(activeEl.attributes[5].value == "combobox")
+                if(activeEl.attributes[5].value == "combobox" | activeEl.attributes[3].value == "file")
                 {
                   wells = document.getElementsByClassName("well wellPlotOUP");
                   for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(192,192,192)"; };
