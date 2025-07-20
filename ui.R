@@ -1,36 +1,21 @@
 library(shiny)
-library(shinybusy)
+library(bslib)
 library(shinythemes)
+library(shinybusy)
 library(plotly)
 
-# ui ----
+# ui
 shinyUI(
   navbarPage(title=div(img(src="Roar32x32.png",alt="Get on your bike!")),
-    # theme ----
     theme = shinytheme("spacelab"),
-    # end ----
-    navbarMenu("Ornstein-Uhlenbeck Process",
-      tabPanel("Real Options",
-        # language ----
-        tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">')),
-        # styles ----
-        tags$head(
-          tags$style(HTML('
-            body { background-color: rgb(245,250,255); }
-            .form-control.shiny-bound-input,.selectize-input { background-color: rgba(255,255,255,0.4); }
-            .well { background-color: rgb(245,245,245); border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a { padding: 5px 5px 5px 10px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ROPassageTimeOUP"] { border-bottom: thin solid; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ROSequenceOUP"] { border-top: thin solid; }
-          ')),
-        ),
-        # busy ----
+    nav_menu("Ornstein-Uhlenbeck Process",
+      nav_panel("Real Options",
+        tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
+                  tags$link(rel="stylesheet",type="text/css",href="styles.css")),
         add_busy_spinner(spin="swapping-squares",color="rgb(115,33,38)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
-        # end ----
-        navlistPanel(
+        navset_pill_list(
           # Data ----
-          tabPanel("Data",
+          nav_panel("Data",
             # file, time and state
             fixedRow(
               column(actionButton("fileinfoRODataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
@@ -56,11 +41,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyRODataOUP")
             ),
-            #tab id
             value="RODataOUP"
           ),
           # Estimates ----
-          tabPanel("Estimates",
+          nav_panel("Estimates",
             # file, time and state
             fixedRow(
               column(actionButton("fileinfoROEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
@@ -84,11 +68,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyROEstimatesOUP")
             ),
-            # tab id
             value="ROEstimatesOUP"
           ),
           # Regime ----
-          tabPanel("Regime",
+          nav_panel("Regime",
             # User input
             fixedRow(
               column(actionButton("infoRORegimeOUP","Info",width="100%",class="btn-primary"),title="about Regimes",style="padding-top: 25px;",width=2),
@@ -126,11 +109,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyRORegimeOUP")
             ),
-            # tab id
             value="RORegimeOUP"
           ),
           # Decision Threshold ----
-          tabPanel("Decision Threshold",
+          nav_panel("Decision Threshold",
             # User input
             fixedRow(
               column(actionButton("infoRODecisionOUP","Info",width="100%",class="btn-primary"),title="about Decision Threshold",style="padding-top: 25px;",width=2),
@@ -168,11 +150,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyRODecisionOUP")
             ),
-             # tab id
             value="RODecisionOUP"
           ),
           # Passage Time ----
-          tabPanel("Passage Times",
+          nav_panel("Passage Times",
             # User input
             fixedRow(
               column(actionButton("infoROPassageTimeOUP","Info",width="100%",class="btn-primary"),title="about Passage Time",style="padding-top: 25px;",width=2),
@@ -210,46 +191,20 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyROPassageTimeOUP")
             ),
-            # tab id
             value="ROPassageTimeOUP"
           ),
-          # Sequence of Regimes ----
-          # tabPanel("Sequence",
-          #   #tab id
-          #   value="ROSequenceOUP"
-          # ),
-          # navROOUP ----
           id="navROOUP",widths=c(3,9)
         ),
-        # tabROUP ----
         value="tabROOUP",
-        #end ----
+        #end list ----
       ),
-      tabPanel("Analytical",
-        # language ----
-        tags$head(HTML('<html lang="en">')),
-        # styles ----
-        tags$head(
-          tags$style(HTML('
-            body { background-color: rgb(245,250,255); }
-            .form-control.shiny-bound-input,.selectize-input { background-color: rgba(255,255,255,0.4); }
-            .well { background-color: rgb(245,245,245); border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a { padding: 5px 5px 5px 10px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ADiffusionOUP"] { border-bottom: thin solid; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="AMeanOUP"] { border-top: thin solid; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ADoubleOUP"] { border-bottom: thin solid; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="AOptionOUP"] { border-top: thin solid; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="AObligationOUP"] { border-bottom: thin solid; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="APTModeMedianMeanOUP"] { border-top: thin solid; }
-          ')),
-        ),
-        # busy ----
+      nav_panel("Analytical",
+        tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
+                  tags$link(rel="stylesheet",type="text/css",href="styles.css")),
         add_busy_spinner(spin="radar",color="rgb(0,90,46)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
-        # end ----
-        navlistPanel(
+        navset_pill_list(
           # Drift ----
-          tabPanel("Drift",
+          nav_panel("Drift",
             # User input
             fixedRow(
               column(actionButton("infoADriftOUP","Info",width="100%",class="btn-primary"),title="about Drift",style="padding-top: 25px;",width=2),
@@ -279,7 +234,7 @@ shinyUI(
             value="ADriftOUP"
           ),
           # Diffusion ----
-          tabPanel("Diffusion",
+          nav_panel("Diffusion",
             # User input
             fixedRow(
               column(actionButton("infoADiffusionOUP","Info",width="100%",class="btn-primary"),title="about Diffusion",style="padding-top: 25px;",width=2),
@@ -309,11 +264,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyADiffusionOUP")
             ),
-            # tab id
             value="ADiffusionOUP"
           ),
           # Mean ----
-          tabPanel("Mean",
+          nav_panel("Mean",
             # User input
             fixedRow(
               column(actionButton("infoAMeanOUP","Info",width="100%",class="btn-primary"),title="about Mean",style="padding-top: 25px;",width=2),
@@ -354,11 +308,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAMeanOUP")
             ),
-            # tab id
             value="AMeanOUP"
           ),
           # Mean convergence----
-          tabPanel("Mean Convergence",
+          nav_panel("Mean Convergence",
             # User input
             fixedRow(
               column(actionButton("infoAMeanCOUP","Info",width="100%",class="btn-primary"),title="about Mean Convergence",style="padding-top: 25px;",width=2),
@@ -397,11 +350,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAMeanCOUP")
             ),
-            # tab id
             value="AMeanCOUP"
           ),
           # Variance ----
-          tabPanel("Variance",
+          nav_panel("Variance",
             # User input
             fixedRow(
               column(actionButton("infoAVarianceOUP","Info",width="100%",class="btn-primary"),title="about Variance",style="padding-top: 25px;",width=2),
@@ -442,11 +394,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAVarianceOUP")
             ),
-            # tab id
             value="AVarianceOUP"
           ),
           # Variance convergence----
-          tabPanel("Variance Convergence",
+          nav_panel("Variance Convergence",
             # User input
             fixedRow(
               column(actionButton("infoAVarianceCOUP","Info",width="100%",class="btn-primary"),title="about Variance Convergence",style="padding-top: 25px;",width=2),
@@ -484,11 +435,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAVarianceCOUP")
             ),
-            # tab id
             value="AVarianceCOUP"
           ),
           # Transition Density ----
-          tabPanel("Transition Density",
+          nav_panel("Transition Density",
             # User input
             fixedRow(
               column(actionButton("infoADensityOUP","Info",width="100%",class="btn-primary"),title="about Transition Density",style="padding-top: 25px;",width=2),
@@ -529,11 +479,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyADensityOUP")
             ),
-            # tab id
             value="ADensityOUP"
           ),
           # Transition Probability ----
-          tabPanel("Transition Probability",
+          nav_panel("Transition Probability",
             # User input
             fixedRow(
               column(actionButton("infoAProbabilityOUP","Info",width="100%",class="btn-primary"),title="about Transition Probability",style="padding-top: 25px;",width=2),
@@ -574,11 +523,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAProbabilityOUP")
             ),
-            # tab id
             value="AProbabilityOUP"
           ),
           # Double Integral ----
-          tabPanel("Double Integral",
+          nav_panel("Double Integral",
             # User input
             fixedRow(
               column(actionButton("infoADoubleOUP","Info",width="100%",class="btn-primary"),title="about Double Integral",style="padding-top: 25px;",width=2),
@@ -619,11 +567,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyADoubleOUP")
             ),
-            # tab id
             value="ADoubleOUP"
           ),
           # Option ----
-          tabPanel("Option",
+          nav_panel("Option",
             # User input
             fixedRow(
               column(actionButton("infoAOptionOUP","Info",width="100%",class="btn-primary"),title="about Option",style="padding-top: 25px;",width=2),
@@ -664,11 +611,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAOptionOUP")
             ),
-            # tab id
             value="AOptionOUP"
           ),
           # Option Envelope ----
-          tabPanel("Option Envelope",
+          nav_panel("Option Envelope",
             # User input
             fixedRow(
               column(actionButton("infoAEnvelopeOUP","Info",width="100%",class="btn-primary"),title="about Option Envelope",style="padding-top: 25px;",width=2),
@@ -709,11 +655,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAEnvelopeOUP")
             ),
-            # tab id
             value="AEnvelopeOUP"
           ),
           # Decision Threshold ----
-          tabPanel("Decision Threshold",
+          nav_panel("Decision Threshold",
             # User input
             fixedRow(
               column(actionButton("infoADecisionOUP","Info",width="100%",class="btn-primary"),title="about Decision Threshold",style="padding-top: 25px;",width=2),
@@ -748,11 +693,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyADecisionOUP")
             ),
-            # tab id
             value="ADecisionOUP"
           ),
           # Obligation ----
-          tabPanel("Obligation",
+          nav_panel("Obligation",
             # User input
             fixedRow(
               column(actionButton("infoAObligationOUP","Info",width="100%",class="btn-primary"),title="about Obligation",style="padding-top: 25px;",width=2),
@@ -793,11 +737,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAObligationOUP")
             ),
-            # tab id
             value="AObligationOUP"
           ),
           # Passage Time Mode, Median and Mean ----
-          tabPanel("Passage Time Mode, Median and Mean",
+          nav_panel("Passage Time Mode, Median and Mean",
             # User input
             fixedRow(
               column(actionButton("infoAPTModeMedianMeanOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Mode, Median and Mean",style="padding-top: 25px;",width=2),
@@ -838,11 +781,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTModeMedianMeanOUP")
             ),
-            # tab id
             value="APTModeMedianMeanOUP"
           ),
           # Passage Time Variance ----
-          tabPanel("Passage Time Variance",
+          nav_panel("Passage Time Variance",
             # User input
             fixedRow(
               column(actionButton("infoAPTVarianceOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Variance",style="padding-top: 25px;",width=2),
@@ -878,11 +820,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTVarianceOUP")
             ),
-            # tab id
             value="APTVarianceOUP"
           ),
           # Passage Time Percentiles ----
-          tabPanel("Passage Time Percentiles",
+          nav_panel("Passage Time Percentiles",
             # User input
             fixedRow(
               column(actionButton("infoAPTPercentilesOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Percentiles",style="padding-top: 25px;",width=2),
@@ -923,11 +864,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTPercentilesOUP")
             ),
-            # tab id
             value="APTPercentilesOUP"
           ),
           # Passage Time Density ----
-          tabPanel("Passage Time Density",
+          nav_panel("Passage Time Density",
             # User input
             fixedRow(
               column(actionButton("infoAPTDensityOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Density",style="padding-top: 25px;",width=2),
@@ -968,11 +908,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTDensityOUP")
             ),
-            # tab id
             value="APTDensityOUP"
           ),
           # Passage Time Probability ----
-          tabPanel("Passage Time Probability",
+          nav_panel("Passage Time Probability",
             # User input
             fixedRow(
               column(actionButton("infoAPTProbabilityOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Probability",style="padding-top: 25px;",width=2),
@@ -1013,35 +952,20 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTProbabilityOUP")
             ),
-            # tab id
             value="APTProbabilityOUP"
           ),
-          # navAOUP ----
           id="navAOUP",widths=c(3,9)
         ),
-        # tabAOUP ----
         value="tabAOUP"
-        #end ----
+        #end list ----
       ),
-      tabPanel("Finite Difference",
-        # language ----
-        tags$head(HTML('<html lang="en">')),
-        # styles ----
-        tags$head(
-          tags$style(HTML('
-            body { background-color: rgb(245,250,255); }
-            .form-control.shiny-bound-input,.selectize-input { background-color: rgba(255,255,255,0.4); }
-            .well { background-color: rgb(245,245,245); border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a { padding: 5px 5px 5px 10px; }
-          ')),
-        ),
-        # busy ----
+      nav_panel("Finite Difference",
+        tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
+                  tags$link(rel="stylesheet",type="text/css",href="styles.css")),
         add_busy_spinner(spin="flower",color="rgb(115,33,38)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
-        # end ----
-        navlistPanel(
+        navset_pill_list(
           # Drift ----
-          tabPanel("Drift",
+          nav_panel("Drift",
             # User input
             fixedRow(
               column(width=2),
@@ -1067,11 +991,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDDriftOUP")
             ),
-            # tab id
             value="FDDriftOUP"
           ),
           # Diffusion ----
-          tabPanel("Diffusion",
+          nav_panel("Diffusion",
             # User input
             fixedRow(
               column(width=2),
@@ -1100,11 +1023,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDDiffusionOUP")
             ),
-            # tab id
             value="FDDiffusionOUP"
           ),
           # Terminal Values ----
-          tabPanel("Terminal Values",
+          nav_panel("Terminal Values",
             # User input
             fixedRow(
               column(uiOutput("VFDTerminalOUP"),title="terminal values",width=4),
@@ -1132,11 +1054,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDTerminalOUP")
             ),
-            # tab id
             value="FDTerminalOUP"
           ),
           # Option ----
-          tabPanel("Option",
+          nav_panel("Option",
             # User input
             fixedRow(
               column(uiOutput("VFDOptionOUP"),title="terminal values",width=4),
@@ -1176,11 +1097,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDOptionOUP")
             ),
-            # tab id
             value="FDOptionOUP"
           ),
           # Option Envelope ----
-          tabPanel("Option Envelope",
+          nav_panel("Option Envelope",
             # User input
             fixedRow(
               column(uiOutput("VFDEnvelopeOUP"),title="terminal values",width=4),
@@ -1220,11 +1140,10 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDEnvelopeOUP")
             ),
-            # tab id
             value="FDEnvelopeOUP"
           ),
           # Decision Threshold ----
-          tabPanel("Decision Threshold",
+          nav_panel("Decision Threshold",
             # User input
             fixedRow(
               column(uiOutput("VFDDecisionOUP"),title="terminal values",width=4),
@@ -1259,35 +1178,20 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDDecisionOUP")
             ),
-            #tab id
             value="FDDecisionOUP"
           ),
-          # navFDOUP ----
           id="navFDOUP",widths=c(3,9)
         ),
-        # tabFDOUP ----
         value="tabFDOUP"
-        #end ----
+        #end list ----
       ),
-      tabPanel("Maximum Likelihood",
-        # language ----
-        tags$head(HTML('<html lang="en">')),
-        # styles ----
-        tags$head(
-          tags$style(HTML('
-            body { background-color: rgb(245,250,255); }
-            .form-control.shiny-bound-input,.selectize-input { background-color: rgba(255,255,255,0.4); }
-            .well { background-color: rgb(245,245,245); border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-            .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a { padding: 5px 5px 5px 10px; }
-          ')),
-        ),
-        # busy ----
+      nav_panel("Maximum Likelihood",
+        tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
+                  tags$link(rel="stylesheet",type="text/css",href="styles.css")),
         add_busy_spinner(spin="fulfilling-bouncing-circle",color="rgb(0,86,136)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
-        # end ----
-        navlistPanel(
+        navset_pill_list(
           # Data ----
-          tabPanel("Data",
+          nav_panel("Data",
             # file, time and state
             fixedRow(
               column(actionButton("fileinfoMLDataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
@@ -1313,14 +1217,13 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyMLDataOUP")
             ),
-            #tab id
             value="MLDataOUP"
           ),
           # Log Likelihood ----
-          tabPanel("Log Likelihood",
+          nav_panel("Log Likelihood",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLLikelihoodOUP","...",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLLikelihoodOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
               column(selectInput("filesMLLikelihoodOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLLikelihoodOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLLikelihoodOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1345,14 +1248,13 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyMLLikelihoodOUP")
             ),
-            #tab id
             value="MLLikelihoodOUP"
           ),
           # Estimates ----
-          tabPanel("Estimates",
+          nav_panel("Estimates",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLEstimatesOUP","...",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
               column(selectInput("filesMLEstimatesOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLEstimatesOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLEstimatesOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1372,14 +1274,13 @@ shinyUI(
               style="margin-top: 18px; height: 402px; width: 580px;",
               plotlyOutput("plotlyMLEstimatesOUP")
             ),
-            # tab id
             value="MLEstimatesOUP"
           ),
           # Goodness-of-Fit ----
-          tabPanel("Goodness-of-Fit",
+          nav_panel("Goodness-of-Fit",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLGoodnessOUP","...",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLGoodnessOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
               column(selectInput("filesMLGoodnessOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
               column(selectInput("timeMLGoodnessOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
               column(selectInput("stateMLGoodnessOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
@@ -1400,14 +1301,13 @@ shinyUI(
               column(width=2),
               column(wellPanel(class="wellTableOUP",style="margin-top: 40px; padding: 6px 0px 18px 0px; width=100%;",uiOutput("goodsMLGoodnessOUP")),width=6)
             ),
-           # tab id
             value="MLGoodnessOUP"
           ),
           # Likelihood Ratio Test ----
-          tabPanel("Likelihood Ratio Test",
+          nav_panel("Likelihood Ratio Test",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLRatioOUP","...",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLRatioOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
               column(selectInput("filesMLRatioOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLRatioOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLRatioOUP",label="State",choices=""),title="state variable",width=3)
@@ -1428,220 +1328,29 @@ shinyUI(
               column(width=2),
               column(wellPanel(class="wellTableOUP",style="margin-top: 25px; padding: 6px 0px 18px 0px; width=100%;",uiOutput("ratioMLRatioOUP")),width=6)
             ),
-            # tab id
             value="MLRatioOUP"
           ),
-          # navMLOUP ----
           id="navMLOUP",widths=c(3,9)
         ),
-        # tabMLOUP ----
         value="tabMLOUP",
-# for MC tab, delete comma above and uncomment below
-        #end ----
-      # ),
-      # tabPanel("Monte Carlo Simulation",
-        # # language ----
-        # tags$head(HTML('<html lang="en">')),
-      #   # styles ----
-      #   tags$head(
-      #     tags$style(HTML('
-      #       body { background-color: rgb(245,250,255); }
-      #       .form-control.shiny-bound-input,.selectize-input { background-color: rgba(255,255,255,0.4); }
-      #       .well { background-color: rgb(245,245,245); border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-      #       .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-      #       .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a { padding: 5px 5px 5px 10px; }
-      #       .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCProbabilitiesOUP"] { border-bottom: thin solid; }
-      #       .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCBoundedOUP"] { border-top: thin solid; }
-      #       .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCFirstPassageOUP"] { border-bottom: thin solid; }
-      #       .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCBackwardOUP"] { border-top: thin solid; }
-      #     ')),
-      #   ),
-      #   # busy ----
-      #   add_busy_spinner(spin="scaling-squares",color="rgb(0,90,46)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
-      #   # end ----
-      #   navlistPanel(
-      #     # Forward Paths ----
-      #     tabPanel("Forward Paths",
-      #       # tab id
-      #       value="MCForwardOUP"
-      #     ),
-      #     # Visiting Time Probabilities ----
-      #     tabPanel("...Visiting Times",
-      #       #tab id
-      #       value="MCVisitingOUP"
-      #     ),
-      #     # Transition Probabilities ----
-      #     tabPanel("...Probabilities",
-      #       #tab id
-      #       value="MCProbabilitiesOUP"
-      #     ),
-      #     # Bounded Paths ----
-      #     tabPanel("Bounded Paths",
-      #       # tab id
-      #       value="MCBoundedOUP"
-      #     ),
-      #     # First Passage Time Probabilities ----
-      #     tabPanel("...First Passage Times",
-      #       # tab id
-      #       value="MCFirstPassageOUP"
-      #     ),
-      #     # Backward Paths ----
-      #     tabPanel("Backward Paths",
-      #       #tab id
-      #       value="MCBackwardOUP"
-      #     ),
-      #     # Options ----
-      #     tabPanel("...Options",
-      #       #tab id
-      #       value="MCOptionsOUP"
-      #     ),
-      #     # navMCOUP ----
-      #     id="navMCOUP",widths=c(3,9)
-      #   ),
-      #   # tabMCOUP ----
-      #   value="tabMCOUP",
-        #end ----
-        # javascript ----
-        tags$script(HTML('
-          lastEvent = "";
-        // bootstrap tabs
-          barIdOUP="tabROOUP";
-          $("#navBar").on("shown.bs.tab",function(event){
-            barIdOUP = event.target.attributes[3].value;
-          });
-          ROIdOUP="RODataOUP";
-          $("#navROOUP").on("shown.bs.tab",function(event){
-            ROIdOUP = event.target.attributes[3].value;
-          });
-          AIdOUP="ADriftOUP";
-          $("#navAOUP").on("shown.bs.tab",function(event){
-            AIdOUP = event.target.attributes[3].value;
-          });
-          FDIdOUP="FDDriftOUP";
-          $("#navFDOUP").on("shown.bs.tab",function(event){
-            FDIdOUP = event.target.attributes[3].value;
-          });
-          MLIdOUP="MLDataOUP";
-          $("#navMLOUP").on("shown.bs.tab",function(event){
-            MLIdOUP = event.target.attributes[3].value;
-          });
-          MCIdOUP="MCForwardOUP";
-          $("#navMCOUP").on("shown.bs.tab",function(event){
-            MCIdOUP = event.target.attributes[3].value;
-          });
-        // combobox change
-          $(document).on("change",function(){
-            if(lastEvent == "click")
-            {
-              activeEl=document.activeElement;
-              if(activeEl.tagName == "INPUT")
-              {
-                if(activeEl.attributes[5].value == "combobox" | activeEl.attributes[3].value == "file")
-                {
-                  wells = document.getElementsByClassName("well wellPlotOUP");
-                  for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(192,192,192)"; };
-                  wells = document.getElementsByClassName("well wellTableOUP");
-                  for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(192,192,192)"; };
-                };
-              };
-            };
-          });
-        // mouse fresh
-          $(document).on("click",function(){
-            activeEl=document.activeElement;
-            if(activeEl.tagName == "BUTTON")
-            {
-              btnClass=activeEl.attributes[0].value;
-              if(btnClass.includes("btn-success"))
-              {
-                wells = document.getElementsByClassName("well wellPlotOUP");
-                for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(245,245,245)"; };
-                wells = document.getElementsByClassName("well wellTableOUP");
-                for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(245,245,245)"; };
-              };
-            }
-            else if(activeEl.tagName == "A")
-            {
-              wells = document.getElementsByClassName("well wellPlotOUP");
-              for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(245,245,245)"; };
-              wells = document.getElementsByClassName("well wellTableOUP");
-              for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(245,245,245)"; };
-            };
-            lastEvent = "click";
-          });
-        // keyboard fresh or stale
-          $(document).on("keyup",function(e){
-            if(e.key == "Enter")
-            {
-              if(barIdOUP == "tabROOUP")
-              {
-                plotId="#plot"+ROIdOUP;
-                $(plotId).click();
-              }
-              else if(barIdOUP == "tabAOUP")
-              {
-                plotId="#plot"+AIdOUP;
-                $(plotId).click();
-              }
-              else if(barIdOUP == "tabFDOUP")
-              {
-                plotId="#plot"+FDIdOUP;
-                $(plotId).click();
-              }
-              else if(barIdOUP == "tabMLOUP")
-              {
-                plotId="#plot"+MLIdOUP;
-                $(plotId).click();
-              }
-              else if(barIdOUP == "tabMCOUP")
-              {
-                plotId="#plot"+MCIdOUP;
-                $(plotId).click();
-              };
-              wells = document.getElementsByClassName("well wellPlotOUP");
-              for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(245,245,245)"; };
-              wells = document.getElementsByClassName("well wellTableOUP");
-              for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(245,245,245)"; };
-            }
-            else if(e.key == "1" | e.key == "2" | e.key == "3" | e.key == "4" | e.key == "5" | e.key == "6" | e.key == "7" | e.key == "8" | e.key == "9" | e.key == "0" | e.key == "-" | e.key == "+" | e.key == "." | e.key == "Delete" | e.key == "Backspace")
-            {
-              activeEl=document.activeElement;
-              if(activeEl.tagName == "INPUT")
-              {
-                numId = activeEl.attributes[0].value;
-                if(numId.includes("beg") | numId.includes("end"))
-                {
-                  wells = document.getElementsByClassName("well wellPlotOUP");
-                  for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(192,192,192)"; };
-                }
-                else
-                {
-                  wells = document.getElementsByClassName("well wellPlotOUP");
-                  for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(192,192,192)"; };
-                  wells = document.getElementsByClassName("well wellTableOUP");
-                  for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor="rgb(192,192,192)"; };
-                };
-              };
-            };
-            lastEvent = "keyup";
-          });
-        '))
+        tags$script(src="script.js")
+        #end list ----
       )
     ),
-    # end ----
-    navbarMenu("About",
-      tabPanel("Info",
-        # tabInfoOUP ----
-        value="tabInfo"
+    nav_menu("Help",
+      nav_item(
+        a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Tutorials",target="_blank")
       ),
-      tabPanel("License",
-        # tabLicenseOUP ----
-        value="tabLicense"
-        # end ----
+      nav_item(
+        a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Ribbon Help",target="_blank")
+      ),
+      nav_panel("About",
+        value="tabAboutOUP"
+      ),
+      nav_panel("License",
+        value="tabLicenseOUP"
       )
     ),
-    # tabNav ----
     id="navBar",windowTitle="ROAR"
-    #end ----
   )
 )

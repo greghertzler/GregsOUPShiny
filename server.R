@@ -4,7 +4,7 @@ library(tools)
 library(rvest)
 library(GregsOUPR6)
 
-# server ----
+# server
 shinyServer(function(input,output,session){
 
 # instantiate objects ----
@@ -15,8 +15,11 @@ ML <- OUP$get_MaximumLikelihood()
 MC <- OUP$get_MonteCarlo()
 A$set_plot_info(theme="light",opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
-datapath <- paste(sep="",system.file(package="GregsOUPR6"),"/data/")
+ouppath <- system.file(package="GregsOUPR6")
+datapath <- paste(sep="",ouppath,"/data/")
 htmlpath <- paste(sep="",getwd(),"/www/html/")
+tutorialspath <- paste(sep="",getwd(),"/www/shinytutorials/OUP_ShinyTutorials.html")
+ribbonpath <- paste(sep="",getwd(),"/www/ribbonhelp/OUP_Help.html")
 uploadname <- "MyData"
 uploadpath <- paste(sep="",datapath,"MyData.csv")
 agrlist <- file_path_sans_ext(list.files(datapath,pattern="Agric_"))
@@ -49,7 +52,6 @@ LRT_params <- c(NA,NA,NA)
     # navBar ----
     if(input$navBar == "tabROOUP")
     {
-      # tabROUP
       observeEvent(input$navROOUP,{
         # Data ----
         if(input$navROOUP == "RODataOUP")
@@ -1394,7 +1396,6 @@ LRT_params <- c(NA,NA,NA)
     }
     else if(input$navBar == "tabAOUP")
     {
-      # navAOUP
       observeEvent(input$navAOUP,{
         # Drift ----
         if(input$navAOUP == "ADriftOUP")
@@ -5698,7 +5699,6 @@ LRT_params <- c(NA,NA,NA)
     }
     else if(input$navBar == "tabFDOUP")
     {
-      # tabFDOUP
       observeEvent(input$navFDOUP,{
         # Drift ----
         if(input$navFDOUP == "FDDriftOUP")
@@ -7027,7 +7027,6 @@ LRT_params <- c(NA,NA,NA)
     }
     else if(input$navBar == "tabMLOUP")
     {
-      # tabMLOUP
       observeEvent(input$navMLOUP,{
         # Data ----
         if(input$navMLOUP == "MLDataOUP")
@@ -8877,50 +8876,9 @@ LRT_params <- c(NA,NA,NA)
         }
       })
     }
-    # else if(input$navBar == "tabMCOUP")
-    # {
-    #   # tabMCOUP
-    #   observeEvent(input$navMCOUP,{
-    #     # Forward Paths ----
-    #     if(input$navMCOUP == "MCForwardOUP")
-    #     {
-    #       message(input$navMCOUP)
-    #     }
-    #     # Visiting Time Probabilities ----
-    #     if(input$navMCOUP == "MCVisitingOUP")
-    #     {
-    #       message(input$navMCOUP)
-    #     }
-    #     # Transition Probabilities ----
-    #     if(input$navMCOUP == "MCProbabilitiesOUP")
-    #     {
-    #       message(input$navMCOUP)
-    #     }
-    #     # Bounded Paths ----
-    #     if(input$navMCOUP == "MCBoundedOUP")
-    #     {
-    #       message(input$navMCOUP)
-    #     }
-    #     # First Passage Time Probabilities ----
-    #     if(input$navMCOUP == "MCFirstPassageOUP")
-    #     {
-    #       message(input$navMCOUP)
-    #     }
-    #     # Backward Paths ----
-    #     if(input$navMCOUP == "MCBackwardOUP")
-    #     {
-    #       message(input$navMCOUP)
-    #     }
-    #     # Options ----
-    #     if(input$navMCOUP == "MCOptionsOUP")
-    #     {
-    #       message(input$navMCOUP)
-    #     }
-    #   })
-    # }
-    else if(input$navBar == "tabInfo")
+    else if(input$navBar == "tabAboutOUP")
     {
-      # tabInfoOUP ----
+      # tabAboutOUP ----
       showModal(modalDialog(
         title = div(img(src="Roar64x64.png"),"Real Options for Adoption and Resilience"),
         HTML("Description:  R Shiny implementation of the R6 objects, OUProcess, Analytical, FiniteDifference, MaximumLikelihood and MonteCarlo&mdash;a complete set of functions for maximum likelihood estimation and the calculation of probabilities, option prices, decision thresholds, visiting times, first passage times and more&mdash;everything for a real options analysis.<br><br>
@@ -8941,7 +8899,7 @@ LRT_params <- c(NA,NA,NA)
         footer = modalButton("Close")
       ))
     }
-    else if(input$navBar == "tabLicense")
+    else if(input$navBar == "tabLicenseOUP")
     {
       # tabLicenseOUP ----
       showModal(modalDialog(

@@ -17,6 +17,7 @@ Code:
 Excel user-defined functions, Visual Basic for Applications code, R6 objects and a Shiny App.
 
 Help:
+Tutorials--Shiny tutorials as a website.
 Ribbon Help--context-sensitive help for Excel workbooks, the R app and a website.
 
 Deploy Shiny App using RStudio and shinyapps.io<br>
@@ -32,5 +33,9 @@ Deploy Shiny App using RStudio and shinyapps.io<br>
 
 I failed to publish GregsOUP with both R6 and Shiny in one package.  That's why they are split.
 
-The roxygen markdown gets converted to html and put in the /html directory when GregsOUPR6 is built.  The /data directory of GregsOUPR6 is accessible in shinyapps.io, but the /html directory seems to disappear.  The /html directory and files describing the data were copied from GregsOUPR6 to the /www directory in GregsOUPShiny and the directory was set to htmlpath <- paste(sep="",getwd(),"/www/html/")
+The /data directory of GregsOUPR6 is accessible in shinyapps.io, but the /html directory seems to disappear.  
+
+The roxygen markdown gets converted to html and put in the /html directory when GregsOUPR6 is built.  The /html directory and files describing the data were copied from GregsOUPR6 to the /www directory in GregsOUPShiny and the directory was set to htmlpath <- paste(sep="",getwd(),"/www/html/")
  at the top of the server.  The absolute path seems to be required by the read_html function that is used to put the html files onto a modal dialog.  Thus the html files are accessible in shinyapps.io.
+ 
+Shiny Tutorials are in the GitHubPages for this repo.  Ribbon Help is in the GitHubPages for GregsOUPR6.  These are launched in a new tab of the default browser.
