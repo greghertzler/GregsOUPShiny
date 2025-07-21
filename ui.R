@@ -1339,7 +1339,7 @@ shinyUI(
     ),
     nav_menu("Help",
       nav_item(
-        a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Tutorials",target="_blank")
+        a(href="https://greghertzler.github.io/GregsOUPShiny/OUP_ShinyTutorials.html","Tutorials",target="_blank")
       ),
       nav_item(
         a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Ribbon Help",target="_blank")
