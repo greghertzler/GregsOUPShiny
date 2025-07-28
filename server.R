@@ -2,7 +2,7 @@ library(shiny)
 library(plotly)
 library(tools)
 library(rvest)
-library(GregsOUP)
+library(GregsOUPR6)
 
 # server
 shinyServer(function(input,output,session){
@@ -15,11 +15,9 @@ ML <- OUP$get_MaximumLikelihood()
 MC <- OUP$get_MonteCarlo()
 A$set_plot_info(theme="light",opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
-ouppath <- system.file(package="GregsOUP")
+ouppath <- system.file(package="GregsOUPR6")
 datapath <- paste(sep="",ouppath,"/data/")
 htmlpath <- paste(sep="",ouppath,"/html/")
-tutorialspath <- paste(sep="","file://",ouppath,"/shinytutorials/OUP_ShinyTutorials.html")
-helppath <- paste(sep="","file://",ouppath,"/ribbonhelp/OUP_Help.html")
 uploadname <- "MyData"
 uploadpath <- paste(sep="",datapath,"MyData.csv")
 agrlist <- file_path_sans_ext(list.files(datapath,pattern="Agric_"))
@@ -571,6 +569,8 @@ LRT_params <- c(NA,NA,NA)
                 ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[2],timename=tname[2],statename=sname[2],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
+                updateNumericInput(session,"begROEstimatesOUP",value=beg)
+                updateNumericInput(session,"endROEstimatesOUP",value=end)
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
@@ -7917,6 +7917,8 @@ LRT_params <- c(NA,NA,NA)
                 ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[5],timename=tname[5],statename=sname[5],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
+                updateNumericInput(session,"begMLEstimatesOUP",value=beg)
+                updateNumericInput(session,"endMLEstimatesOUP",value=end)
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
@@ -8872,14 +8874,6 @@ LRT_params <- c(NA,NA,NA)
           }) %>% bindEvent(input$infoMLRatioOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
-    }
-    else if(input$navBar == "tabTutorialsOUP")
-    {
-      browseURL(tutorialspath)
-    }
-    else if(input$navBar == "tabHelpOUP")
-    {
-      browseURL(helppath)
     }
     else if(input$navBar == "tabAboutOUP")
     {
