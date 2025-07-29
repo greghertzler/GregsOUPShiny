@@ -17,7 +17,7 @@ A$set_plot_info(theme="light",opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
 ouppath <- system.file(package="GregsOUPR6")
 datapath <- paste(sep="",ouppath,"/data/")
-htmlpath <- paste(sep="",ouppath,"/html/")
+htmlpath <- paste(sep="",getwd(),"/www/html/")
 uploadname <- "MyData"
 uploadpath <- paste(sep="",datapath,"MyData.csv")
 agrlist <- file_path_sans_ext(list.files(datapath,pattern="Agric_"))
