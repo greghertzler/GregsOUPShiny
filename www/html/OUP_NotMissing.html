@@ -1,12 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Unequal observation intervals and the Ornstein-Uhlenbeck...</title>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Observation intervals of different lengths and the...</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
 <link rel="stylesheet" type="text/css" href="R.css" />
 </head><body><div class="container">
 
-<table width="100%" summary="page for OUP_UnequalIntervals {GregsOUPR6}"><tr><td>OUP_UnequalIntervals {GregsOUPR6}</td><td style="text-align: right;">R Documentation</td></tr></table>
+<table width="100%" summary="page for OUP_NotMissing {GregsOUPR6}"><tr><td>OUP_NotMissing {GregsOUPR6}</td><td style="text-align: right;">R Documentation</td></tr></table>
 
-<h2>Unequal observation intervals and the Ornstein-Uhlenbeck Process</h2>
+<h2>Observation intervals of different lengths and the Ornstein-Uhlenbeck Process</h2>
 
 <h3>Description</h3>
 
@@ -16,7 +16,7 @@
 
 <h3>Format</h3>
 
-<p>csv file with 151 rows and 4 columns
+<p>csv file with 366 rows and 6 columns
 </p>
 
 
@@ -24,16 +24,22 @@
 
 
 <ul>
-<li><p> year 1: time variable in annual increments
+<li><p> Day: time variable in days
 </p>
 </li>
-<li><p> z rho 0.5: sample paths with annual time increments or longer and a rate of convergence of 0.5
+<li><p> Equal: sample paths with equal observation intervals
 </p>
 </li>
-<li><p> year 0.05: time variable in increments of 1/20 year
+<li><p> Unequal: sample paths with unequal observation intervals
 </p>
 </li>
-<li><p> z rho 10: sample paths with time increments of 1/20 year or longer and a rate of convergence of 10
+<li><p> Average: sample paths filled in with the average of states of nature
+</p>
+</li>
+<li><p> Means: sample paths filled in with Means
+</p>
+</li>
+<li><p> Year: time variable as decimal year
 </p>
 </li></ul>
 
