@@ -1,13 +1,12 @@
 library(shiny)
 library(bslib)
-library(shinythemes)
 library(shinybusy)
 library(plotly)
 
 # ui
 shinyUI(
-  navbarPage(title=div(img(src="Roar32x32.png",alt="Get on your bike!")),
-    theme = shinytheme("spacelab"),
+  page_navbar(title=img(src="Roar32x32.png",alt="ROAR"),
+    theme=bs_theme(bootswatch="spacelab",bg="#ddeeff",fg="#001122",success="#11aa88"),
     nav_menu("Ornstein-Uhlenbeck Process",
       nav_panel("Real Options",
         tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
@@ -18,27 +17,27 @@ shinyUI(
           nav_panel("Data",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoRODataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(actionButton("fileinfoRODataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesRODataOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeRODataOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateRODataOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # first and last times, number of rows and columns in data
             fixedRow(
-              column(fileInput("filesROUploadOUP",NULL,multiple=FALSE,accept=".csv",buttonLabel="...",placeholder="Select a file to upload..."),title="upload a data file",style="padding-top: 24px;",width=6),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("descrRODataOUP")),style="padding-top: 24px;",width=6)
+              column(fileInput("filesROUploadOUP",NULL,multiple=FALSE,accept=".csv",buttonLabel="...",placeholder="Select a file to upload..."),title="upload a data file",width=6),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("descrRODataOUP")),width=6)
             ),
             # buttons, begin and end dates
             fixedRow(
-              column(actionButton("resetRODataOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 25px;",width=2),
+              column(actionButton("resetRODataOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 32px;",width=2),
               column(numericInput("begRODataOUP",label="Begin",value="",step="any",width="100%"),title="time to begin plot",width=3),
               column(numericInput("endRODataOUP",label="End",value="",step="any",width="100%"),title="time to end plot",width=3),
-              column(actionButton("plotRODataOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 25px;",width=2),
-              column(actionButton("infoRODataOUP","Info",width="100%",class="btn-primary"),title="about Data",style="padding-top: 25px;",width=2)
+              column(actionButton("plotRODataOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 32px;",width=2),
+              column(actionButton("infoRODataOUP","Info",width="100%",class="btn-primary"),title="about Data",style="padding-top: 32px;",width=2)
             ),
             # plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyRODataOUP")
             ),
             value="RODataOUP"
@@ -47,25 +46,27 @@ shinyUI(
           nav_panel("Estimates",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoROEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
-              column(selectInput("filesROEstimatesOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
-              column(selectInput("timeROEstimatesOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
-              column(selectInput("stateROEstimatesOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
+              column(actionButton("fileinfoROEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(selectInput("filesROEstimatesOUP",label="File",choices=""),title="data files",width=5),
+              column(selectInput("timeROEstimatesOUP",label="Time",choices=""),title="time variable",width=3),
+              column(selectInput("stateROEstimatesOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # parameters
+            fixedRow(
               column(width=2),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 80%;",uiOutput("paramROEstimatesOUP")),width=10),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramROEstimatesOUP")),width=8)
+            ),
             # buttons, begin and end dates
             fixedRow(
-              column(actionButton("resetROEstimatesOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 25px;",width=2),
+              column(actionButton("resetROEstimatesOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 32px;",width=2),
               column(numericInput("begROEstimatesOUP",label="Begin",value="",step="any",width="100%"),title="time to begin plot",width=3),
               column(numericInput("endROEstimatesOUP",label="End",value="",step="any",width="100%"),title="time to end plot",width=3),
-              column(actionButton("plotROEstimatesOUP","Go",width="100%",class="btn-success"),title="estimate and plot",style="padding-top: 25px;",width=2),
-              column(actionButton("infoROEstimatesOUP","Info",width="100%",class="btn-primary"),title="about Data and Estimates",style="padding-top: 25px;",width=2)
+              column(actionButton("plotROEstimatesOUP","Go",width="100%",class="btn-success"),title="estimate and plot",style="padding-top: 32px;",width=2),
+              column(actionButton("infoROEstimatesOUP","Info",width="100%",class="btn-primary"),title="about Estimates",style="padding-top: 32px;",width=2)
             ),
             # plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyROEstimatesOUP")
             ),
             value="ROEstimatesOUP"
@@ -73,20 +74,20 @@ shinyUI(
           # Regime ----
           nav_panel("Regime",
             # User input
-            fixedRow(
-              column(actionButton("infoRORegimeOUP","Info",width="100%",class="btn-primary"),title="about Regimes",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoRORegimeOUP","Info",width="100%",class="btn-primary"),title="about Regimes",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("xFromRORegimeOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToRORegimeOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByRORegimeOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoRORegimeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muRORegimeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaRORegimeOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(width=2),
               column(numericInput("yRORegimeOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rRORegimeOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
@@ -106,7 +107,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyRORegimeOUP")
             ),
             value="RORegimeOUP"
@@ -114,20 +115,20 @@ shinyUI(
           # Decision Threshold ----
           nav_panel("Decision Threshold",
             # User input
-            fixedRow(
-              column(actionButton("infoRODecisionOUP","Info",width="100%",class="btn-primary"),title="about Decision Threshold",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoRODecisionOUP","Info",width="100%",class="btn-primary"),title="about Decision Threshold",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("xFromRODecisionOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToRODecisionOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByRODecisionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoRODecisionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muRODecisionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaRODecisionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(width=2),
               column(numericInput("yRODecisionOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rRODecisionOUP",label="r",value="",step="any",width="100%"),title="discount rate of convergence",width=2),
@@ -147,7 +148,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyRODecisionOUP")
             ),
             value="RODecisionOUP"
@@ -155,20 +156,20 @@ shinyUI(
           # Passage Time ----
           nav_panel("Passage Times",
             # User input
-            fixedRow(
-              column(actionButton("infoROPassageTimeOUP","Info",width="100%",class="btn-primary"),title="about Passage Time",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoROPassageTimeOUP","Info",width="100%",class="btn-primary"),title="about Passage Time",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("zFromROPassageTimeOUP",label="z:From",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zToROPassageTimeOUP",label="z:To",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zByROPassageTimeOUP",label="z:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoROPassageTimeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muROPassageTimeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaROPassageTimeOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(width=2),
               column(numericInput("kROPassageTimeOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
               column(numericInput("sROPassageTimeOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
@@ -188,7 +189,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyROPassageTimeOUP")
             ),
             value="ROPassageTimeOUP"
@@ -206,29 +207,29 @@ shinyUI(
           # Drift ----
           nav_panel("Drift",
             # User input
-            fixedRow(
-              column(actionButton("infoADriftOUP","Info",width="100%",class="btn-primary"),title="about Drift",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoADriftOUP","Info",width="100%",class="btn-primary"),title="about Drift",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("zFromADriftOUP",label="z:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("zToADriftOUP",label="z:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("zByADriftOUP",label="z:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 144px;",
               column(width=2),
               column(numericInput("rhoADriftOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADriftOUP",label="mu",value="",step="any",width="100%"),title="location",width=2)
             ),
             # User action
             fixedRow(
-              column(actionButton("saveADriftOUP","Save",width="100%",class="btn-info"),title="all arguments",style="padding-top: 78px;",width=2),
-              column(actionButton("undoADriftOUP","Undo",width="100%",class="btn-success"),title="arguments to last Save",style="padding-top: 78px;",width=2),
-              column(actionButton("syncADriftOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",style="padding-top: 78px;",width=2),
-              column(actionButton("axesADriftOUP","Axes",width="100%",class="btn-success"),title="for z",style="padding-top: 78px;",width=2),
-              column(actionButton("plotADriftOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 78px;",width=2)
+              column(actionButton("saveADriftOUP","Save",width="100%",class="btn-info"),title="all arguments",width=2),
+              column(actionButton("undoADriftOUP","Undo",width="100%",class="btn-success"),title="arguments to last Save",width=2),
+              column(actionButton("syncADriftOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
+              column(actionButton("axesADriftOUP","Axes",width="100%",class="btn-success"),title="for z",width=2),
+              column(actionButton("plotADriftOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyADriftOUP")
             ),
             value="ADriftOUP"
@@ -236,14 +237,14 @@ shinyUI(
           # Diffusion ----
           nav_panel("Diffusion",
             # User input
-            fixedRow(
-              column(actionButton("infoADiffusionOUP","Info",width="100%",class="btn-primary"),title="about Diffusion",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoADiffusionOUP","Info",width="100%",class="btn-primary"),title="about Diffusion",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("zFromADiffusionOUP",label="z:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("zToADiffusionOUP",label="z:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("zByADiffusionOUP",label="z:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 144px;",
               column(width=2),
               column(numericInput("rhoADiffusionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADiffusionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -251,17 +252,17 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("saveADiffusionOUP","Save",width="100%",class="btn-info"),title="all arguments",style="padding-top: 78px;",width=2),
-              column(actionButton("undoADiffusionOUP","Undo",width="100%",class="btn-success"),title="arguments to last Save",style="padding-top: 78px;",width=2),
-              column(actionButton("syncADiffusionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",style="padding-top: 78px;",width=2),
-              column(actionButton("axesADiffusionOUP","Axes",width="100%",class="btn-success"),title="for z",style="padding-top: 78px;",width=2),
-              column(actionButton("plotADiffusionOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 78px;",width=2),
-              column(actionButton("leftADiffusionOUP","<",width="100%",class="btn-success"),title="previous",style="padding-top: 78px; padding-right: 2px;",width=1),
-              column(actionButton("rghtADiffusionOUP",">",width="100%",class="btn-success"),title="next",style="padding-top: 78px; padding-left: 2px;",width=1)
+              column(actionButton("saveADiffusionOUP","Save",width="100%",class="btn-info"),title="all arguments",width=2),
+              column(actionButton("undoADiffusionOUP","Undo",width="100%",class="btn-success"),title="arguments to last Save",width=2),
+              column(actionButton("syncADiffusionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
+              column(actionButton("axesADiffusionOUP","Axes",width="100%",class="btn-success"),title="for z",width=2),
+              column(actionButton("plotADiffusionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
+              column(actionButton("leftADiffusionOUP","<",width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("rghtADiffusionOUP",">",width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1)
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyADiffusionOUP")
             ),
             value="ADiffusionOUP"
@@ -269,15 +270,15 @@ shinyUI(
           # Mean ----
           nav_panel("Mean",
             # User input
-            fixedRow(
-              column(actionButton("infoAMeanOUP","Info",width="100%",class="btn-primary"),title="about Mean",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAMeanOUP","Info",width="100%",class="btn-primary"),title="about Mean",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("yFromAMeanOUP",label="y:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yToAMeanOUP",label="y:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yByAMeanOUP",label="y:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByAMeanOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAMeanOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAMeanOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -285,7 +286,7 @@ shinyUI(
               column(numericInput("pmaxAMeanOUP",label="p max",value="",step="any",width="100%"),title="maximum density",width=2),
               column(numericInput("tToAMeanOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("sAMeanOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAMeanOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
@@ -305,7 +306,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAMeanOUP")
             ),
             value="AMeanOUP"
@@ -313,15 +314,15 @@ shinyUI(
           # Mean convergence----
           nav_panel("Mean Convergence",
             # User input
-            fixedRow(
-              column(actionButton("infoAMeanCOUP","Info",width="100%",class="btn-primary"),title="about Mean Convergence",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAMeanCOUP","Info",width="100%",class="btn-primary"),title="about Mean Convergence",style="padding-top: 32px;",width=2),
               column(width=2),
               column(width=2),
               column(width=2),
               column(width=2),
               column(numericInput("tByAMeanCOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAMeanCOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(width=2),
@@ -329,7 +330,7 @@ shinyUI(
               column(width=2),
               column(numericInput("tToAMeanCOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("sAMeanCOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAMeanCOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(numericInput("epsAMeanCOUP",label="epsilon",value="",step="any",width="100%"),title="proportion remaining",width=2),
@@ -347,7 +348,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAMeanCOUP")
             ),
             value="AMeanCOUP"
@@ -355,15 +356,15 @@ shinyUI(
           # Variance ----
           nav_panel("Variance",
             # User input
-            fixedRow(
-              column(actionButton("infoAVarianceOUP","Info",width="100%",class="btn-primary"),title="about Variance",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAVarianceOUP","Info",width="100%",class="btn-primary"),title="about Variance",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("yFromAVarianceOUP",label="y:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yToAVarianceOUP",label="y:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yByAVarianceOUP",label="y:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByAVarianceOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAVarianceOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAVarianceOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -371,7 +372,7 @@ shinyUI(
               column(numericInput("pmaxAVarianceOUP",label="p max",value="",step="any",width="100%"),title="maximum density",width=2),
               column(numericInput("tToAVarianceOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("sAVarianceOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAVarianceOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
@@ -391,7 +392,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAVarianceOUP")
             ),
             value="AVarianceOUP"
@@ -399,15 +400,15 @@ shinyUI(
           # Variance convergence----
           nav_panel("Variance Convergence",
             # User input
-            fixedRow(
-              column(actionButton("infoAVarianceCOUP","Info",width="100%",class="btn-primary"),title="about Variance Convergence",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAVarianceCOUP","Info",width="100%",class="btn-primary"),title="about Variance Convergence",style="padding-top: 32px;",width=2),
               column(width=2),
               column(width=2),
               column(width=2),
               column(width=2),
               column(numericInput("tByAVarianceCOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAVarianceCOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(width=2),
@@ -415,7 +416,7 @@ shinyUI(
               column(width=2),
               column(numericInput("tToAVarianceCOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("sAVarianceCOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(width=2),
               column(numericInput("epsAVarianceCOUP",label="epsilon",value="",step="any",width="100%"),title="proportion remaining",width=2),
@@ -432,7 +433,7 @@ shinyUI(
               column(actionButton("plotAVarianceCOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
             ),
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAVarianceCOUP")
             ),
             value="AVarianceCOUP"
@@ -440,15 +441,15 @@ shinyUI(
           # Transition Density ----
           nav_panel("Transition Density",
             # User input
-            fixedRow(
-              column(actionButton("infoADensityOUP","Info",width="100%",class="btn-primary"),title="about Transition Density",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoADensityOUP","Info",width="100%",class="btn-primary"),title="about Transition Density",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("yFromADensityOUP",label="y:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yToADensityOUP",label="y:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yByADensityOUP",label="y:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByADensityOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoADensityOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADensityOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -456,7 +457,7 @@ shinyUI(
               column(numericInput("pmaxADensityOUP",label="p max",value="",step="any",width="100%"),title="maximum density",width=2),
               column(numericInput("tToADensityOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("sADensityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xADensityOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
@@ -476,7 +477,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyADensityOUP")
             ),
             value="ADensityOUP"
@@ -484,15 +485,15 @@ shinyUI(
           # Transition Probability ----
           nav_panel("Transition Probability",
             # User input
-            fixedRow(
-              column(actionButton("infoAProbabilityOUP","Info",width="100%",class="btn-primary"),title="about Transition Probability",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAProbabilityOUP","Info",width="100%",class="btn-primary"),title="about Transition Probability",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("yFromAProbabilityOUP",label="y:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yToAProbabilityOUP",label="y:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yByAProbabilityOUP",label="y:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByAProbabilityOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAProbabilityOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAProbabilityOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -500,7 +501,7 @@ shinyUI(
               column(width=2),
               column(numericInput("tToAProbabilityOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("sAProbabilityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAProbabilityOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
@@ -520,7 +521,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAProbabilityOUP")
             ),
             value="AProbabilityOUP"
@@ -528,15 +529,15 @@ shinyUI(
           # Double Integral ----
           nav_panel("Double Integral",
             # User input
-            fixedRow(
-              column(actionButton("infoADoubleOUP","Info",width="100%",class="btn-primary"),title="about Double Integral",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoADoubleOUP","Info",width="100%",class="btn-primary"),title="about Double Integral",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("yFromADoubleOUP",label="y:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yToADoubleOUP",label="y:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("yByADoubleOUP",label="y:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByADoubleOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoADoubleOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADoubleOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -544,7 +545,7 @@ shinyUI(
               column(width=2),
               column(numericInput("tToADoubleOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("sADoubleOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xADoubleOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
@@ -564,7 +565,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyADoubleOUP")
             ),
             value="ADoubleOUP"
@@ -572,15 +573,15 @@ shinyUI(
           # Option ----
           nav_panel("Option",
             # User input
-            fixedRow(
-              column(actionButton("infoAOptionOUP","Info",width="100%",class="btn-primary"),title="about Option",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAOptionOUP","Info",width="100%",class="btn-primary"),title="about Option",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("xFromAOptionOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToAOptionOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByAOptionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("sByAOptionOUP",label="s:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAOptionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAOptionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -588,7 +589,7 @@ shinyUI(
               column(width=2),
               column(numericInput("sToAOptionOUP",label="s:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("tAOptionOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("yAOptionOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rAOptionOUP",label="r",value="",step="any",width="100%"),title="discount rate of convergence",width=2),
@@ -608,7 +609,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAOptionOUP")
             ),
             value="AOptionOUP"
@@ -616,15 +617,15 @@ shinyUI(
           # Option Envelope ----
           nav_panel("Option Envelope",
             # User input
-            fixedRow(
-              column(actionButton("infoAEnvelopeOUP","Info",width="100%",class="btn-primary"),title="about Option Envelope",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAEnvelopeOUP","Info",width="100%",class="btn-primary"),title="about Option Envelope",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("xFromAEnvelopeOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToAEnvelopeOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByAEnvelopeOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("sByAEnvelopeOUP",label="s:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAEnvelopeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAEnvelopeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -632,7 +633,7 @@ shinyUI(
               column(width=2),
               column(numericInput("sToAEnvelopeOUP",label="s:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("tAEnvelopeOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("yAEnvelopeOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rAEnvelopeOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
@@ -652,7 +653,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAEnvelopeOUP")
             ),
             value="AEnvelopeOUP"
@@ -660,20 +661,20 @@ shinyUI(
           # Decision Threshold ----
           nav_panel("Decision Threshold",
             # User input
-            fixedRow(
-              column(actionButton("infoADecisionOUP","Info",width="100%",class="btn-primary"),title="about Decision Threshold",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoADecisionOUP","Info",width="100%",class="btn-primary"),title="about Decision Threshold",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("xFromADecisionOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToADecisionOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByADecisionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoADecisionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muADecisionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaADecisionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(width=2),
               column(numericInput("yADecisionOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rADecisionOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
@@ -690,7 +691,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyADecisionOUP")
             ),
             value="ADecisionOUP"
@@ -698,15 +699,15 @@ shinyUI(
           # Obligation ----
           nav_panel("Obligation",
             # User input
-            fixedRow(
-              column(actionButton("infoAObligationOUP","Info",width="100%",class="btn-primary"),title="about Obligation",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAObligationOUP","Info",width="100%",class="btn-primary"),title="about Obligation",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("xFromAObligationOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToAObligationOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByAObligationOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("sByAObligationOUP",label="s:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAObligationOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAObligationOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -714,7 +715,7 @@ shinyUI(
               column(width=2),
               column(numericInput("sToAObligationOUP",label="s:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("tAObligationOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("yAObligationOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rAObligationOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
@@ -734,7 +735,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAObligationOUP")
             ),
             value="AObligationOUP"
@@ -742,15 +743,15 @@ shinyUI(
           # Passage Time Mode, Median and Mean ----
           nav_panel("Passage Time Mode, Median and Mean",
             # User input
-            fixedRow(
-              column(actionButton("infoAPTModeMedianMeanOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Mode, Median and Mean",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAPTModeMedianMeanOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Mode, Median and Mean",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("zFromAPTModeMedianMeanOUP",label="z:From",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zToAPTModeMedianMeanOUP",label="z:To",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zByAPTModeMedianMeanOUP",label="z:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByAPTModeMedianMeanOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAPTModeMedianMeanOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTModeMedianMeanOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -758,7 +759,7 @@ shinyUI(
               column(numericInput("ptmaxAPTModeMedianMeanOUP",label="pt max",value="",step="any",width="100%"),title="maximum density",width=2),
               column(numericInput("tToAPTModeMedianMeanOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("kAPTModeMedianMeanOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
               column(numericInput("sAPTModeMedianMeanOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTModeMedianMeanOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
@@ -778,7 +779,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTModeMedianMeanOUP")
             ),
             value="APTModeMedianMeanOUP"
@@ -786,20 +787,20 @@ shinyUI(
           # Passage Time Variance ----
           nav_panel("Passage Time Variance",
             # User input
-            fixedRow(
-              column(actionButton("infoAPTVarianceOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Variance",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAPTVarianceOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Variance",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("zFromAPTVarianceOUP",label="z:From",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zToAPTVarianceOUP",label="z:To",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zByAPTVarianceOUP",label="z:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAPTVarianceOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTVarianceOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAPTVarianceOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("kAPTVarianceOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
               column(numericInput("sAPTVarianceOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTVarianceOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
@@ -817,7 +818,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTVarianceOUP")
             ),
             value="APTVarianceOUP"
@@ -825,15 +826,15 @@ shinyUI(
           # Passage Time Percentiles ----
           nav_panel("Passage Time Percentiles",
             # User input
-            fixedRow(
-              column(actionButton("infoAPTPercentilesOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Percentiles",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAPTPercentilesOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Percentiles",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("zFromAPTPercentilesOUP",label="z:From",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zToAPTPercentilesOUP",label="z:To",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zByAPTPercentilesOUP",label="z:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByAPTPercentilesOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAPTPercentilesOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTPercentilesOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -841,7 +842,7 @@ shinyUI(
               column(numericInput("ptmaxAPTPercentilesOUP",label="pt max",value="",step="any",width="100%"),title="maximum density",width=2),
               column(numericInput("tToAPTPercentilesOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("kAPTPercentilesOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
               column(numericInput("sAPTPercentilesOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTPercentilesOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
@@ -861,7 +862,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTPercentilesOUP")
             ),
             value="APTPercentilesOUP"
@@ -869,15 +870,15 @@ shinyUI(
           # Passage Time Density ----
           nav_panel("Passage Time Density",
             # User input
-            fixedRow(
-              column(actionButton("infoAPTDensityOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Density",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAPTDensityOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Density",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("zFromAPTDensityOUP",label="z:From",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zToAPTDensityOUP",label="z:To",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zByAPTDensityOUP",label="z:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByAPTDensityOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAPTDensityOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTDensityOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -885,7 +886,7 @@ shinyUI(
               column(numericInput("ptmaxAPTDensityOUP",label="pt max",value="",step="any",width="100%"),title="maximum density",width=2),
               column(numericInput("tToAPTDensityOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("kAPTDensityOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
               column(numericInput("sAPTDensityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTDensityOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
@@ -905,7 +906,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTDensityOUP")
             ),
             value="APTDensityOUP"
@@ -913,15 +914,15 @@ shinyUI(
           # Passage Time Probability ----
           nav_panel("Passage Time Probability",
             # User input
-            fixedRow(
-              column(actionButton("infoAPTProbabilityOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Probability",style="padding-top: 25px;",width=2),
+            fixedRow(style="height: 60px;",
+              column(actionButton("infoAPTProbabilityOUP","Info",width="100%",class="btn-primary"),title="about Passage Time Probability",style="padding-top: 32px;",width=2),
               column(width=2),
               column(numericInput("zFromAPTProbabilityOUP",label="z:From",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zToAPTProbabilityOUP",label="z:To",value="",step="any",width="100%"),title="alternate initial states",width=2),
               column(numericInput("zByAPTProbabilityOUP",label="z:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("tByAPTProbabilityOUP",label="t:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(numericInput("rhoAPTProbabilityOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAPTProbabilityOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
@@ -929,7 +930,7 @@ shinyUI(
               column(width=2),
               column(numericInput("tToAPTProbabilityOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("kAPTProbabilityOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
               column(numericInput("sAPTProbabilityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTProbabilityOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
@@ -949,7 +950,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyAPTProbabilityOUP")
             ),
             value="APTProbabilityOUP"
@@ -967,28 +968,28 @@ shinyUI(
           # Drift ----
           nav_panel("Drift",
             # User input
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(width=2),
               column(numericInput("xFromFDDriftOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDDriftOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDDriftOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 144px;",
               column(numericInput("rhoFDDriftOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDDriftOUP",label="mu",value="",step="any",width="100%"),title="location",width=2)
             ),
             # User action
             fixedRow(
-              column(actionButton("infoFDDriftOUP","Info",width="100%",class="btn-primary"),title="about Drift",style="padding-top: 78px;",width=2),
-              column(actionButton("saveFDDriftOUP","Save",width="100%",class="btn-info"),title="all arguments",style="padding-top: 78px;",width=2),
-              column(actionButton("undoFDDriftOUP","Undo",width="100%",class="btn-success"),title="arguments to last Save",style="padding-top: 78px;",width=2),
-              column(actionButton("axesFDDriftOUP","Axes",width="100%",class="btn-success"),title="for s and x",style="padding-top: 78px;",width=2),
-              column(actionButton("plotFDDriftOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 78px;",width=2)
+              column(actionButton("infoFDDriftOUP","Info",width="100%",class="btn-primary"),title="about Drift",width=2),
+              column(actionButton("saveFDDriftOUP","Save",width="100%",class="btn-info"),title="all arguments",width=2),
+              column(actionButton("undoFDDriftOUP","Undo",width="100%",class="btn-success"),title="arguments to last Save",width=2),
+              column(actionButton("axesFDDriftOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
+              column(actionButton("plotFDDriftOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDDriftOUP")
             ),
             value="FDDriftOUP"
@@ -996,31 +997,31 @@ shinyUI(
           # Diffusion ----
           nav_panel("Diffusion",
             # User input
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(width=2),
               column(width=2),
               column(numericInput("xFromFDDiffusionOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDDiffusionOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDDiffusionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 144px;",
               column(numericInput("rhoFDDiffusionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDDiffusionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaFDDiffusionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
             # User action
             fixedRow(
-              column(actionButton("infoFDDiffusionOUP","Info",width="100%",class="btn-primary"),title="about Diffusion",style="padding-top: 78px;",width=2),
-              column(actionButton("saveFDDiffusionOUP","Save",width="100%",class="btn-info"),title="all arguments",style="padding-top: 78px;",width=2),
-              column(actionButton("undoFDDiffusionOUP","Undo",width="100%",class="btn-success"),title="arguments to last Save",style="padding-top: 78px;",width=2),
-              column(actionButton("axesFDDiffusionOUP","Axes",width="100%",class="btn-success"),title="for s and x",style="padding-top: 78px;",width=2),
-              column(actionButton("plotFDDiffusionOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 78px;",width=2),
-              column(actionButton("leftFDDiffusionOUP","<",width="100%",class="btn-success"),title="previous",style="padding-top: 78px; padding-right: 2px;",width=1),
-              column(actionButton("rghtFDDiffusionOUP",">",width="100%",class="btn-success"),title="next",style="padding-top: 78px; padding-left: 2px;",width=1)
+              column(actionButton("infoFDDiffusionOUP","Info",width="100%",class="btn-primary"),title="about Diffusion",width=2),
+              column(actionButton("saveFDDiffusionOUP","Save",width="100%",class="btn-info"),title="all arguments",width=2),
+              column(actionButton("undoFDDiffusionOUP","Undo",width="100%",class="btn-success"),title="arguments to last Save",width=2),
+              column(actionButton("axesFDDiffusionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
+              column(actionButton("plotFDDiffusionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
+              column(actionButton("leftFDDiffusionOUP","<",width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("rghtFDDiffusionOUP",">",width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1)
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDDiffusionOUP")
             ),
             value="FDDiffusionOUP"
@@ -1028,18 +1029,18 @@ shinyUI(
           # Terminal Values ----
           nav_panel("Terminal Values",
             # User input
-            fixedRow(
+            fixedRow(style="height: 136px;",
               column(uiOutput("VFDTerminalOUP"),title="terminal values",width=4),
               column(numericInput("xFromFDTerminalOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDTerminalOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDTerminalOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
-              column(numericInput("V1FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",style="padding-top: 78px;",width=2),
-              column(numericInput("V2FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",style="padding-top: 78px;",width=2),
-              column(numericInput("V3FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",style="padding-top: 78px;",width=2),
-              column(numericInput("V4FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",style="padding-top: 78px;",width=2),
-              column(numericInput("V5FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",style="padding-top: 78px;",width=2)
+            fixedRow(style="height: 68px;",
+              column(numericInput("V1FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
+              column(numericInput("V2FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
+              column(numericInput("V3FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
+              column(numericInput("V4FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
+              column(numericInput("V5FDTerminalOUP",label="~",value="",step="any",width="100%"),title="argument",width=2)
             ),
             # User action
             fixedRow(
@@ -1051,7 +1052,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDTerminalOUP")
             ),
             value="FDTerminalOUP"
@@ -1059,14 +1060,14 @@ shinyUI(
           # Option ----
           nav_panel("Option",
             # User input
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(uiOutput("VFDOptionOUP"),title="terminal values",width=4),
               column(numericInput("xFromFDOptionOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDOptionOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDOptionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("sByFDOptionOUP",label="s:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(numericInput("rhoFDOptionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDOptionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaFDOptionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
@@ -1074,7 +1075,7 @@ shinyUI(
               column(width=2),
               column(numericInput("sToFDOptionOUP",label="s:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("V1FDOptionOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
               column(numericInput("V2FDOptionOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
               column(numericInput("V3FDOptionOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
@@ -1094,7 +1095,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDOptionOUP")
             ),
             value="FDOptionOUP"
@@ -1102,14 +1103,14 @@ shinyUI(
           # Option Envelope ----
           nav_panel("Option Envelope",
             # User input
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(uiOutput("VFDEnvelopeOUP"),title="terminal values",width=4),
               column(numericInput("xFromFDEnvelopeOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDEnvelopeOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDEnvelopeOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2),
               column(numericInput("sByFDEnvelopeOUP",label="s:By",value="",step="any",width="100%"),title="time increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(numericInput("rhoFDEnvelopeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDEnvelopeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaFDEnvelopeOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
@@ -1117,7 +1118,7 @@ shinyUI(
               column(width=2),
               column(numericInput("sToFDEnvelopeOUP",label="s:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("V1FDEnvelopeOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
               column(numericInput("V2FDEnvelopeOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
               column(numericInput("V3FDEnvelopeOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
@@ -1137,7 +1138,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDEnvelopeOUP")
             ),
             value="FDEnvelopeOUP"
@@ -1145,20 +1146,20 @@ shinyUI(
           # Decision Threshold ----
           nav_panel("Decision Threshold",
             # User input
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(uiOutput("VFDDecisionOUP"),title="terminal values",width=4),
               column(numericInput("xFromFDDecisionOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDDecisionOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDDecisionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 60px;",
               column(numericInput("rhoFDDecisionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muFDDecisionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaFDDecisionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
               column(numericInput("rFDDecisionOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
               column(numericInput("phiFDDecisionOUP",label="phi",value="",step="any",width="100%"),title="exit or entry option",width=2)
             ),
-            fixedRow(
+            fixedRow(style="height: 68px;",
               column(numericInput("V1FDDecisionOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
               column(numericInput("V2FDDecisionOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
               column(numericInput("V3FDDecisionOUP",label="~",value="",step="any",width="100%"),title="argument",width=2),
@@ -1175,7 +1176,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyFDDecisionOUP")
             ),
             value="FDDecisionOUP"
@@ -1194,27 +1195,27 @@ shinyUI(
           nav_panel("Data",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLDataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLDataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesMLDataOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLDataOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLDataOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # first and last times, number of rows and columns in data
             fixedRow(
-              column(fileInput("filesMLUploadOUP",NULL,multiple=FALSE,accept=".csv",buttonLabel="...",placeholder="Select a file to upload..."),title="upload a data file",style="padding-top: 24px;",width=6),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("descrMLDataOUP")),style="padding-top: 24px;",width=6)
+              column(fileInput("filesMLUploadOUP",NULL,multiple=FALSE,accept=".csv",buttonLabel="...",placeholder="Select a file to upload..."),title="upload a data file",width=6),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width=100%;",uiOutput("descrMLDataOUP")),width=6)
             ),
             # buttons, begin and end dates
             fixedRow(
-              column(actionButton("resetMLDataOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 25px;",width=2),
+              column(actionButton("resetMLDataOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 32px;",width=2),
               column(numericInput("begMLDataOUP",label="Begin",value="",step="any",width="100%"),title="time to begin plot",width=3),
               column(numericInput("endMLDataOUP",label="End",value="",step="any",width="100%"),title="time to end plot",width=3),
-              column(actionButton("plotMLDataOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 25px;",width=2),
-              column(actionButton("infoMLDataOUP","Info",width="100%",class="btn-primary"),title="about Data",style="padding-top: 25px;",width=2)
+              column(actionButton("plotMLDataOUP","Plot",width="100%",class="btn-success"),title="refresh",style="padding-top: 32px;",width=2),
+              column(actionButton("infoMLDataOUP","Info",width="100%",class="btn-primary"),title="about Data",style="padding-top: 32px;",width=2)
             ),
             # plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyMLDataOUP")
             ),
             value="MLDataOUP"
@@ -1223,13 +1224,13 @@ shinyUI(
           nav_panel("Log Likelihood",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLLikelihoodOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
-              column(selectInput("filesMLLikelihoodOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
-              column(selectInput("timeMLLikelihoodOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
-              column(selectInput("stateMLLikelihoodOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
+              column(actionButton("fileinfoMLLikelihoodOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(selectInput("filesMLLikelihoodOUP",label="File",choices=""),title="data files",width=5),
+              column(selectInput("timeMLLikelihoodOUP",label="Time",choices=""),title="time variable",width=3),
+              column(selectInput("stateMLLikelihoodOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # parameters and Likelihood
-            fixedRow(
+            fixedRow(style="height: 71px;",
               column(numericInput("rhoMLLikelihoodOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muMLLikelihoodOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaMLLikelihoodOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
@@ -1237,15 +1238,15 @@ shinyUI(
             ),
             # buttons, begin and end dates
             fixedRow(
-              column(actionButton("resetMLLikelihoodOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 25px;",width=2),
+              column(actionButton("resetMLLikelihoodOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 32px;",width=2),
               column(numericInput("begMLLikelihoodOUP",label="Begin",value="",step="any",width="100%"),title="time to begin plot",width=3),
               column(numericInput("endMLLikelihoodOUP",label="End",value="",step="any",width="100%"),title="time to end plot",width=3),
-              column(actionButton("plotMLLikelihoodOUP","Go",width="100%",class="btn-success"),title="calculate and plot",style="padding-top: 25px;",width=2),
-              column(actionButton("infoMLLikelihoodOUP","Info",width="100%",class="btn-primary"),title="about Log Likelihood",style="padding-top: 25px;",width=2)
+              column(actionButton("plotMLLikelihoodOUP","Go",width="100%",class="btn-success"),title="calculate and plot",style="padding-top: 32px;",width=2),
+              column(actionButton("infoMLLikelihoodOUP","Info",width="100%",class="btn-primary"),title="about Log Likelihood",style="padding-top: 32px;",width=2)
             ),
             # plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyMLLikelihoodOUP")
             ),
             value="MLLikelihoodOUP"
@@ -1254,24 +1255,27 @@ shinyUI(
           nav_panel("Estimates",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
-              column(selectInput("filesMLEstimatesOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
-              column(selectInput("timeMLEstimatesOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
-              column(selectInput("stateMLEstimatesOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
+              column(actionButton("fileinfoMLEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(selectInput("filesMLEstimatesOUP",label="File",choices=""),title="data files",width=5),
+              column(selectInput("timeMLEstimatesOUP",label="Time",choices=""),title="time variable",width=3),
+              column(selectInput("stateMLEstimatesOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # parameters, likelihood and such
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLEstimatesOUP")),width=12),
+            fixedRow(
+              column(width=2),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLEstimatesOUP")),width=8)
+            ),
             # buttons, begin and end dates
             fixedRow(
-              column(actionButton("resetMLEstimatesOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 25px;",width=2),
+              column(actionButton("resetMLEstimatesOUP","Reset",width="100%",class="btn-success"),title="reset begin and end",style="padding-top: 32px;",width=2),
               column(numericInput("begMLEstimatesOUP",label="Begin",value="",step="any",width="100%"),title="time to begin plot",width=3),
               column(numericInput("endMLEstimatesOUP",label="End",value="",step="any",width="100%"),title="time to end plot",width=3),
-              column(actionButton("plotMLEstimatesOUP","Go",width="100%",class="btn-success"),title="estimate and plot",style="padding-top: 25px;",width=2),
-              column(actionButton("infoMLEstimatesOUP","Info",width="100%",class="btn-primary"),title="about Estimates",style="padding-top: 25px;",width=2)
+              column(actionButton("plotMLEstimatesOUP","Go",width="100%",class="btn-success"),title="estimate and plot",style="padding-top: 32px;",width=2),
+              column(actionButton("infoMLEstimatesOUP","Info",width="100%",class="btn-primary"),title="about Estimates",style="padding-top: 32px;",width=2)
             ),
             # plot
             wellPanel(class="wellPlotOUP",
-              style="margin-top: 18px; height: 402px; width: 580px;",
+              style="margin: 0 auto; height: 402px; width: 580px;",
               plotlyOutput("plotlyMLEstimatesOUP")
             ),
             value="MLEstimatesOUP"
@@ -1280,26 +1284,29 @@ shinyUI(
           nav_panel("Goodness-of-Fit",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLGoodnessOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
-              column(selectInput("filesMLGoodnessOUP",label="File",choices=""),style="padding-bottom: 24px;",title="data files",width=5),
-              column(selectInput("timeMLGoodnessOUP",label="Time",choices=""),style="padding-bottom: 24px;",title="time variable",width=3),
-              column(selectInput("stateMLGoodnessOUP",label="State",choices=""),style="padding-bottom: 24px;",title="state variable",width=3)
+              column(actionButton("fileinfoMLGoodnessOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(selectInput("filesMLGoodnessOUP",label="File",choices=""),title="data files",width=5),
+              column(selectInput("timeMLGoodnessOUP",label="Time",choices=""),title="time variable",width=3),
+              column(selectInput("stateMLGoodnessOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # parameters, likelihood and such
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLGoodnessOUP")),width=12),
+            fixedRow(style="height: 99px;",
+              column(width=2),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLGoodnessOUP")),width=8)
+            ),
             # buttons
             fixedRow(
               column(width=2),
               column(width=2),
               column(width=2),
               column(width=2),
-              column(actionButton("plotMLGoodnessOUP","Go",width="100%",class="btn-success"),title="calculate",style="padding-top: 25px;",width=2),
-              column(actionButton("infoMLGoodnessOUP","Info",width="100%",class="btn-primary"),title="about Goodness-of-Fit",style="padding-top: 25px;",width=2)
+              column(actionButton("plotMLGoodnessOUP","Go",width="100%",class="btn-success"),title="calculate",style="padding-top: 32px;",width=2),
+              column(actionButton("infoMLGoodnessOUP","Info",width="100%",class="btn-primary"),title="about Goodness-of-Fit",style="padding-top: 32px;",width=2)
             ),
             # table
             fixedRow(
-              column(width=2),
-              column(wellPanel(class="wellTableOUP",style="margin-top: 40px; padding: 6px 0px 18px 0px; width=100%;",uiOutput("goodsMLGoodnessOUP")),width=6)
+              column(width=3),
+              column(wellPanel(class="wellTableOUP",style="margin-top: 25px; padding: 6px 0px 18px 0px; width=100%;",uiOutput("goodsMLGoodnessOUP")),width=6)
             ),
             value="MLGoodnessOUP"
           ),
@@ -1307,33 +1314,35 @@ shinyUI(
           nav_panel("Likelihood Ratio Test",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLRatioOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 25px;",width=1),
+              column(actionButton("fileinfoMLRatioOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesMLRatioOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLRatioOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLRatioOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # parameters, likelihood and such
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLRatioOUP")),width=12),
+            fixedRow(
+              column(width=2),
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLRatioOUP")),width=8)
+            ),
             # restrictions and buttons
             fixedRow(
-              column(actionButton("resetMLRatioOUP","Reset",width="100%",class="btn-success"),title="reset rhor, mur and sigmar",style="padding-top: 25px;",width=2),
+              column(actionButton("resetMLRatioOUP","Reset",width="100%",class="btn-success"),title="reset rhor, mur and sigmar",style="padding-top: 32px;",width=2),
               column(numericInput("rhorMLRatioOUP",label="rhor",value="",step="any",width="100%"),title="constant for rate",width=2),
               column(numericInput("murMLRatioOUP",label="mur",value="",step="any",width="100%"),title="constant for location",width=2),
               column(numericInput("sigmarMLRatioOUP",label="sigmar",value="",step="any",width="100%"),title="constant for scale",width=2),
-              column(actionButton("plotMLRatioOUP","Go",width="100%",class="btn-success"),title="calculate",style="padding-top: 25px;",width=2),
-              column(actionButton("infoMLRatioOUP","Info",width="100%",class="btn-primary"),title="about Likelihood Ratio Test",style="padding-top: 25px;",width=2)
+              column(actionButton("plotMLRatioOUP","Go",width="100%",class="btn-success"),title="calculate",style="padding-top: 32px;",width=2),
+              column(actionButton("infoMLRatioOUP","Info",width="100%",class="btn-primary"),title="about Likelihood Ratio Test",style="padding-top: 32px;",width=2)
             ),
             # table
             fixedRow(
-              column(width=2),
-              column(wellPanel(class="wellTableOUP",style="margin-top: 25px; padding: 6px 0px 18px 0px; width=100%;",uiOutput("ratioMLRatioOUP")),width=6)
+              column(width=3),
+              column(wellPanel(class="wellTableOUP",style="margin-top: 10px; padding: 6px 0px 18px 0px; width=100%;",uiOutput("ratioMLRatioOUP")),width=6)
             ),
             value="MLRatioOUP"
           ),
           id="navMLOUP",widths=c(3,9)
         ),
-        value="tabMLOUP",
-        tags$script(src="script.js")
+        value="tabMLOUP"
         #end list ----
       )
     ),
@@ -1348,9 +1357,11 @@ shinyUI(
         value="tabAboutOUP"
       ),
       nav_panel("License",
-        value="tabLicenseOUP"
+        value="tabLicenseOUP",
+        tags$script(src="script.js")
       )
     ),
-    id="navBar",windowTitle="ROAR"
+    nav_item(input_dark_mode(id="darkmodeswitch")),
+    id="navBar",window_title="ROAR"
   )
 )

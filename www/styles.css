@@ -1,7 +1,5 @@
-body { background-color: rgb(245,250,255); }
-.form-control.shiny-bound-input,.selectize-input { background-color: rgba(255,255,255,0.4); }
-.well { background-color: rgb(245,245,245); border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
-.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-color: rgb(51,153,243); border-radius: 4px; }
+.well { border: thin solid; border-radius: 4px; }
+.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-radius: 4px; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a { padding: 5px 5px 5px 10px; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ROPassageTimeOUP"] { border-bottom: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ADiffusionOUP"] { border-bottom: thin solid; }
@@ -10,3 +8,6 @@ body { background-color: rgb(245,250,255); }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="AOptionOUP"] { border-top: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="AObligationOUP"] { border-bottom: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="APTModeMedianMeanOUP"] { border-top: thin solid; }
+.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="APTProbabilityOUP"] { border-bottom: thin solid; }
+.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="FDDecisionOUP"] { border-bottom: thin solid; }
+.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MLRatioOUP"] { border-bottom: thin solid; }

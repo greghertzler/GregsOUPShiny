@@ -1,4 +1,5 @@
 library(shiny)
+library(bslib)
 library(plotly)
 library(tools)
 library(rvest)
@@ -6,6 +7,7 @@ library(GregsOUPR6)
 
 # server
 shinyServer(function(input,output,session){
+session$setCurrentTheme(bs_theme(bootswatch="spacelab",bg="#ddeeff",fg="#001122",success="#11aa88"))
 
 # instantiate objects ----
 OUP <- OUProcess$new()
@@ -13,7 +15,7 @@ A <- OUP$get_Analytical()
 FD <- OUP$get_FiniteDifference()
 ML <- OUP$get_MaximumLikelihood()
 MC <- OUP$get_MonteCarlo()
-A$set_plot_info(theme="light",opaque=0.0,labels=FALSE)
+A$set_plot_info(theme="dark",opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
 ouppath <- system.file(package="GregsOUPR6")
 datapath <- paste(sep="",ouppath,"/data/")
@@ -8895,7 +8897,8 @@ LRT_params <- c(NA,NA,NA)
             &mdash;resources provided by CSIRO Environment.
         "),
         easyClose = TRUE,
-        footer = modalButton("Close")
+        footer = modalButton("Close"),
+        size="l"
       ))
     }
     else if(input$navBar == "tabLicenseOUP")
@@ -8911,5 +8914,9 @@ LRT_params <- c(NA,NA,NA)
       ))
     }
     # end ----
+  })
+  observeEvent(input$darkmodeswitch, {
+    if (input$darkmodeswitch == "light") { A$set_plot_info(theme="light") }
+    else { A$set_plot_info(theme="dark") }
   })
 })
