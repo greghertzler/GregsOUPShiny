@@ -15,7 +15,7 @@ A <- OUP$get_Analytical()
 FD <- OUP$get_FiniteDifference()
 ML <- OUP$get_MaximumLikelihood()
 MC <- OUP$get_MonteCarlo()
-A$set_plot_info(theme="dark",opaque=0.0,labels=FALSE)
+A$set_plot_info(opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
 ouppath <- system.file(package="GregsOUPR6")
 datapath <- paste(sep="",ouppath,"/data/")
@@ -46,6 +46,9 @@ tname <- c("tau","tau","tau","tau","tau","tau","tau")
 sname <- c("z","z","z","z","z","z","z")
 lnL_params <- c(0,0,0)
 LRT_params <- c(NA,NA,NA)
+# gloval reactive values for modal dialogs
+ibutton <- reactiveVal("")
+infobutton <- reactiveVal("")
 
 # events ----
   observeEvent(input$navBar,{
@@ -56,7 +59,7 @@ LRT_params <- c(NA,NA,NA)
         # Data ----
         if(input$navROOUP == "RODataOUP")
         {
-          # Define set functions ----
+          # define set functions ----
           DataInfo <- function()
           {
             output$descrRODataOUP <- renderUI({
@@ -263,12 +266,10 @@ LRT_params <- c(NA,NA,NA)
             uploadname <<- file_path_sans_ext(input$filesROUploadOUP$name)
             uploadpath <<- input$filesROUploadOUP$datapath
             filelist[1] <<- uploadname
-# message(uploadname)
-# print(filelist)
             first <<- TRUE
             FromR6toUI()
           }) %>% bindEvent(input$filesROUploadOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe reset, begin and end ----
+          # observe reset, begin and end ----
           resetButton <- reactiveVal(FALSE)
           beginInput <- reactiveVal(FALSE)
           endInput <- reactiveVal(FALSE)
@@ -283,7 +284,6 @@ LRT_params <- c(NA,NA,NA)
           }) %>% bindEvent(input$endRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # plot ----
           observe({
-# message("plot")
             if(resetButton())
             {
               begin <- -Inf
@@ -318,81 +318,14 @@ LRT_params <- c(NA,NA,NA)
             endInput(FALSE)
             output$plotlyRODataOUP <- renderPlotly({ ML$PlotTimeSeries() })
           }) %>% bindEvent(input$resetRODataOUP,input$plotRODataOUP)
-          # User clicks i ----
+          # observe i and info ----
           observe({
-            htmlname <- paste(sep="",htmlpath,input$filesRODataOUP,".html")
-            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
-            rawtext <- read_html(htmlname)
-            halo <- input$filesRODataOUP
-            body <- html_element(rawtext,"body")
-            gen1 <- html_children(body)
-            gen2 <- html_children(gen1)
-            m <- length(gen2)-2
-            soul <- as.character(gen2[2:m])
-            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),halo),
-              HTML(paste(sep="",style,soul)),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton(input$filesRODataOUP)
+            infobutton("")
           }) %>% bindEvent(input$fileinfoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Data"),
-              HTML("The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
-              Data must be a time-series, with observations of times and states of nature.  Within the time-series, each observation has its own initial time and state, and its own terminal time and state.  Typically, the terminal time and state of one observation will be the initial time and state of the next observation.  Therefore, if measurements are taken at <i>m</i>  times, there will be <i>m</i>-1 observations.<br><br>
-              Data is read from 'csv' (comma separated value) files.  Typically the files would be organized as in this table.
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>tau</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>1</sub></td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>n</sub></td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>1</td>
-                  <td style='padding: 0px 4px 0px 4px;'>16.3</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>12.7</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>2</td>
-                  <td style='padding: 0px 4px 0px 4px;'>5.1</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>13.9</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&nbsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>m</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'>14.3</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>8.9</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              Names are in the first row.  Numbers start in the second row.  Time is in the first column and states start in the second column.  There can be more than one time column.  There must be <i>m</i>+1 rows in all columns, but there can be blank elements if there is no measurment at that time.  Data is sorted by time and time intervals can be unequal.  Indeed, unequal time intervals seem to improve the estimation.<br><br>
-              How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoRODataOUP")
           }) %>% bindEvent(input$infoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Estimates ----
@@ -656,44 +589,17 @@ LRT_params <- c(NA,NA,NA)
             })
             output$plotlyROEstimatesOUP <- renderPlotly({ ML$PlotEstimates() })
           }) %>% bindEvent(input$resetROEstimatesOUP,input$plotROEstimatesOUP)
-          # User clicks i ----
+          # observe i and info ----
           observe({
-            htmlname <- paste(sep="",htmlpath,input$filesROEstimatesOUP,".html")
-            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
-            rawtext <- read_html(htmlname)
-            halo <- input$filesROEstimatesOUP
-            body <- html_element(rawtext,"body")
-            gen1 <- html_children(body)
-            gen2 <- html_children(gen1)
-            m <- length(gen2)-2
-            soul <- as.character(gen2[2:m])
-            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),halo),
-              HTML(paste(sep="",style,soul)),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton(input$filesROEstimatesOUP)
+            infobutton("")
           }) %>% bindEvent(input$fileinfoROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Estimates"),
-              HTML("If you know the parameters of the Ornstein-Uhlenbeck Process, you can enter them directly.  If you have data, you can use it to estimate the parameters.  Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Likelihood of observing the data as a random sample.<br><br>
-              &emsp;&emsp;Arguments:<br>
-              &emsp;&emsp;&emsp;<i>tau</i> are times;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are states.<br>
-              &emsp;&emsp;Returns:<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter."),
-              easyClose = TRUE,
-              footer = tagList(actionButton("moreROEstimatesOUP","More",class="btn-primary",title="Maximum Likelihood Data"),modalButton("Close")),
-            ))
+            ibutton("")
+            infobutton("infoROEstimatesOUP")
           }) %>% bindEvent(input$infoROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
-            removeModal()
+            removeModal(session)
             updateTabsetPanel(session,"navBar",selected="tabMLOUP")
             updateTabsetPanel(session,"navMLOUP",selected="MLEstimatesOUP")
           }) %>% bindEvent(input$moreROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
@@ -701,7 +607,7 @@ LRT_params <- c(NA,NA,NA)
         # Regime ----
         else if(input$navROOUP == "RORegimeOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -802,9 +708,9 @@ LRT_params <- c(NA,NA,NA)
               A$set_x_stoch_args(y=y,r=r,phi=phi,b=b,c=c)
             }
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, axes, plot (or enter key), left and rght ----
+          # observe undo, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
           plotButton <- reactiveVal(FALSE)
@@ -845,12 +751,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo,  axes, plot (or enter key), left or rght ----
+          # user clicks undo,  axes, plot (or enter key), left or rght ----
           output$plotlyRORegimeOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(axesButton())
@@ -886,38 +792,13 @@ LRT_params <- c(NA,NA,NA)
             else if(phi == 0) { A$PlotObligation(title="Obligation",type=2) }
             else { A$PlotOption(title="Entry Option",type=2) }
           }) %>% bindEvent(input$undoRORegimeOUP,input$axesRORegimeOUP,input$plotRORegimeOUP,input$leftRORegimeOUP,input$rghtRORegimeOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Regime"),
-              HTML("A Regime is a benefit/cost analysis with options.  The benefit/cost analysis is called an Obligation.  It is how benefits are gained and costs are lost.  An Obligation is linear in the state of nature and, hence, certain.  The options are Exit and Entry Options.   Options value the flexibility to exit from and enter into an Obligation.  Exit and Entry Options are highly convex and, hence, uncertain.<br><br>
-              A Regime consists of an Entry Option, an Obligation and an Exit Option.  An Entry Option without an Exit Option is an Obligation.  Exercising an Exit Option eliminates the Obligation.<br><br>
-	            Entry and Exit Options are perpetual options.  There is no fixed expiry date.  If the value of flexibility exceeds the benefits to be gained or the costs being lost, decision-makers will keep their options open.  Otherwise, they will exercise one of their options.<br><br>
-              &emsp;&emsp;Arguments:<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>y</i> is the break-even point;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option;<br>
-              &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
-              &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option.<br><br>
-	            Policies may alter the arguments to advance or delay entry and exit decisions.<br>
-              &emsp;1)  A contract may require farmers to plant trees and never cut them, eliminating the Exit Option.<br>
-              &emsp;2)  Farmers may be prohibited from ever planting poppies, eliminating the Entry Option.<br>
-              &emsp;3)  A business is obligated to pay fixed costs, delaying exit.<br>
-              &emsp;4)  Subsidising the installation of solar panels advances entry.<br>
-              &emsp;5)  Purchasing excess power from solar panels reduces the break-even point, advancing entry and delaying exit.<br>
-              &emsp;6)  An input tax reduces the location parameter, delaying entry and advancing exit.<br>
-              &emsp;7)  Insurance decreases the scale parameter, advancing both entry and exit.<br>
-              &emsp;8)  Subsidising interest rates for farmers in a drought delays exit."),
-              easyClose = TRUE,
-              footer = tagList(actionButton("moreRORegimeOUP","More",class="btn-primary",title="Analytical Option"),modalButton("Close")),
-              size = "l"
-            ))
+            ibutton("")
+            infobutton("infoRORegimeOUP")
           }) %>% bindEvent(input$infoRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
-            removeModal()
+            removeModal(session)
             updateTabsetPanel(session,"navBar",selected="tabAOUP")
             updateTabsetPanel(session,"navAOUP",selected="AOptionOUP")
           }) %>% bindEvent(input$moreRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
@@ -925,7 +806,7 @@ LRT_params <- c(NA,NA,NA)
         # Decision Threshold ----
         else if(input$navROOUP == "RODecisionOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -1026,9 +907,9 @@ LRT_params <- c(NA,NA,NA)
               A$set_x_stoch_args(y=y,r=r,phi=phi,b=b,c=c)
             }
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left or rght ----
+          # observe undo, sync, axes, plot (or enter key), left or rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -1083,12 +964,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyRODecisionOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -1137,29 +1018,13 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotDecisionThreshold()
           }) %>% bindEvent(input$undoRODecisionOUP,input$syncRODecisionOUP,input$axesRODecisionOUP,input$plotRODecisionOUP,input$leftRODecisionOUP,input$rghtRODecisionOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Decision Threshold"),
-              HTML("The Decision Threshold is the state of the system where a decision-maker will be indifferent between holding or exercising an Entry or Exit Option.  The Option value at the threshold is the price of flexibility&mdash;the price of keeping options open.  It is the most a decision-maker will pay in costs rather than exit prematurely, or the most a decision-maker will forego in benefits rather than enter prematurely.<br><br>
-              &emsp;&emsp;Arguments:<br>
-              &emsp;&emsp;&emsp;<i>y</i> is the break-even point;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option;<br>
-              &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
-              &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option.<br>
-              &emsp;&emsp;Returns:<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
-              &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
-              easyClose = TRUE,
-              footer = tagList(actionButton("moreRODecisionOUP","More",class="btn-primary",title="Analytical Decision Threshold"),modalButton("Close")),
-            ))
+            ibutton("")
+            infobutton("infoRODecisionOUP")
           }) %>% bindEvent(input$infoRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
-            removeModal()
+            removeModal(session)
             updateTabsetPanel(session,"navBar",selected="tabAOUP")
             updateTabsetPanel(session,"navAOUP",selected="ADecisionOUP")
           }) %>% bindEvent(input$moreRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
@@ -1167,7 +1032,7 @@ LRT_params <- c(NA,NA,NA)
         # Passage Time ----
         else if(input$navROOUP == "ROPassageTimeOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -1246,9 +1111,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             A$set_t_stoch_args(t=t,k=k,s=s,x=x,z=z,omega=omega,Ppct=Ppct)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -1303,12 +1168,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, axes, plot (or enter key), left or rght ----
+          # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyROPassageTimeOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -1357,43 +1222,17 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotPassageTimePercentiles(type=3)
           }) %>% bindEvent(input$undoROPassageTimeOUP,input$syncROPassageTimeOUP,input$axesROPassageTimeOUP,input$plotROPassageTimeOUP,input$leftROPassageTimeOUP,input$rghtROPassageTimeOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Passage Times"),
-              HTML("A Passage Time is the time until a system crosses a threshold.  The longer the passage time, the more resilient the system.  Passage Times will be longer if the state of the system is far from the threshold, is moving slowly and is less stochastic.<br><br>
-                The probabilities of the Ornstein-Uhlenbeck Process are symmetric.  The measure of central tendency is the Mean and the measure of dispersion is the Variance.  The probabilities of Passage Times are not symmetric.  There are three measures of central tendency, the Mode, Median and Mean.  However, the Mean and Variance may not exist.<br><br>
-                Percentiles are a reliable alternative. The Median is the Passage Time with a 50% chance the threshold has been crossed and a 50% chance it is yet to be crossed.  Higher and lower Percentiles have similar interpretations.  Percentiles of 0.841345 and 0.158655 are equivalent to adding and subtracting the square-root of the Variance to the Mean of the Ornstein-Uhlenbeck Process.<br><br>
-                If crossing a threshold is irreversible, Passage Times are First Passage Times.  If crossing a threshold is completely reversible, Passage Times are Visiting Times.  If crossing a threshold may be partially reversible, Passage Times are in between First Passage Times and Visiting Times.<br><br>
-              &emsp;&emsp;Arguments:<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
-              &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>Ppct</i> is a passage time probability.<br>
-              &emsp;&emsp;Returns:<br>
-              &emsp;&emsp;&emsp;<i>t</i><sub>0.5</sub> is the Median Passage Time;<br>
-              &emsp;&emsp;&emsp;<i>t<sub>Ppct</sub></i> and <i>t</i><sub>1-<i>Ppct</i></sub> are Passage Time Percentiles for <i>Ppct</i> and 1-<i>Ppct</i>."),
-              easyClose = TRUE,
-              footer = tagList(actionButton("moreROPassageTimeOUP","More",class="btn-primary",title="Analytical Passage Time Percentiles"),modalButton("Close")),
-              size = "l"
-            ))
+            ibutton("")
+            infobutton("infoROPassageTimeOUP")
           }) %>% bindEvent(input$infoROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
-            removeModal()
+            removeModal(session)
             updateTabsetPanel(session,"navBar",selected="tabAOUP")
             updateTabsetPanel(session,"navAOUP",selected="APTPercentilesOUP")
           }) %>% bindEvent(input$moreROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
-        # Sequence ----
-        #   else if(input$navROOUP == "ROSequenceOUP")
-        #  {
-        #    message(input$navROOUP)
-        #  }
        })
     }
     else if(input$navBar == "tabAOUP")
@@ -1402,7 +1241,7 @@ LRT_params <- c(NA,NA,NA)
         # Drift ----
         if(input$navAOUP == "ADriftOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -1446,9 +1285,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho,mu=mu)
             A$set_z_stoch_args(z=z)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes and plot (or enter key) ----
+          # observe undo, sync, axes and plot (or enter key) ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -1477,12 +1316,12 @@ LRT_params <- c(NA,NA,NA)
             axesButton(FALSE)
             plotButton(TRUE)
           }) %>% bindEvent(input$plotADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes or plot (or enter key) ----
+          # user clicks undo, sync, axes or plot (or enter key) ----
           output$plotlyADriftOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -1503,39 +1342,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotDrift()
           }) %>% bindEvent(input$undoADriftOUP,input$syncADriftOUP,input$axesADriftOUP,input$plotADriftOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Drift"),
-              HTML("Drift is the expected change in the state of a stochastic process over a brief instant.  It is also called the Instantaneous Mean.  For the Ornstein-Uhlenbeck Process, it depends upon the current state <i>z</i>.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Drift(<i>z,rho,mu</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>z</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>g</i>(<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>g</i>(<i>z</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>g</i> is the Drift."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoADriftOUP")
           }) %>% bindEvent(input$infoADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Diffusion ----
         else if(input$navAOUP == "ADiffusionOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -1583,9 +1399,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             A$set_z_stoch_args(z=z)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -1640,12 +1456,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyADiffusionOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -1688,37 +1504,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotDiffusion()
           }) %>% bindEvent(input$undoADiffusionOUP,input$syncADiffusionOUP,input$axesADiffusionOUP,input$plotADiffusionOUP,input$leftADiffusionOUP,input$rghtADiffusionOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Diffusion"),
-              HTML("An error is the difference between the actual and expected changes in the state of a stochastic process.  Diffusion is the error squared over a brief instant.  It is also called the Instantaneous Variance.  For the Ornstein-Uhlenbeck Process, it is constant.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Diffusion(<i>sigma</i>)<br>
-              &emsp;&emsp;with argument:<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>h</i><sup>2</sup></td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>h</i><sup>2</sup></td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>h</i><sup>2</sup> is the Diffusion."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoADiffusionOUP")
           }) %>% bindEvent(input$infoADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Mean ----
         else if(input$navAOUP == "AMeanOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -1807,9 +1602,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_y_stoch_args(t=t,y=y,s=s,x=x,psi=psi)
             A$set_plot_info(pmax=pmax)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -1864,12 +1659,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAMeanOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -1914,49 +1709,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotMean()
           }) %>% bindEvent(input$undoAMeanOUP,input$syncAMeanOUP,input$axesAMeanOUP,input$plotAMeanOUP,input$leftAMeanOUP,input$rghtAMeanOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Mean"),
-              HTML("A Mean of a stochastic process is the expected state <i>y</i> at time <i>t</i> in the future.  For all stochastic processes, including the Ornstein-Uhlenbeck Process, it depends upon the initial time <i>s</i> and the initial state <i>x</i>.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Mean(<i>t,s,x,rho,mu</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>G</i>(<i>t</i><sub>1</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>G</i>(<i>t</i><sub>m</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>G</i> is the Mean."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAMeanOUP")
           }) %>% bindEvent(input$infoAMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Mean convergence----
         else if(input$navAOUP == "AMeanCOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -2011,9 +1773,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho)
             A$set_y_stoch_args(t=t,s=s,x=x,eps=eps)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes and plot (or enter key) ----
+          # observe undo, sync, axes and plot (or enter key) ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -2042,12 +1804,12 @@ LRT_params <- c(NA,NA,NA)
             axesButton(FALSE)
             plotButton(TRUE)
           }) %>% bindEvent(input$plotAMeanCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAMeanCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes or plot (or enter key) ----
+          # user clicks undo, sync, axes or plot (or enter key) ----
           output$plotlyAMeanCOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -2068,37 +1830,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotMeanToConverge()
           }) %>% bindEvent(input$undoAMeanCOUP,input$syncAMeanCOUP,input$axesAMeanCOUP,input$plotAMeanCOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Mean Convergence"),
-              HTML("Statistical methods applied to time series usually assume weak stationarity.  This requires the Mean to have converged to its Asymptotic Mean, while the Variance may still be converging.  The time for the Mean to converge indicates the required time interval between measurements for observations to become approximately stationary.  For the Ornstein-Uhlenbeck Process, the Asymptotic Mean is location <i>mu</i> and the Mean converges at rate <i>rho</i>.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;MeanToConverge(<i>s,rho,epsilon</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>epsilon</i> is the proportion remaining;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>t</i><sub>epsilon</sub></td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>t</i><sub>epsilon</sub> is the time to converge by 1-epsilon."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAMeanCOUP")
           }) %>% bindEvent(input$infoAMeanCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Variance ----
         else if(input$navAOUP == "AVarianceOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -2187,9 +1928,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_y_stoch_args(t=t,y=y,s=s,x=x,psi=psi)
             A$set_plot_info(pmax=pmax)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -2244,12 +1985,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAVarianceOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -2296,48 +2037,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotVariance()
           }) %>% bindEvent(input$undoAVarianceOUP,input$syncAVarianceOUP,input$axesAVarianceOUP,input$plotAVarianceOUP,input$leftAVarianceOUP,input$rghtAVarianceOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Variance"),
-              HTML("An error is the difference between the actual and expected state of a stochastic process for time <i>t</i> in the future.  A Variance is the error squared.  For the Ornstein-Uhlenbeck Process, it depends upon the initial time <i>s</i>.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Variance(<i>t,s,rho,sigma</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>H</i>&hairsp;<sup>2</sup>(<i>t</i><sub>1</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>H</i>&hairsp;<sup>2</sup>(<i>t</i><sub>m</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>H</i>&hairsp;<sup>2</sup> is the Variance."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAVarianceOUP")
           }) %>% bindEvent(input$infoAVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Variance convergence----
         else if(input$navAOUP == "AVarianceCOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -2392,9 +2101,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho,sigma=sigma)
             A$set_y_stoch_args(t=t,s=s,eps=eps)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes and plot (or enter key) ----
+          # observe undo, sync, axes and plot (or enter key) ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -2423,12 +2132,12 @@ LRT_params <- c(NA,NA,NA)
             axesButton(FALSE)
             plotButton(TRUE)
           }) %>% bindEvent(input$plotAVarianceCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAVarianceCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes or plot (or enter key) ----
+          # user clicks undo, sync, axes or plot (or enter key) ----
           output$plotlyAVarianceCOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -2449,37 +2158,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotVarianceToConverge()
           }) %>% bindEvent(input$undoAVarianceCOUP,input$syncAVarianceCOUP,input$axesAVarianceCOUP,input$plotAVarianceCOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Variance Convergence"),
-              HTML("In statistical methods applied to time series, weak stationarity assumes the Mean has converged to the Asymptotic Mean. Strong stationarity assumes the Variance has also converged to the Asymptotic Variance.  For the Ornstein-Uhlenbeck Process, the Asymptotic Variance is <i>sigma<sup>2</sup>/2rho</i> and the Variance converges at rate <i>2rho</i>.  The Variance converges twice as fast as the Mean.  Therefore, if the Ornstein-Uhlenbeck Process is weaky stationary, it is also strongly stationary.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;VarianceToConverge(<i>s,rho,epsilon</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>epsilon</i> is the proportion remaining;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>t</i><sub>epsilon</sub></td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>t</i><sub>epsilon</sub> is the time to converge by 1-epsilon."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAVarianceCOUP")
           }) %>% bindEvent(input$infoAVarianceCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Transition Density ----
         else if(input$navAOUP == "ADensityOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -2562,9 +2250,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_y_stoch_args(t=t,y=y,s=s,x=x)
             A$set_plot_info(pmax=pmax)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -2619,12 +2307,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtADensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveADensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyADensityOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -2671,57 +2359,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotDensity()
           }) %>% bindEvent(input$undoADensityOUP,input$syncADensityOUP,input$axesADensityOUP,input$plotADensityOUP,input$leftADensityOUP,input$rghtADensityOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Transition Density"),
-              HTML("The Transition Density is the probability of state <i>y</i> being observed at time <i>t</i>.  At initial time <i>t</i> equal to <i>s</i>, the probability of <i>y</i> equal to <i>x</i> is one and the probability of <i>y</i> not equal to <i>x</i> is zero.  The Transition Density is the Dirac or Degenerate Density.  As time passes, the probability of <i>y</i> equal to <i>x</i> decreases, the probability of <i>y</i> not equal to <i>x</i> increases and the Transition Density widens and moves away from <i>x</i>.  In the limit as <i>t</i> goes to infinity, the Transition Density loses its dependence on <i>s</i> and <i>x</i> and converges to its Invariant Density, with Asymptotic Mean <i>mu</i> and Asymptotic Variance <i>sigma</i><sup>2</sup>/2<i>rho</i>.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Density(<i>t,y,s,x,rho,mu,sigma</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
-              &emsp;&emsp;&emsp;<i>y</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p</i>(<i>t</i><sub>1</sub>,<i>y</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p</i>(<i>t</i><sub>1</sub>,<i>y</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p</i>(<i>t</i><sub>m</sub>,<i>y</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p</i>(<i>t</i><sub>m</sub>,<i>y</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>p</i> is the Transition Density."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoADensityOUP")
           }) %>% bindEvent(input$infoADensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Transition Probability ----
         else if(input$navAOUP == "AProbabilityOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -2804,9 +2451,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             A$set_y_stoch_args(t=t,y=y,s=s,x=x,psi=psi)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -2861,12 +2508,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAProbabilityOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -2913,58 +2560,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotProbability()
           }) %>% bindEvent(input$undoAProbabilityOUP,input$syncAProbabilityOUP,input$axesAProbabilityOUP,input$plotAProbabilityOUP,input$leftAProbabilityOUP,input$rghtAProbabilityOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Transition Probability"),
-              HTML("The Transition Probability integrates the Transition Density.  It sums the probabilities of observing states less than or equal to <i>y</i> at time <i>t</i>.  Alternatively, it sums the probabilities greater than or equal to <i>y</i>.  At initial time <i>t</i> equal to <i>s</i>, it sums the Dirac Density to become the Heavyside or Step Function, which steps from zero to one at <i>y</i> equal to the initial state <i>x</i>.  As time passes, the Transition Probability widens and moves away from <i>x</i>.  For the Ornstein-Uhlenbeck Process, as <i>t</i> goes to infinity, the Transition Probability converges to its Invariant Probability, with Asymptotic Mean <i>mu</i> and Asymptotic Variance <i>sigma</i><sup>2</sup>/2<i>rho</i>.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Probability(<i>t,y,s,x,rho,mu,sigma,phi</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
-              &emsp;&emsp;&emsp;<i>y</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>psi</i> is < 0 to integrate from -Inf to y and > 0 to integrate from y to Inf;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P</i>(<i>t</i><sub>1</sub>,<i>y</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P</i>(<i>t</i><sub>1</sub>,<i>y</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P</i>(<i>t</i><sub>m</sub>,<i>y</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P</i>(<i>t</i><sub>m</sub>,<i>y</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>P</i> is the Transition Probability."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAProbabilityOUP")
           }) %>% bindEvent(input$infoAProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Double Integral ----
         else if(input$navAOUP == "ADoubleOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -3047,9 +2652,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             A$set_y_stoch_args(t=t,y=y,s=s,x=x,psi=psi)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -3104,12 +2709,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtADoubleOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveADoubleOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyADoubleOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -3156,58 +2761,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotDoubleIntegral()
           }) %>% bindEvent(input$undoADoubleOUP,input$syncADoubleOUP,input$axesADoubleOUP,input$plotADoubleOUP,input$leftADoubleOUP,input$rghtADoubleOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Double Integral"),
-              HTML("The Double Integral sums the probabilities one more time.  The effect is easiest to see at initial time <i>t</i> equal to <i>s</i>, when the Transition Density is the Dirac Density and the Transition Probability is the Heavyside Function.  Integrating the Dirac Density gives the Heavyside Function and integrating the Heavyside Function gives the Threshold Function.  The Threshold Function is kinked, like a payoff function for an option, and the Double Integral is the precursor to an analytical option pricing formula.  Thresholds are a property of stochastic processes, including the Ornstein-Uhlenbeck Process, and in a world of uncertainty over time, Options are not optional.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;DoubleIntegral(<i>t,y,s,x,rho,mu,sigma,psi</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
-              &emsp;&emsp;&emsp;<i>y</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>psi</i> is < 0 to integrate from -Inf to y and > 0 to integrate from y to Inf;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Popf;(<i>t</i><sub>1</sub>,<i>y</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Popf;(<i>t</i><sub>1</sub>,<i>y</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Popf;(<i>t</i><sub>m</sub>,<i>y</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Popf;(<i>t</i><sub>m</sub>,<i>y</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;&Popf; is the Double Integral."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoADoubleOUP")
           }) %>% bindEvent(input$infoADoubleOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option ----
         else if(input$navAOUP == "AOptionOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -3333,9 +2896,9 @@ LRT_params <- c(NA,NA,NA)
             if(phi > 0) { A$set_x_stoch_args(b=bc) }
             else { A$set_x_stoch_args(c=bc) }
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe phi ----
+          # observe phi ----
           observe({
             if(is.numeric(input$phiAOptionOUP))
             {
@@ -3351,7 +2914,7 @@ LRT_params <- c(NA,NA,NA)
               }
             }
           }) %>% bindEvent(input$phiAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -3406,12 +2969,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAOptionOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -3458,61 +3021,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotOption()
           }) %>% bindEvent(input$undoAOptionOUP,input$syncAOptionOUP,input$axesAOptionOUP,input$plotAOptionOUP,input$leftAOptionOUP,input$rghtAOptionOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Option"),
-              HTML("Probabilities are an initial-value problem with fixed initial time and state.  Options are a terminal-value problem with fixed terminal time and state.  A Double Integral becomes an Option by reinterpreting time <i>s</i> and state <i>x</i> as variable and time <i>t</i> and state <i>y</i> as fixed.  Multiplying by a discount factor gives the value of an Option discounted to time <i>s</i>.  The Ornstein-Uhlenbeck Process has a Double Integral and, hence, an analytical Option pricing formula.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Option(<i>s,x,t,y,rho,mu,sigma,r,phi,b,c</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>s</i> are the variable times;<br>
-              &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>t</i> is the fixed terminal time;<br>
-              &emsp;&emsp;&emsp;<i>y</i> is the fixed terminal state;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option, = 0 for either;<br>
-              &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
-              &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>1</sub>,<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>1</sub>,<i>x</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>m</sub>,<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>m</sub>,<i>x</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;&Oopf; is an Option."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAOptionOUP")
           }) %>% bindEvent(input$infoAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option Envelope----
         else if(input$navAOUP == "AEnvelopeOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -3638,9 +3156,9 @@ LRT_params <- c(NA,NA,NA)
             if(phi > 0) { A$set_x_stoch_args(b=bc) }
             else { A$set_x_stoch_args(c=bc) }
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe phi ----
+          # observe phi ----
           observe({
             if(is.numeric(input$phiAEnvelopeOUP))
             {
@@ -3656,7 +3174,7 @@ LRT_params <- c(NA,NA,NA)
               }
             }
           }) %>% bindEvent(input$phiAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -3711,12 +3229,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAEnvelopeOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -3759,45 +3277,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotOptionEnvelope()
           }) %>% bindEvent(input$undoAEnvelopeOUP,input$syncAEnvelopeOUP,input$axesAEnvelopeOUP,input$plotAEnvelopeOUP,input$leftAEnvelopeOUP,input$rghtAEnvelopeOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Option Envelope"),
-              HTML("A Financial Option is a contract between a buyer and a seller with a fixed expiry date.  A Real Option is not a contract.  There is neither buyer nor seller.  There is no fixed expiry date.  It is a Perpetual Option that a decision-maker can exercise whenever they choose.  If the maximum value of the Option is the payoff function, it should be exercised immediately.  If the maximum value of the Option is greater than the payoff function, it should be held and possibly exercised in the future.  The Option Envelope is the maximum value of either exercising or holding the option for all states, <i>x</i>.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;OptionEnvelope(<i>x,y,rho,mu,sigma,r,phi,b,c</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>y</i> is the fixed terminal state;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option, = 0 for either;<br>
-              &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
-              &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>x</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;\u00D4 is an Option on the Envelope."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAEnvelopeOUP")
           }) %>% bindEvent(input$infoAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Decision Threshold ----
         else if(input$navAOUP == "ADecisionOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -3898,9 +3387,9 @@ LRT_params <- c(NA,NA,NA)
             if(phi > 0) { A$set_x_stoch_args(b=bc) }
             else { A$set_x_stoch_args(c=bc) }
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe phi ----
+          # observe phi ----
           observe({
             if(is.numeric(input$phiADecisionOUP))
             {
@@ -3916,7 +3405,7 @@ LRT_params <- c(NA,NA,NA)
               }
             }
           }) %>% bindEvent(input$phiADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe undo, sync, axes and plot (or enter key) ----
+          # observe undo, sync, axes and plot (or enter key) ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -3945,12 +3434,12 @@ LRT_params <- c(NA,NA,NA)
             axesButton(FALSE)
             plotButton(TRUE)
           }) %>% bindEvent(input$plotADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes or plot (or enter key) ----
+          # user clicks undo, sync, axes or plot (or enter key) ----
           output$plotlyADecisionOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -3971,48 +3460,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotDecisionThreshold()
           }) %>% bindEvent(input$undoADecisionOUP,input$syncADecisionOUP,input$axesADecisionOUP,input$plotADecisionOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Decision Threshold"),
-              HTML("The Decision Threshold is the state <i>k</i> where a decision-maker will be indifferent between holding or exercising a Real Option.  The Option value at the threshold is the price of flexibility&mdash;the price of keeping options open.  It is the most a decision-maker will pay in costs rather than exit prematurely, or the most a decision-maker will forego in benefits rather than enter prematurely.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;DecisionThreshold(<i>y,rho,mu,sigma,r,phi,b,c</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>y</i> is the fixed terminal state;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option, = 0 for either;<br>
-              &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
-              &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>k</i></td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>k</i>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
-              &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoADecisionOUP")
           }) %>% bindEvent(input$infoADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Obligation ----
         else if(input$navAOUP == "AObligationOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -4134,9 +3591,9 @@ LRT_params <- c(NA,NA,NA)
             if(phi > 0) { A$set_x_stoch_args(b=bc) }
             else { A$set_x_stoch_args(c=bc) }
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe phi ----
+          # observe phi ----
           observe({
             if(is.numeric(input$phiAObligationOUP))
             {
@@ -4152,7 +3609,7 @@ LRT_params <- c(NA,NA,NA)
               }
             }
           }) %>% bindEvent(input$phiAObligationOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -4207,12 +3664,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAObligationOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAObligationOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAObligationOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -4259,93 +3716,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotObligation()
           }) %>% bindEvent(input$undoAObligationOUP,input$syncAObligationOUP,input$axesAObligationOUP,input$plotAObligationOUP,input$leftAObligationOUP,input$rghtAObligationOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Obligation"),
-              HTML("In finance, the call/put parity transforms options from one to the other.  In Real Options, the intermediate formula in the transformation is called the Obligation&mdash;the obligation to take losses.  An Obligation equals the Entry Option minus the Exit Option.  Another name for an Obligation is a Benefit/Cost Analysis.  A negative Obligation is a Prohibition&mdash;the prohibition from taking gains.  A Prohibition equals the Exit Option minus the Entry Option.  Neither an Obligation nor a Prohibition is uncertain.  All uncertainty is in the options.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Obligation(<i>s,x,t,y,rho,mu,r,phi,b,c</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>s</i> are the variable times;<br>
-              &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>t</i> is the fixed terminal time;<br>
-              &emsp;&emsp;&emsp;<i>y</i> is the fixed terminal state;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;&emsp;<i>phi</i> is <= for an Obligation; > 0 for a Prohibition;<br>
-              &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
-              &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\uD835\uDD39(<i>s</i><sub>1</sub>,<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\uD835\uDD39(<i>s</i><sub>1</sub>,<i>x</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\uD835\uDD39(<i>s</i><sub>m</sub>,<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\uD835\uDD39(<i>s</i><sub>m</sub>,<i>x</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 10px; margin-right: 10px;'>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td>or</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><strong>\u2102</strong>(<i>s</i><sub>1</sub>,<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><strong>\u2102</strong>(<i>s</i><sub>1</sub>,<i>x</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><strong>\u2102</strong>(<i>s</i><sub>m</sub>,<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><strong>\u2102</strong>(<i>s</i><sub>m</sub>,<i>x</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;\uD835\uDD39 is an Obligation with positive benefits and negative costs;<br>
-              &emsp;&emsp;&emsp;<strong>\u2102</strong> is a Prohibition with positive costs and negative benefits."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAObligationOUP")
           }) %>% bindEvent(input$infoAObligationOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Mode, Median and Mean ----
         else if(input$navAOUP == "APTModeMedianMeanOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -4438,9 +3818,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_t_stoch_args(t=t,k=k,s=s,x=x,z=z,omega=omega)
             A$set_plot_info(ptmax=ptmax)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -4495,12 +3875,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAPTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAPTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTModeMedianMeanOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -4551,104 +3931,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotPassageTimeModeMedianMean()
           }) %>% bindEvent(input$undoAPTModeMedianMeanOUP,input$syncAPTModeMedianMeanOUP,input$axesAPTModeMedianMeanOUP,input$plotAPTModeMedianMeanOUP,input$leftAPTModeMedianMeanOUP,input$rghtAPTModeMedianMeanOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Passage Time Mode, Median and Mean"),
-              HTML("If crossing a threshold is irreversible, the Mode is the most likely time to cross, the Median is the time with a 50% chance the threshold has already been crossed and the Mean is the expected time to cross.  If crossing is partially or completely reversible, net visits are crossings to the far side minus returns to the near side.  The Mode is when net visits are greatest.  The Median is when net visits reach 50% of the long-term proportion of time spent on the far side.  The Mean is the expected time of net visits to the far side.  If the Ornstein-Uhlenbeck Process is attracted across a threshold, the Mode is less than the Median is less than the Mean.  If, however, the process is attracted to a location away from the threshold, the Mean can be less than the Median can be less than the Mode.  If the process is not attracted at all, with a rate of convergence of zero, the Mean does not exist and the expected time to cross a threshold is unknown.<br><br>
-              &emsp;&emsp;The R6 methods:<br>
-              &emsp;&emsp;&emsp;PassageTimeMode(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
-              &emsp;&emsp;&emsp;PassageTimeMedian(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
-              &emsp;&emsp;&emsp;PassageTimeMean(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
-              &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;return:<br>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>mode(<i>x</i>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 14px; margin-right: 18px;'>
-                <tr>
-                  <td>and</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>mode(<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>mode(<i>z</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>median(<i>x</i>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 10px; margin-right: 10px;'>
-                <tr>
-                  <td>and</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>median(<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>median(<i>z</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>mean(<i>x</i>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 14px; margin-right: 18px;'>
-                <tr>
-                  <td>and</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>mean(<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>mean(<i>z</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;mode(<i>x</i>), median(<i>x</i>) and mean(<i>x</i>) are the Passage Time Mode, Median and Mean at <i>x</i>;<br>
-              &emsp;&emsp;&emsp;mode(<i>z</i><sub>j</sub>), median(<i>z</i><sub>j</sub>) and mean(<i>z</i><sub>j</sub>) are the Passage Time Mode, Median and Mean for <i>x=z</i><sub>j</sub>;<br>"),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton("")
+            infobutton("infoAPTModeMedianMeanOUP")
           }) %>% bindEvent(input$infoAPTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Variance ----
         else if(input$navAOUP == "APTVarianceOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -4717,9 +4009,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             A$set_t_stoch_args(NULL,k=k,s=s,x=x,z=z,omega=omega)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -4774,12 +4066,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAPTVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAPTVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTVarianceOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -4822,57 +4114,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotPassageTimeVariance()
           }) %>% bindEvent(input$undoAPTVarianceOUP,input$syncAPTVarianceOUP,input$axesAPTVarianceOUP,input$plotAPTVarianceOUP,input$leftAPTVarianceOUP,input$rghtAPTVarianceOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Passage Time Variance"),
-              HTML("If the Ornstein-Uhlenbeck Process has a larger Variance, the chance of bouncing across a threshold will be greater and the Passage Time will have a smaller Variance.  More uncertainty about the evolution of the state translates to less uncertainty about crossing a threshold.  If the Ornstein-Uhlenbeck Process converges slowly, the Passage Time Density is 'fat-tailed' and the Passage Time Variance may not exist.  The uncertainty about crossing a threshold may be unknown.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;PassageTimeVariance(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
-              &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>variance(<i>x</i>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 10px; margin-right: 10px;'>
-                <tr>
-                  <td>and</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>variance(<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>variance(<i>z</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;variance(<i>x</i>) is the Passage Time Variance at <i>x</i>;<br>
-              &emsp;&emsp;&emsp;variance(<i>z</i><sub>j</sub>) is the Passage Time Variance for <i>x=z</i><sub>j</sub>."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAPTVarianceOUP")
           }) %>% bindEvent(input$infoAPTVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Percentiles ----
         else if(input$navAOUP == "APTPercentilesOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -4971,9 +4222,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_t_stoch_args(t=t,k=k,s=s,x=x,z=z,omega=omega,Ppct=Ppct)
             A$set_plot_info(ptmax=ptmax)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -5028,12 +4279,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAPTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAPTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTPercentilesOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -5084,59 +4335,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotPassageTimePercentiles()
           }) %>% bindEvent(input$undoAPTPercentilesOUP,input$syncAPTPercentilesOUP,input$axesAPTPercentilesOUP,input$plotAPTPercentilesOUP,input$leftAPTPercentilesOUP,input$rghtAPTPercentilesOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Passage Time Percentiles"),
-              HTML("The Transition Densities and Probabilites for the Ornstein-Uhlenbeck Process are symmetric and easy to interpret.  The only measure of central tendency is the Mean and the only measure of dispersion is the Variance.  Adding and subtracting the square-root of the Variance gives Percentiles above and below the Mean.<span hidden>Transition Density Transition Probability</span>  Passage Time Densities and Probabilities are not symmetric.  There are three measures of central tendency, the Mode, Median and Mean.  Adding and subtracting the square-root of the Variance gives weird results.  If a stochastic process does not converge, its Passage Time Mean and Variance do not exist.<span hidden>Passage Time Density Passage Time Probability</span>  An easier alternative is to calculate Percentiles.  The Median is the time with a 50% chance the threshold has been crossed and a 50% chance it is yet to be crossed.  Higher and lower Percentiles have similar interpretations.  Percentiles for Passage Time Probabilities of 0.841345 and 0.158655 measure the same dispersion as adding and subtracting the square-root of the Variance to the Mean of the Ornstein-Uhlenbeck Process.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;PassageTimePercentile(<i>k,s,x,z,omega,rho,mu,sigma,Ppct</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
-              &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>Ppct</i> is a passage time probability;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>percentile(<i>x</i>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 10px; margin-right: 10px;'>
-                <tr>
-                  <td>and</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>percentile(<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>percentile(<i>z</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;percentile(<i>x</i>) is the Passage Time Percentile for Ppct at <i>x</i>;<br>
-              &emsp;&emsp;&emsp;percentile(<i>z</i><sub>j</sub>) are the Passage Time Percentiles for Ppct at <i>x=z</i><sub>j</sub>;<br>"),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton("")
+            infobutton("infoAPTPercentilesOUP")
           }) %>% bindEvent(input$infoAPTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Density ----
         else if(input$navAOUP == "APTDensityOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -5229,9 +4437,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_t_stoch_args(t=t,k=k,s=s,x=x,z=z,omega=omega)
             A$set_plot_info(ptmax=ptmax)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -5286,12 +4494,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAPTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAPTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTDensityOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -5340,88 +4548,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotPassageTimeDensity()
           }) %>% bindEvent(input$undoAPTDensityOUP,input$syncAPTDensityOUP,input$axesAPTDensityOUP,input$plotAPTDensityOUP,input$leftAPTDensityOUP,input$rghtAPTDensityOUP)
-          # User clicks info ----
+          # user clicks info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Passage Time Density"),
-              HTML("An additional proportion of time an Ornstein-Uhlenbeck Process spends on the far side of a threshold is the Passage Time Density.  If crossing a threshold is irreversible, it is the First Passage Time Density.  If crossing a threshold can be completely reversed, it is the Visiting Time Density.  In between is the Passage Time Density.  A Passage Time Density is typically skewed, but can also be bi-modal and even negative if the process is attracted away from a threshold.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;PassageTimeDensity(<i>t,k,s,x,z,omega,rho,mu,sigma</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>t</i> are stochastic times;<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
-              &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>x</i>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>x</i>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 10px; margin-right: 10px;'>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td>and</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>z</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>z</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>p<sub>t</sub></i>(<i>t</i>|<i>x</i>) is the Passage Time Density at <i>x</i>;<br>
-              &emsp;&emsp;&emsp;<i>p<sub>t</sub></i>(<i>t</i>|<i>z</i><sub>j</sub>) is the Passage Time Density for <i>x=z</i><sub>j</sub>."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAPTDensityOUP")
           }) %>% bindEvent(input$infoAPTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Probability ----
         else if(input$navAOUP == "APTProbabilityOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -5508,9 +4644,9 @@ LRT_params <- c(NA,NA,NA)
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             A$set_t_stoch_args(t=t,k=k,s=s,x=x,z=z,omega=omega)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, sync, axes, plot (or enter key), left and rght ----
+          # observe undo, sync, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
@@ -5565,12 +4701,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtAPTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             A$default_save()
           }) %>% bindEvent(input$saveAPTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTProbabilityOUP <- renderPlotly({
             if(undoButton()) { A$default_read() }
             else if(syncButton())
@@ -5619,82 +4755,10 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             A$PlotPassageTimeProbability()
           }) %>% bindEvent(input$undoAPTProbabilityOUP,input$syncAPTProbabilityOUP,input$axesAPTProbabilityOUP,input$plotAPTProbabilityOUP,input$leftAPTProbabilityOUP,input$rghtAPTProbabilityOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Passage Time Probability"),
-              HTML("The proportion of time an Ornstein-Uhlenbeck Process spends on the far side of a threshold is the Passage Time Probability.  At one extreme is the First Passage Time Probability and at the other is the Visiting Time Probability.  The First Passage Time Probability goes to one because the Ornstein-Uhlenbeck Process will eventually cross the threshold and be trapped on the far side.  A Passage Time Probability does not go to one because the process may return to spend time on the near side.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;PassageTimeProbability(<i>t,k,s,x,z,omega,rho,mu,sigma</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>t</i> are stochastic times;<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
-              &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
-              &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
-              &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>x</i>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>x</i>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 10px; margin-right: 10px;'>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td>and</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>z</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>z</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>z</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>P<sub>t</sub></i>(<i>t</i>|<i>x</i>) is the Passage Time Probability at <i>x</i>;<br>
-              &emsp;&emsp;&emsp;<i>P<sub>t</sub></i>(<i>t</i>|<i>z</i><sub>j</sub>) is the Passage Time Probability for <i>x=z</i><sub>j</sub>."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoAPTProbabilityOUP")
           }) %>% bindEvent(input$infoAPTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
@@ -5705,7 +4769,7 @@ LRT_params <- c(NA,NA,NA)
         # Drift ----
         if(input$navFDOUP == "FDDriftOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -5772,9 +4836,9 @@ LRT_params <- c(NA,NA,NA)
             if(xOK) { FD$set_x_stoch_args(x=seq(from=xFrom,to=xTo,by=xBy)) }
             else { FD$axes_x_stoch() }
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, axes and plot (or enter key) ----
+          # observe undo, axes and plot (or enter key) ----
           undoButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
           plotButton <- reactiveVal(FALSE)
@@ -5793,12 +4857,12 @@ LRT_params <- c(NA,NA,NA)
             axesButton(FALSE)
             plotButton(TRUE)
           }) %>% bindEvent(input$plotFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             FD$default_save()
           }) %>% bindEvent(input$saveFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, axes or plot (or enter key) ----
+          # user clicks undo, axes or plot (or enter key) ----
           output$plotlyFDDriftOUP <- renderPlotly({
             if(undoButton()) { FD$default_read() }
             else if(axesButton())
@@ -5813,39 +4877,16 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             FD$PlotDrift()
           }) %>% bindEvent(input$undoFDDriftOUP,input$axesFDDriftOUP,input$plotFDDriftOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Drift"),
-              HTML("Drift is the expected change in the state of a stochastic process over a brief instant.  It is a component of the partial differential equation solved by the Finite Difference Method.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Drift(<i>x,rho,mu</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>g</i>(<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>g</i>(<i>x</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>g</i> is the Drift."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoFDDriftOUP")
           }) %>% bindEvent(input$infoFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Diffusion ----
         if(input$navFDOUP == "FDDiffusionOUP")
         {
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -5916,9 +4957,9 @@ LRT_params <- c(NA,NA,NA)
             if(xOK) { FD$set_x_stoch_args(x=seq(from=xFrom,to=xTo,by=xBy)) }
             else { FD$axes_x_stoch() }
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Observe undo, axes, plot (or enter key), left and rght ----
+          # observe undo, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
           plotButton <- reactiveVal(FALSE)
@@ -5959,12 +5000,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             FD$default_save()
           }) %>% bindEvent(input$saveFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, axes, plot (or enter key), left or rght ----
+          # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyFDDiffusionOUP <- renderPlotly({
             if(undoButton()) { FD$default_read() }
             else if(axesButton())
@@ -6001,41 +5042,20 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             FD$PlotDiffusion()
           }) %>% bindEvent(input$undoFDDiffusionOUP,input$axesFDDiffusionOUP,input$plotFDDiffusionOUP,input$leftFDDiffusionOUP,input$rghtFDDiffusionOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Diffusion"),
-              HTML("An error is the difference between the actual and expected changes in the state of a stochastic process.  Diffusion is the error squared over a brief instant.  It is a component of the partial differential equation solved by the Finite Difference Method.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Diffusion(<i>sigma</i>)<br>
-              &emsp;&emsp;with argument:<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>h</i><sup>2</sup></td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>h</i><sup>2</sup></td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>h</i><sup>2</sup> is the Diffusion."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoFDDiffusionOUP")
           }) %>% bindEvent(input$infoFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Terminal Values ----
         if(input$navFDOUP == "FDTerminalOUP")
         {
-          # Dynamic UI ----
+          # dynamic UI ----
           V_info <- FD$get_V_info()
           names <- V_info[[3]]
           output$VFDTerminalOUP <- renderUI({ selectInput("VFDTerminalOUP",label="V",choices=names) })
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -6133,14 +5153,14 @@ LRT_params <- c(NA,NA,NA)
             else { FD$axes_x_stoch() }
             FD$set_V_args(NULL,NULL,v1,v2,v3,v4,v5)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Select ----
+          # select ----
           observe({
             FD$set_V_info(input$VFDTerminalOUP)
             FromR6toUI()
           }) %>% bindEvent(input$VFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe undo, axes and plot (or enter key) ----
+          # observe undo, axes and plot (or enter key) ----
           undoButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
           plotButton <- reactiveVal(FALSE)
@@ -6159,12 +5179,12 @@ LRT_params <- c(NA,NA,NA)
             axesButton(FALSE)
             plotButton(TRUE)
           }) %>% bindEvent(input$plotFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             FD$default_save()
           }) %>% bindEvent(input$saveFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, axes or plot (or enter key) ----
+          # user clicks undo, axes or plot (or enter key) ----
           output$plotlyFDTerminalOUP <- renderPlotly({
             if(undoButton()) { FD$default_read() }
             else if(axesButton())
@@ -6179,55 +5199,20 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             FD$PlotTerminalValue()
           }) %>% bindEvent(input$undoFDTerminalOUP,input$axesFDTerminalOUP,input$plotFDTerminalOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Terminal Values"),
-              HTML("Analytical option pricing has a kinked terminal value, but the Finite Difference Method is more flexible.  Any terminal value can be pre-calculated and entered into the option pricing calculations.  Some likely terminal values are programmed here for convenience.<br><br>
-              &emsp;&emsp;The R6 methods:<br>
-              &emsp;&emsp;&emsp;TerminalValue_Linear(<i>x,x</i>o<i>,v</i>s)<br>
-              &emsp;&emsp;&emsp;TerminalValue_Kinked(<i>x,x</i>o<i>,v</i>s<i>,V</i>max<i>,V</i>min)<br>
-              &emsp;&emsp;&emsp;TerminalValue_Stepped(<i>x,x</i>i<i>,v</i>s<i>,V</i>max<i>,V</i>min)<br>
-              &emsp;&emsp;&emsp;TerminalValue_Mitscherlich(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
-              &emsp;&emsp;&emsp;TerminalValue_Gompertz(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
-              &emsp;&emsp;&emsp;TerminalValue_Logistic(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
-              &emsp;&emsp;&emsp;TerminalValue_Transcendental(<i>x,x</i>o<i>,x</i>i<i>,x</i>m<i>,V</i>max<i>,V</i>min)<br>
-              &emsp;&emsp;&emsp;TerminalValue_YieldIndex(<i>x,x</i>o<i>,x</i>i<i>,x</i>m<i>,V</i>max<i>,V</i>min)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>x</i>o is the state at the origin, kink, or step;<br>
-              &emsp;&emsp;&emsp;<i>x</i>i is the state at the inflection point;<br>
-              &emsp;&emsp;&emsp;<i>x</i>m is the state at the maximum;<br>
-              &emsp;&emsp;&emsp;<i>v</i>s is the slope or the direction of a step;<br>
-              &emsp;&emsp;&emsp;<i>v</i>r is the rate of change;<br>
-              &emsp;&emsp;&emsp;<i>V</i>max is the maximum terminal value;<br>
-              &emsp;&emsp;&emsp;<i>V</i>min is the minimum terminal value;<br>
-              &emsp;&emsp;return:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>V</i>(<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>V</i>(<i>x</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>V</i> is the Terminal Value."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoFDTerminalOUP")
           }) %>% bindEvent(input$infoFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option ----
         if(input$navFDOUP == "FDOptionOUP")
         {
-          # Dynamic UI ----
+          # dynamic UI ----
           V_info <- FD$get_V_info()
           names <- V_info[[3]]
           output$VFDOptionOUP <- renderUI({ selectInput("VFDOptionOUP",label="V",choices=names) })
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -6375,14 +5360,14 @@ LRT_params <- c(NA,NA,NA)
             }
             FD$set_V_args(NULL,NULL,v1,v2,v3,v4,v5)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Select ----
+          # select ----
           observe({
             FD$set_V_info(input$VFDOptionOUP)
             FromR6toUI()
           }) %>% bindEvent(input$VFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe undo, axes, plot (or enter key), left and rght ----
+          # observe undo, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
           plotButton <- reactiveVal(FALSE)
@@ -6423,12 +5408,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             FD$default_save()
           }) %>% bindEvent(input$saveFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, axes, plot (or enter key), left or rght ----
+          # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyFDOptionOUP <- renderPlotly({
             if(undoButton()) { FD$default_read() }
             else if(axesButton())
@@ -6469,61 +5454,20 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             FD$PlotOption()
           }) %>% bindEvent(input$undoFDOptionOUP,input$axesFDOptionOUP,input$plotFDOptionOUP,input$leftFDOptionOUP,input$rghtFDOptionOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Option"),
-              HTML("Options are the value of flexibility&mdash;the value of keeping your options open.  Options with kinked terminal values are a fundamental property of the Ornstein-Uhlenbeck Process and have analytical solutions.  Options with arbitrary terminal values can be calculated using the Finite Difference Method.  However, the Ornstein-Uhlenbeck Process has no boundary conditions, which makes finite difference solutions more difficult.  If possible, the Finite Difference Method should be calibrated with an analytical solution.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Option(<i>s,x,V,rho,mu,sigma,r</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>s</i> are the variable times;<br>
-              &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>V</i> are the terminal values;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>1</sub>,<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>1</sub>,<i>x</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>m</sub>,<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>m</sub>,<i>x</i><sub>n</sub>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;&Oopf; is an Option."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoFDOptionOUP")
           }) %>% bindEvent(input$infoFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option Envelope ----
         if(input$navFDOUP == "FDEnvelopeOUP")
         {
-          # Dynamic UI ----
+          # dynamic UI ----
           V_info <- FD$get_V_info()
           names <- V_info[[3]]
           output$VFDEnvelopeOUP <- renderUI({ selectInput("VFDEnvelopeOUP",label="V",choices=names) })
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -6674,14 +5618,14 @@ LRT_params <- c(NA,NA,NA)
             }
             FD$set_V_args(NULL,NULL,v1,v2,v3,v4,v5)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Select ----
+          # select ----
           observe({
             FD$set_V_info(input$VFDEnvelopeOUP)
             FromR6toUI()
           }) %>% bindEvent(input$VFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe undo, axes, plot (or enter key), left and rght ----
+          # observe undo, axes, plot (or enter key), left and rght ----
           undoButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
           plotButton <- reactiveVal(FALSE)
@@ -6722,12 +5666,12 @@ LRT_params <- c(NA,NA,NA)
             leftButton(FALSE)
             rghtButton(TRUE)
           }) %>% bindEvent(input$rghtFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             FD$default_save()
           }) %>% bindEvent(input$saveFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, axes, plot (or enter key), left or rght ----
+          # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyFDEnvelopeOUP <- renderPlotly({
             if(undoButton()) { FD$default_read() }
             else if(axesButton())
@@ -6764,46 +5708,20 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             FD$PlotOptionEnvelope()
           }) %>% bindEvent(input$undoFDEnvelopeOUP,input$axesFDEnvelopeOUP,input$plotFDEnvelopeOUP,input$leftFDEnvelopeOUP,input$rghtFDEnvelopeOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Option Envelope"),
-              HTML("The Option Envelope is the maximum value of either holding or exercising an option for all possible states of nature.  Using the Finite Difference Method, a matrix of Options is first calculated at discrete nodes.  Then the nodes are searched.  The discrete nodes limit the accuracy of the Option Envelope compared with an analytical solution.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;OptionEnvelope(<i>x,V,rho,mu,sigma,r</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>V</i> are the terminal values;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>x</i><sub>1</sub>)</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>x</i><sub>n</sub>)</td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;\u00D4 is an Option on the Envelope."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoFDEnvelopeOUP")
           }) %>% bindEvent(input$infoFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Decision Threshold ----
         if(input$navFDOUP == "FDDecisionOUP")
         {
-          # Dynamic UI ----
+          # dynamic UI ----
           V_info <- FD$get_V_info()
           names <- V_info[[3]]
           output$VFDDecisionOUP <- renderUI({ selectInput("VFDDecisionOUP",label="V",choices=names) })
-          # Define set/get functions ----
+          # define set/get functions ----
           FromR6toUI <- function()
           {
             # Get from OUP ----
@@ -6942,14 +5860,14 @@ LRT_params <- c(NA,NA,NA)
             }
             FD$set_V_args(NULL,NULL,v1,v2,v3,v4,v5)
           }
-          # Initialize ----
+          # initialize ----
           FromR6toUI()
-          # Select ----
+          # select ----
           observe({
             FD$set_V_info(input$VFDDecisionOUP)
             FromR6toUI()
           }) %>% bindEvent(input$VFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe undo, axes and plot (or enter key) ----
+          # observe undo, axes and plot (or enter key) ----
           undoButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
           plotButton <- reactiveVal(FALSE)
@@ -6968,12 +5886,12 @@ LRT_params <- c(NA,NA,NA)
             axesButton(FALSE)
             plotButton(TRUE)
           }) %>% bindEvent(input$plotFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks save ----
+          # user clicks save ----
           observe({
             FromUItoR6()
             FD$default_save()
           }) %>% bindEvent(input$saveFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks undo, axes or plot (or enter key) ----
+          # user clicks undo, axes or plot (or enter key) ----
           output$plotlyFDDecisionOUP <- renderPlotly({
             if(undoButton()) { FD$default_read() }
             else if(axesButton())
@@ -6988,41 +5906,10 @@ LRT_params <- c(NA,NA,NA)
             FromR6toUI()
             FD$PlotDecisionThreshold()
           }) %>% bindEvent(input$undoFDDecisionOUP,input$axesFDDecisionOUP,input$plotFDDecisionOUP)
-          # User clicks info ----
+          # observe info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Decision Threshold"),
-              HTML("The Decision Threshold is the point of indifference between holding and exercising a perpetual option.  The Finite Difference Method calculates Options at discrete nodes, which gives an Option Envelope at discrete nodes.  Choosing a node as the indifference point is inaccurate.  To improve the accuracy, a polynomial interpolation of the Option Envelope is used to approximate the Decision Threshold. For reliability, the Finite Difference Method with a Kinked Terminal Value can be calibrated against an Analytical solution.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;DecisionThreshold(<i>x,V,rho,mu,sigma,r,phi</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
-              &emsp;&emsp;&emsp;<i>V</i> are the terminal values;<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
-              &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option, = 0 for either;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>k</i></td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>k</i>)</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
-              &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoFDDecisionOUP")
           }) %>% bindEvent(input$infoFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
@@ -7033,7 +5920,7 @@ LRT_params <- c(NA,NA,NA)
         # Data ----
         if(input$navMLOUP == "MLDataOUP")
         {
-          # Define set functions ----
+          # define set functions ----
           DataInfo <- function()
           {
             output$descrMLDataOUP <- renderUI({
@@ -7245,7 +6132,7 @@ LRT_params <- c(NA,NA,NA)
             first <<- TRUE
             FromR6toUI()
           }) %>% bindEvent(input$filesMLUploadOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe reset, begin and end ----
+          # observe reset, begin and end ----
           resetButton <- reactiveVal(FALSE)
           beginInput <- reactiveVal(FALSE)
           endInput <- reactiveVal(FALSE)
@@ -7295,81 +6182,14 @@ LRT_params <- c(NA,NA,NA)
             endInput(FALSE)
             output$plotlyMLDataOUP <- renderPlotly({ ML$PlotTimeSeries() })
           }) %>% bindEvent(input$resetMLDataOUP,input$plotMLDataOUP)
-          # User clicks i ----
+          # observe i and info ----
           observe({
-            htmlname <- paste(sep="",htmlpath,input$filesMLDataOUP,".html")
-            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
-            rawtext <- read_html(htmlname)
-            halo <- input$filesMLDataOUP
-            body <- html_element(rawtext,"body")
-            gen1 <- html_children(body)
-            gen2 <- html_children(gen1)
-            m <- length(gen2)-2
-            soul <- as.character(gen2[2:m])
-            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),halo),
-              HTML(paste(sep="",style,soul)),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton(input$filesMLDataOUP)
+            infobutton("")
           }) %>% bindEvent(input$fileinfoMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Data"),
-              HTML("The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
-              Data must be a time-series, with observations of times and states of nature.  Within the time-series, each observation has its own initial time and state, and its own terminal time and state.  Typically, the terminal time and state of one observation will be the initial time and state of the next observation.  Therefore, if measurements are taken at <i>m</i>  times, there will be <i>m</i>-1 observations.<br><br>
-              Data is read from 'csv' (comma separated value) files.  Typically the files would be organized as in this table.
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>tau</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>1</sub></td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>n</sub></td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>1</td>
-                  <td style='padding: 0px 4px 0px 4px;'>16.3</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>12.7</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>2</td>
-                  <td style='padding: 0px 4px 0px 4px;'>5.1</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>13.9</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&nbsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>m</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'>14.3</td>
-                  <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>8.9</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              Names are in the first row.  Numbers start in the second row.  Time is in the first column and states start in the second column.  There can be more than one time column.  There must be <i>m</i>+1 rows in all columns, but there can be blank elements if there is no measurment at that time.  Data is sorted by time and time intervals can be unequal.  Indeed, unequal time intervals seem to improve the estimation.<br><br>
-              How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoMLDataOUP")
           }) %>% bindEvent(input$infoMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Log Likelihood ----
@@ -7575,7 +6395,7 @@ LRT_params <- c(NA,NA,NA)
               }
             }
           }) %>% bindEvent(input$stateMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe rho, mu and sigma ----
+          # observe rho, mu and sigma ----
           rhoInput <- reactiveVal(FALSE)
           muInput <- reactiveVal(FALSE)
           sigmaInput <- reactiveVal(FALSE)
@@ -7588,7 +6408,7 @@ LRT_params <- c(NA,NA,NA)
           observe({
             sigmaInput(TRUE)
           }) %>% bindEvent(input$sigmaMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe reset, begin and end ----
+          # observe reset, begin and end ----
           resetButton <- reactiveVal(FALSE)
           beginInput <- reactiveVal(FALSE)
           endInput <- reactiveVal(FALSE)
@@ -7694,53 +6514,14 @@ LRT_params <- c(NA,NA,NA)
             })
             output$plotlyMLLikelihoodOUP <- renderPlotly({ ML$PlotEstimates() })
           }) %>% bindEvent(input$resetMLLikelihoodOUP,input$plotMLLikelihoodOUP)
-          # User clicks i ----
+          # observe i and info ----
           observe({
-            htmlname <- paste(sep="",htmlpath,input$filesMLLikelihoodOUP,".html")
-            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
-            rawtext <- read_html(htmlname)
-            halo <- input$filesMLLikelihoodOUP
-            body <- html_element(rawtext,"body")
-            gen1 <- html_children(body)
-            gen2 <- html_children(gen1)
-            m <- length(gen2)-2
-            soul <- as.character(gen2[2:m])
-            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),halo),
-              HTML(paste(sep="",style,soul)),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton(input$filesMLLikelihoodOUP)
+            infobutton("")
           }) %>% bindEvent(input$fileinfoMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Log Likelihood"),
-              HTML("The Likelihood is the joint probability of observing a time-series as a random sample.  For numerical reasons, the natural logarithm of the Likelihood, or Log Likelihood, is calculated instead.  The Log Likelihood can be maximized to estimate the parameters of the Ornstein-Uhlenbeck Process.  It can be calculated for a restricted set of parameters to test hypotheses.  An example would compare two sets of parameters by calculating their Log Likelihoods and conducting a Likelihood Ratio Test.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;LogLikelihood(<i>rho,mu,sigma,tau,z</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the random rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the random location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the random scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>tau</i> are the fixed times;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are the fixed states;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>ln<i>L</i></td>
-                  <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;ln<i>L</i> is the Log Likelihood."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoMLLikelihoodOUP")
           }) %>% bindEvent(input$infoMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Estimates ----
@@ -8016,158 +6797,14 @@ LRT_params <- c(NA,NA,NA)
             })
             output$plotlyMLEstimatesOUP <- renderPlotly({ ML$PlotEstimates() })
           }) %>% bindEvent(input$resetMLEstimatesOUP,input$plotMLEstimatesOUP)
-          # User clicks i ----
+          # observe i and info ----
           observe({
-            htmlname <- paste(sep="",htmlpath,input$filesMLEstimatesOUP,".html")
-            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
-            rawtext <- read_html(htmlname)
-            halo <- input$filesMLEstimatesOUP
-            body <- html_element(rawtext,"body")
-            gen1 <- html_children(body)
-            gen2 <- html_children(gen1)
-            m <- length(gen2)-2
-            soul <- as.character(gen2[2:m])
-            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),halo),
-              HTML(paste(sep="",style,soul)),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton(input$filesMLEstimatesOUP)
+            infobutton("")
           }) %>% bindEvent(input$fileinfoMLEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Estimates"),
-              HTML("Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood.  Some or all the parameters can be fixed to constants and other parameters re-estimated.  This gives the Restricted Log Likelihood, which must be less than the Unrestricted Log Likelihood.  The probability distribution of a Log Likelihood is identified by parameter <i>&alpha;</i>, where <i>&alpha;</i>=0.5 for a <i>&chi;</i><sup>2</sup> distribution, <i>&alpha;</i>=1 for an Erlang distribution and 0.5&lt;<i>&alpha;</i>&lt;1 for a Gamma distribution.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;Estimates(<i>tau,z,rhor,mur,sigmar,rhos,mus,sigmas</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>tau</i> are the fixed times;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are the fixed states;<br>
-              &emsp;&emsp;and optional arguments:<br>
-              &emsp;&emsp;&emsp;<i>rhor</i> is a constant for the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mur</i> is a constant for the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigmar</i> is a constant for the scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>rhos</i> is a starting value for the rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mus</i> is a starting value for the location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigmas</i> is a starting value for the scale parameter;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='float: left; margin-left: 60px;'>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>rhohat</i></td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>muhat</i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>sigmahat</i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>ln<i>Lhat</i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>ku</i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>alphau</i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>m</i>-1</td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-              </table>
-              <table style='float: left; margin-left: 10px; margin-right: 10px;'>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td>or</td>
-                </tr>
-              </table>
-              <table>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>rhobar</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>or</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>rhor</i></td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>mubar</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>or</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>mur</i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>sigmabar</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>or</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>sigmar</i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'>ln<i>Lbar</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i></i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i></i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>kr</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i></i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i></i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>alphar</i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i></i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i></i></td>
-                  <td style='border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i>m</i>-1</td>
-                  <td style='padding: 0px 4px 0px 4px;'><i></i></td>
-                  <td style='padding: 0px 4px 0px 4px;'><i></i></td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>rhohat</i>, <i>muhat</i> and <i>sigmahat</i> are estimates with no restrictions;<br>
-              &emsp;&emsp;&emsp;ln<i>Lhat</i> is the maximized unrestricted Log Likelihood;<br>
-              &emsp;&emsp;&emsp;<i>ku</i> is the number of parameters before restrictions;<br>
-              &emsp;&emsp;&emsp;<i>alphau</i> identifies the distribution of <i>ln</i>Lhat;<br>
-              &emsp;&emsp;&emsp;<i>rhobar</i>, <i>mubar</i> and <i>sigmabar</i> are estimates with other paramerts restricted;<br>
-              &emsp;&emsp;&emsp;ln<i>Lbar</i> is the maximized restricted Log Likelihood;<br>
-              &emsp;&emsp;&emsp;<i>kr</i> is the number of estimated parameters after restrictions;<br>
-              &emsp;&emsp;&emsp;<i>alphar</i> identifies the distribution of <i>ln</i>Lbar;<br>
-              &emsp;&emsp;&emsp;<i>m</i>-1 is the number of observations."),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton("")
+            infobutton("infoMLEstimatesOUP")
           }) %>% bindEvent(input$infoMLEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Goodness-of-Fit ----
@@ -8422,67 +7059,14 @@ LRT_params <- c(NA,NA,NA)
           observe({
             Go()
           }) %>% bindEvent(input$plotMLGoodnessOUP)
-          # User clicks i ----
+          # observe i and info ----
           observe({
-            htmlname <- paste(sep="",htmlpath,input$filesMLGoodnessOUP,".html")
-            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
-            rawtext <- read_html(htmlname)
-            halo <- input$filesMLGoodnessOUP
-            body <- html_element(rawtext,"body")
-            gen1 <- html_children(body)
-            gen2 <- html_children(gen1)
-            m <- length(gen2)-2
-            soul <- as.character(gen2[2:m])
-            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),halo),
-              HTML(paste(sep="",style,soul)),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton(input$filesMLGoodnessOUP)
+            infobutton("")
           }) %>% bindEvent(input$fileinfoMLGoodnessOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Goodness-of-Fit"),
-              HTML("Goodness of Fit compares the Log Likelihood of the estimated parameters to the Invariant Log Likelihood and to the Log Likelihood of Scaled Brownian Motion.  Comparing with the Invariant Likelihood tests the null hypothesis H<sub>0</sub>:  'the Ornstein-Uhlenbeck Process has converged'.  Comparing with the Likelihood of Scaled Brownian Motion tests the null hypothesis H<sub>0</sub>:  'the Ornstein-Uhlenbeck does not converge'.  Goodness of Fit is summarized by two Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistics and two probabilities.  A null hypothesis is rejected if the <i>R</i>&hairsp;<sup>2</sup> is at least 0.5 and the probability is small.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;GoodnessOfFit(<i>rho,mu,sigma,tau,z</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;<i>rho</i> is the random rate parameter;<br>
-              &emsp;&emsp;&emsp;<i>mu</i> is the random location parameter;<br>
-              &emsp;&emsp;&emsp;<i>sigma</i> is the random scale parameter;<br>
-              &emsp;&emsp;&emsp;<i>tau</i> are the fixed times;<br>
-              &emsp;&emsp;&emsp;<i>z</i> are the fixed states;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <th>&nbsp;</th>
-                  <th style='padding: 0px 4px 0px 4px;'>Invariant</th>
-                  <th style='padding: 0px 4px 0px 4px;'>Scaled BM</th>
-                  <th>&nbsp;</th>
-                </tr>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 30px;'><i>R</i>&hairsp;<sup>2</sup><sub>&infin;</sub></td>
-                  <td style='padding: 0px 4px 0px 30px;'><i>R</i>&hairsp;<sup>2</sup><sub>0</sub></td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 30px;'>1-<i>P</i><sub>&infin;</sub></td>
-                  <td style='padding: 0px 4px 0px 30px;'>1-<i>P</i><sub>0</sub></td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>R</i>&hairsp;<sup>2</sup><sub>&infin;</sub> and <i>R</i>&hairsp;<sup>2</sup><sub>0</sub> are Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistics;<br>
-              &emsp;&emsp;&emsp;1-<i>P</i><sub>&infin;</sub> and 1-<i>P</i><sub>0</sub> are the right-tails of Gamma probabilities."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoMLGoodnessOUP")
           }) %>% bindEvent(input$infoMLGoodnessOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Likelihood Ratio Test ----
@@ -8676,7 +7260,7 @@ LRT_params <- c(NA,NA,NA)
               }
             }
           }) %>% bindEvent(input$stateMLRatioOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # Observe reset, rhor, mur and sigmar ----
+          # observe reset, rhor, mur and sigmar ----
           resetButton <- reactiveVal(FALSE)
           rhorInput <- reactiveVal(FALSE)
           murInput <- reactiveVal(FALSE)
@@ -8816,107 +7400,1678 @@ LRT_params <- c(NA,NA,NA)
               ))
             })
           }) %>% bindEvent(input$resetMLRatioOUP,input$plotMLRatioOUP)
-          # User clicks i ----
+          # observe i and info ----
           observe({
-            htmlname <- paste(sep="",htmlpath,input$filesMLRatioOUP,".html")
-            if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
-            rawtext <- read_html(htmlname)
-            halo <- input$filesMLRatioOUP
-            body <- html_element(rawtext,"body")
-            gen1 <- html_children(body)
-            gen2 <- html_children(gen1)
-            m <- length(gen2)-2
-            soul <- as.character(gen2[2:m])
-            style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),halo),
-              HTML(paste(sep="",style,soul)),
-              easyClose = TRUE,
-              footer = modalButton("Close"),
-              size = "l"
-            ))
+            ibutton(input$filesMLRatioOUP)
+            infobutton("")
           }) %>% bindEvent(input$fileinfoMLRatioOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # User clicks info ----
           observe({
-            showModal(modalDialog(
-              title=div(img(src="Roar32x32.png"),"Likelihood Ratio Test"),
-              HTML("Hypothesis tests are constrained optimization with restrictions placed on the parameters.  One form of the null hypothesis is H<sub>0</sub>:  'parameters can take their restricted values'. The alternate hypothesis is H<sub>1</sub>:  'parameters cannot take their restricted values'.  A Likelihood Ratio Test rejects the null hypothesis if the restricted Log Likelihood is significantly smaller than the unrestricted Log Likelihood.  A null hypothesis is rejected if the <i>R</i>&hairsp;<sup>2</sup> is at least 0.5 and the probability is small.<br><br>
-              &emsp;&emsp;The R6 method:<br>
-              &emsp;&emsp;&emsp;LikelihoodRatioTest(ln<i>Lu,</i>ln<i>Lr,alphar,m1</i>)<br>
-              &emsp;&emsp;with arguments:<br>
-              &emsp;&emsp;&emsp;ln<i>Lu</i> is the unrestricted Log Likelihood;<br>
-              &emsp;&emsp;&emsp;ln<i>Lr</i> is the restricted Log Likelihood;<br>
-              &emsp;&emsp;&emsp;<i>alphar</i> identifies the distribution of ln<i>Lr</i>;<br>
-              &emsp;&emsp;&emsp;<i>m1</i> is <i>m</i>-1, the number of observations;<br>
-              &emsp;&emsp;returns:<br>
-              <table style='margin-left: 60px;'>
-                <tr>
-                  <th>&nbsp;</th>
-                  <th style='padding: 0px 4px 0px 4px;'>Restricted</th>
-                  <th>&nbsp;</th>
-                </tr>
-                <tr>
-                  <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 30px;'><i>R</i>&hairsp;<sup>2</sup></td>
-                  <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
-                </tr>
-                <tr>
-                  <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
-                  <td style='padding: 0px 4px 0px 30px;'>1-<i>P</i></td>
-                  <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
-                  <td style='padding-left: 2px;'>;</td>
-                </tr>
-              </table>
-              &emsp;&emsp;where:<br>
-              &emsp;&emsp;&emsp;<i>R</i>&hairsp;<sup>2</sup> is a Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistic;<br>
-              &emsp;&emsp;&emsp;1-<i>P</i> is the right-tail of a Gamma probability."),
-              easyClose = TRUE,
-              footer = modalButton("Close")
-            ))
+            ibutton("")
+            infobutton("infoMLRatioOUP")
           }) %>% bindEvent(input$infoMLRatioOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
     }
     else if(input$navBar == "tabAboutOUP")
     {
-      # tabAboutOUP ----
-      showModal(modalDialog(
-        title = div(img(src="Roar64x64.png"),"Real Options for Adoption and Resilience"),
-        HTML("Description:  R Shiny implementation of the R6 objects, OUProcess, Analytical, FiniteDifference, MaximumLikelihood and MonteCarlo&mdash;a complete set of functions for maximum likelihood estimation and the calculation of probabilities, option prices, decision thresholds, visiting times, first passage times and more&mdash;everything for a real options analysis.<br><br>
-            Version:  1.3.5.0 (stochastic process.modules.help.bugs)<br>
-            License:  GPLv3<br><br>
-            Author:  Greg Hertzler<br>
-            email:  ghertzlerau@gmail.com<br>
-            Roles:  author, creator<br>
-            ORCID:  0000-0003-3123-7898<br><br>
-            Author:  Tim Capon<br>
-            email:  Tim.Capon@csiro.au<br>
-            Roles:  contributor<br><br>
-            This project was supported by:<br>
-            &mdash;resources and expertise provided by CSIRO IMT Scientific Computing;<br>
-            &mdash;resources provided by CSIRO Environment.
-        "),
-        easyClose = TRUE,
-        footer = modalButton("Close"),
-        size="l"
-      ))
+      ibutton("")
+      infobutton("tabAboutOUP")
     }
     else if(input$navBar == "tabLicenseOUP")
     {
-      # tabLicenseOUP ----
-      showModal(modalDialog(
-        title = "GNU General Public Licence version 3 (GPLv3)",
-        HTML("This software is copyright (c) Greg Hertzler<br><br>
-            Except where otherwise indicated, the copyright holder grants you a licence to the Software on the terms of the GNU General Public Licence version 3 (GPLv3), distributed at: http://www.gnu.org/licenses/gpl.html.
-          "),
-        easyClose = TRUE,
-        footer = modalButton("Close")
-      ))
+      ibutton("")
+      infobutton("tabLicenseOUP")
     }
     # end ----
   })
+  # dark mode switch
   observeEvent(input$darkmodeswitch, {
     if (input$darkmodeswitch == "light") { A$set_plot_info(theme="light") }
     else { A$set_plot_info(theme="dark") }
   })
+  # modal dialogs
+  observe({
+    content <- ""
+    # file info ----
+    if(ibutton() != "")
+    {
+      htmlname <- paste(sep="",htmlpath,ibutton(),".html")
+      if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
+      rawtext <- read_html(htmlname)
+      halo <- ibutton()
+      body <- html_element(rawtext,"body")
+      gen1 <- html_children(body)
+      gen2 <- html_children(gen1)
+      m <- length(gen2)-2
+      soul <- as.character(gen2[2:m])
+      style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),halo),
+        HTML(paste(sep="",style,soul)),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # ROData ----
+    else if(infobutton() == "infoRODataOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Data"),
+        HTML("The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
+          Data must be a time-series, with observations of times and states of nature.  Within the time-series, each observation has its own initial time and state, and its own terminal time and state.  Typically, the terminal time and state of one observation will be the initial time and state of the next observation.  Therefore, if measurements are taken at <i>m</i>  times, there will be <i>m</i>-1 observations.<br><br>
+          Data is read from 'csv' (comma separated value) files.  Typically the files would be organized as in this table.
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>tau</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>1</sub></td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>n</sub></td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>1</td>
+              <td style='padding: 0px 4px 0px 4px;'>16.3</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>12.7</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>2</td>
+              <td style='padding: 0px 4px 0px 4px;'>5.1</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>13.9</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&nbsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>m</i></td>
+              <td style='padding: 0px 4px 0px 4px;'>14.3</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>8.9</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          Names are in the first row.  Numbers start in the second row.  Time is in the first column and states start in the second column.  There can be more than one time column.  There must be <i>m</i>+1 rows in all columns, but there can be blank elements if there is no measurment at that time.  Data is sorted by time and time intervals can be unequal.  Indeed, unequal time intervals seem to improve the estimation.<br><br>
+          How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # ROEstimates ----
+    else if(infobutton() == "infoROEstimatesOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Estimates"),
+        HTML("If you know the parameters of the Ornstein-Uhlenbeck Process, you can enter them directly.  If you have data, you can use it to estimate the parameters.  Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Likelihood of observing the data as a random sample.<br><br>
+          &emsp;&emsp;Arguments:<br>
+          &emsp;&emsp;&emsp;<i>tau</i> are times;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are states.<br>
+          &emsp;&emsp;Returns:<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter."),
+        footer = tagList(actionButton("moreROEstimatesOUP","More",class="btn-primary",title="Maximum Likelihood Data"),modalButton("Close")),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # RORegime ----
+    else if(infobutton() == "infoRORegimeOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Regime"),
+        HTML("A Regime is a benefit/cost analysis with options.  The benefit/cost analysis is called an Obligation.  It is how benefits are gained and costs are lost.  An Obligation is linear in the state of nature and, hence, certain.  The options are Exit and Entry Options.   Options value the flexibility to exit from and enter into an Obligation.  Exit and Entry Options are highly convex and, hence, uncertain.<br><br>
+          A Regime consists of an Entry Option, an Obligation and an Exit Option.  An Entry Option without an Exit Option is an Obligation.  Exercising an Exit Option eliminates the Obligation.<br><br>
+	         Entry and Exit Options are perpetual options.  There is no fixed expiry date.  If the value of flexibility exceeds the benefits to be gained or the costs being lost, decision-makers will keep their options open.  Otherwise, they will exercise one of their options.<br><br>
+          &emsp;&emsp;Arguments:<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>y</i> is the break-even point;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option;<br>
+          &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
+          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option.<br><br>
+	         Policies may alter the arguments to advance or delay entry and exit decisions.<br>
+          &emsp;1)  A contract may require farmers to plant trees and never cut them, eliminating the Exit Option.<br>
+          &emsp;2)  Farmers may be prohibited from ever planting poppies, eliminating the Entry Option.<br>
+          &emsp;3)  A business is obligated to pay fixed costs, delaying exit.<br>
+          &emsp;4)  Subsidising the installation of solar panels advances entry.<br>
+          &emsp;5)  Purchasing excess power from solar panels reduces the break-even point, advancing entry and delaying exit.<br>
+          &emsp;6)  An input tax reduces the location parameter, delaying entry and advancing exit.<br>
+          &emsp;7)  Insurance decreases the scale parameter, advancing both entry and exit.<br>
+          &emsp;8)  Subsidising interest rates for farmers in a drought delays exit."),
+        footer = tagList(actionButton("moreRORegimeOUP","More",class="btn-primary",title="Analytical Option"),modalButton("Close")),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # RODecision ----
+    else if(infobutton() == "infoRODecisionOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Decision Threshold"),
+        HTML("The Decision Threshold is the state of the system where a decision-maker will be indifferent between holding or exercising an Entry or Exit Option.  The Option value at the threshold is the price of flexibility&mdash;the price of keeping options open.  It is the most a decision-maker will pay in costs rather than exit prematurely, or the most a decision-maker will forego in benefits rather than enter prematurely.<br><br>
+          &emsp;&emsp;Arguments:<br>
+          &emsp;&emsp;&emsp;<i>y</i> is the break-even point;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option;<br>
+          &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
+          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option.<br>
+          &emsp;&emsp;Returns:<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
+          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
+        footer = tagList(actionButton("moreRODecisionOUP","More",class="btn-primary",title="Analytical Decision Threshold"),modalButton("Close")),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # ROPassageTime ----
+    else if(infobutton() == "infoROPassageTimeOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Passage Times"),
+        HTML("A Passage Time is the time until a system crosses a threshold.  The longer the passage time, the more resilient the system.  Passage Times will be longer if the state of the system is far from the threshold, is moving slowly and is less stochastic.<br><br>
+          The probabilities of the Ornstein-Uhlenbeck Process are symmetric.  The measure of central tendency is the Mean and the measure of dispersion is the Variance.  The probabilities of Passage Times are not symmetric.  There are three measures of central tendency, the Mode, Median and Mean.  However, the Mean and Variance may not exist.<br><br>
+          Percentiles are a reliable alternative. The Median is the Passage Time with a 50% chance the threshold has been crossed and a 50% chance it is yet to be crossed.  Higher and lower Percentiles have similar interpretations.  Percentiles of 0.841345 and 0.158655 are equivalent to adding and subtracting the square-root of the Variance to the Mean of the Ornstein-Uhlenbeck Process.<br><br>
+          If crossing a threshold is irreversible, Passage Times are First Passage Times.  If crossing a threshold is completely reversible, Passage Times are Visiting Times.  If crossing a threshold may be partially reversible, Passage Times are in between First Passage Times and Visiting Times.<br><br>
+          &emsp;&emsp;Arguments:<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
+          &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>Ppct</i> is a passage time probability.<br>
+          &emsp;&emsp;Returns:<br>
+          &emsp;&emsp;&emsp;<i>t</i><sub>0.5</sub> is the Median Passage Time;<br>
+          &emsp;&emsp;&emsp;<i>t<sub>Ppct</sub></i> and <i>t</i><sub>1-<i>Ppct</i></sub> are Passage Time Percentiles for <i>Ppct</i> and 1-<i>Ppct</i>."),
+        footer = tagList(actionButton("moreROPassageTimeOUP","More",class="btn-primary",title="Analytical Passage Time Percentiles"),modalButton("Close")),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # ADrift ----
+    else if(infobutton() == "infoADriftOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Drift"),
+        HTML("Drift is the expected change in the state of a stochastic process over a brief instant.  It is also called the Instantaneous Mean.  For the Ornstein-Uhlenbeck Process, it depends upon the current state <i>z</i>.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Drift(<i>z,rho,mu</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>z</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>g</i>(<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>g</i>(<i>z</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>g</i> is the Drift."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # ADiffusion ----
+    else if(infobutton() == "infoADiffusionOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Diffusion"),
+        HTML("An error is the difference between the actual and expected changes in the state of a stochastic process.  Diffusion is the error squared over a brief instant.  It is also called the Instantaneous Variance.  For the Ornstein-Uhlenbeck Process, it is constant.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Diffusion(<i>sigma</i>)<br>
+          &emsp;&emsp;with argument:<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>h</i><sup>2</sup></td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>h</i><sup>2</sup></td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>h</i><sup>2</sup> is the Diffusion."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # AMean ----
+    else if(infobutton() == "infoAMeanOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Mean"),
+        HTML("A Mean of a stochastic process is the expected state <i>y</i> at time <i>t</i> in the future.  For all stochastic processes, including the Ornstein-Uhlenbeck Process, it depends upon the initial time <i>s</i> and the initial state <i>x</i>.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Mean(<i>t,s,x,rho,mu</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>G</i>(<i>t</i><sub>1</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>G</i>(<i>t</i><sub>m</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>G</i> is the Mean."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # AMeanC ----
+    else if(infobutton() == "infoAMeanCOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Mean Convergence"),
+        HTML("Statistical methods applied to time series usually assume weak stationarity.  This requires the Mean to have converged to its Asymptotic Mean, while the Variance may still be converging.  The time for the Mean to converge indicates the required time interval between measurements for observations to become approximately stationary.  For the Ornstein-Uhlenbeck Process, the Asymptotic Mean is location <i>mu</i> and the Mean converges at rate <i>rho</i>.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;MeanToConverge(<i>s,rho,epsilon</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>epsilon</i> is the proportion remaining;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>t</i><sub>epsilon</sub></td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>t</i><sub>epsilon</sub> is the time to converge by 1-epsilon."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # AVariance ----
+    else if(infobutton() == "infoAVarianceOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Variance"),
+        HTML("An error is the difference between the actual and expected state of a stochastic process for time <i>t</i> in the future.  A Variance is the error squared.  For the Ornstein-Uhlenbeck Process, it depends upon the initial time <i>s</i>.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Variance(<i>t,s,rho,sigma</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>H</i>&hairsp;<sup>2</sup>(<i>t</i><sub>1</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>H</i>&hairsp;<sup>2</sup>(<i>t</i><sub>m</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>H</i>&hairsp;<sup>2</sup> is the Variance."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # AVarianceC ----
+    else if(infobutton() == "infoAVarianceCOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Variance Convergence"),
+        HTML("In statistical methods applied to time series, weak stationarity assumes the Mean has converged to the Asymptotic Mean. Strong stationarity assumes the Variance has also converged to the Asymptotic Variance.  For the Ornstein-Uhlenbeck Process, the Asymptotic Variance is <i>sigma</i><sup>2</sup>/2<i>rho</i> and the Variance converges at rate 2<i>rho</i>.  The Variance converges twice as fast as the Mean.  Therefore, if the Ornstein-Uhlenbeck Process is weaky stationary, it is also strongly stationary.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;VarianceToConverge(<i>s,rho,epsilon</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>epsilon</i> is the proportion remaining;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>t</i><sub>epsilon</sub></td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>t</i><sub>epsilon</sub> is the time to converge by 1-epsilon."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # ADensity ----
+    else if(infobutton() == "infoADensityOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Transition Density"),
+        HTML("The Transition Density is the probability of state <i>y</i> being observed at time <i>t</i>.  At initial time <i>t</i> equal to <i>s</i>, the probability of <i>y</i> equal to <i>x</i> is one and the probability of <i>y</i> not equal to <i>x</i> is zero.  The Transition Density is the Dirac or Degenerate Density.  As time passes, the probability of <i>y</i> equal to <i>x</i> decreases, the probability of <i>y</i> not equal to <i>x</i> increases and the Transition Density widens and moves away from <i>x</i>.  In the limit as <i>t</i> goes to infinity, the Transition Density loses its dependence on <i>s</i> and <i>x</i> and converges to its Invariant Density, with Asymptotic Mean <i>mu</i> and Asymptotic Variance <i>sigma</i><sup>2</sup>/2<i>rho</i>.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Density(<i>t,y,s,x,rho,mu,sigma</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
+          &emsp;&emsp;&emsp;<i>y</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p</i>(<i>t</i><sub>1</sub>,<i>y</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p</i>(<i>t</i><sub>1</sub>,<i>y</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p</i>(<i>t</i><sub>m</sub>,<i>y</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p</i>(<i>t</i><sub>m</sub>,<i>y</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>p</i> is the Transition Density."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # AProbability ----
+    else if(infobutton() == "infoAProbabilityOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Transition Probability"),
+        HTML("The Transition Probability integrates the Transition Density.  It sums the probabilities of observing states less than or equal to <i>y</i> at time <i>t</i>.  Alternatively, it sums the probabilities greater than or equal to <i>y</i>.  At initial time <i>t</i> equal to <i>s</i>, it sums the Dirac Density to become the Heavyside or Step Function, which steps from zero to one at <i>y</i> equal to the initial state <i>x</i>.  As time passes, the Transition Probability widens and moves away from <i>x</i>.  For the Ornstein-Uhlenbeck Process, as <i>t</i> goes to infinity, the Transition Probability converges to its Invariant Probability, with Asymptotic Mean <i>mu</i> and Asymptotic Variance <i>sigma</i><sup>2</sup>/2<i>rho</i>.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Probability(<i>t,y,s,x,rho,mu,sigma,phi</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
+          &emsp;&emsp;&emsp;<i>y</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>psi</i> is < 0 to integrate from -Inf to y and > 0 to integrate from y to Inf;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P</i>(<i>t</i><sub>1</sub>,<i>y</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P</i>(<i>t</i><sub>1</sub>,<i>y</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P</i>(<i>t</i><sub>m</sub>,<i>y</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P</i>(<i>t</i><sub>m</sub>,<i>y</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>P</i> is the Transition Probability."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # ADouble ----
+    else if(infobutton() == "infoADoubleOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Double Integral"),
+        HTML("The Double Integral sums the probabilities one more time.  The effect is easiest to see at initial time <i>t</i> equal to <i>s</i>, when the Transition Density is the Dirac Density and the Transition Probability is the Heavyside Function.  Integrating the Dirac Density gives the Heavyside Function and integrating the Heavyside Function gives the Threshold Function.  The Threshold Function is kinked, like a payoff function for an option, and the Double Integral is the precursor to an analytical option pricing formula.  Thresholds are a property of stochastic processes, including the Ornstein-Uhlenbeck Process, and in a world of uncertainty over time, Options are not optional.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;DoubleIntegral(<i>t,y,s,x,rho,mu,sigma,psi</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>t</i> are the variable times;<br>
+          &emsp;&emsp;&emsp;<i>y</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>psi</i> is < 0 to integrate from -Inf to y and > 0 to integrate from y to Inf;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Popf;(<i>t</i><sub>1</sub>,<i>y</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Popf;(<i>t</i><sub>1</sub>,<i>y</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Popf;(<i>t</i><sub>m</sub>,<i>y</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Popf;(<i>t</i><sub>m</sub>,<i>y</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;&Popf; is the Double Integral."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # AOption ----
+    else if(infobutton() == "infoAOptionOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Option"),
+        HTML("Probabilities are an initial-value problem with fixed initial time and state.  Options are a terminal-value problem with fixed terminal time and state.  A Double Integral becomes an Option by reinterpreting time <i>s</i> and state <i>x</i> as variable and time <i>t</i> and state <i>y</i> as fixed.  Multiplying by a discount factor gives the value of an Option discounted to time <i>s</i>.  The Ornstein-Uhlenbeck Process has a Double Integral and, hence, an analytical Option pricing formula.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Option(<i>s,x,t,y,rho,mu,sigma,r,phi,b,c</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>s</i> are the variable times;<br>
+          &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>t</i> is the fixed terminal time;<br>
+          &emsp;&emsp;&emsp;<i>y</i> is the fixed terminal state;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option, = 0 for either;<br>
+          &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
+          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>1</sub>,<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>1</sub>,<i>x</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>m</sub>,<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>m</sub>,<i>x</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;&Oopf; is an Option."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # AEnvelope ----
+    else if(infobutton() == "infoAEnvelopeOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Option Envelope"),
+        HTML("A Financial Option is a contract between a buyer and a seller with a fixed expiry date.  A Real Option is not a contract.  There is neither buyer nor seller.  There is no fixed expiry date.  It is a Perpetual Option that a decision-maker can exercise whenever they choose.  If the maximum value of the Option is the payoff function, it should be exercised immediately.  If the maximum value of the Option is greater than the payoff function, it should be held and possibly exercised in the future.  The Option Envelope is the maximum value of either exercising or holding the option for all states, <i>x</i>.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;OptionEnvelope(<i>x,y,rho,mu,sigma,r,phi,b,c</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>y</i> is the fixed terminal state;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option, = 0 for either;<br>
+          &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
+          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>x</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;\u00D4 is an Option on the Envelope."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # ADecision ----
+    else if(infobutton() == "infoADecisionOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Decision Threshold"),
+        HTML("The Decision Threshold is the state <i>k</i> where a decision-maker will be indifferent between holding or exercising a Real Option.  The Option value at the threshold is the price of flexibility&mdash;the price of keeping options open.  It is the most a decision-maker will pay in costs rather than exit prematurely, or the most a decision-maker will forego in benefits rather than enter prematurely.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;DecisionThreshold(<i>y,rho,mu,sigma,r,phi,b,c</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>y</i> is the fixed terminal state;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option, = 0 for either;<br>
+          &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
+          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>k</i></td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>k</i>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
+          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # AObligation ----
+    else if(infobutton() == "infoAObligationOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Obligation"),
+        HTML("In finance, the call/put parity transforms options from one to the other.  In Real Options, the intermediate formula in the transformation is called the Obligation&mdash;the obligation to take losses.  An Obligation equals the Entry Option minus the Exit Option.  Another name for an Obligation is a Benefit/Cost Analysis.  A negative Obligation is a Prohibition&mdash;the prohibition from taking gains.  A Prohibition equals the Exit Option minus the Entry Option.  Neither an Obligation nor a Prohibition is uncertain.  All uncertainty is in the options.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Obligation(<i>s,x,t,y,rho,mu,r,phi,b,c</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>s</i> are the variable times;<br>
+          &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>t</i> is the fixed terminal time;<br>
+          &emsp;&emsp;&emsp;<i>y</i> is the fixed terminal state;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;&emsp;<i>phi</i> is <= for an Obligation; > 0 for a Prohibition;<br>
+          &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
+          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\uD835\uDD39(<i>s</i><sub>1</sub>,<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\uD835\uDD39(<i>s</i><sub>1</sub>,<i>x</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\uD835\uDD39(<i>s</i><sub>m</sub>,<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\uD835\uDD39(<i>s</i><sub>m</sub>,<i>x</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 10px; margin-right: 10px;'>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>or</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><strong>\u2102</strong>(<i>s</i><sub>1</sub>,<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><strong>\u2102</strong>(<i>s</i><sub>1</sub>,<i>x</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><strong>\u2102</strong>(<i>s</i><sub>m</sub>,<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><strong>\u2102</strong>(<i>s</i><sub>m</sub>,<i>x</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;\uD835\uDD39 is an Obligation with positive benefits and negative costs;<br>
+          &emsp;&emsp;&emsp;<strong>\u2102</strong> is a Prohibition with positive costs and negative benefits."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # APTModeMedianMean ----
+    else if(infobutton() == "infoAPTModeMedianMeanOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Passage Time Mode, Median and Mean"),
+        HTML("If crossing a threshold is irreversible, the Mode is the most likely time to cross, the Median is the time with a 50% chance the threshold has already been crossed and the Mean is the expected time to cross.  If crossing is partially or completely reversible, net visits are crossings to the far side minus returns to the near side.  The Mode is when net visits are greatest.  The Median is when net visits reach 50% of the long-term proportion of time spent on the far side.  The Mean is the expected time of net visits to the far side.  If the Ornstein-Uhlenbeck Process is attracted across a threshold, the Mode is less than the Median is less than the Mean.  If, however, the process is attracted to a location away from the threshold, the Mean can be less than the Median can be less than the Mode.  If the process is not attracted at all, with a rate of convergence of zero, the Mean does not exist and the expected time to cross a threshold is unknown.<br><br>
+          &emsp;&emsp;The R6 methods:<br>
+          &emsp;&emsp;&emsp;PassageTimeMode(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
+          &emsp;&emsp;&emsp;PassageTimeMedian(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
+          &emsp;&emsp;&emsp;PassageTimeMean(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
+          &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;return:<br>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>mode(<i>x</i>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 14px; margin-right: 18px;'>
+            <tr>
+              <td>and</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>mode(<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>mode(<i>z</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>median(<i>x</i>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 10px; margin-right: 10px;'>
+            <tr>
+              <td>and</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>median(<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>median(<i>z</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>mean(<i>x</i>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 14px; margin-right: 18px;'>
+            <tr>
+              <td>and</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>mean(<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>mean(<i>z</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;mode(<i>x</i>), median(<i>x</i>) and mean(<i>x</i>) are the Passage Time Mode, Median and Mean at <i>x</i>;<br>
+          &emsp;&emsp;&emsp;mode(<i>z</i><sub>j</sub>), median(<i>z</i><sub>j</sub>) and mean(<i>z</i><sub>j</sub>) are the Passage Time Mode, Median and Mean for <i>x=z</i><sub>j</sub>;<br>"),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # APTVariance ----
+    else if(infobutton() == "infoAPTVarianceOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Passage Time Variance"),
+        HTML("If the Ornstein-Uhlenbeck Process has a larger Variance, the chance of bouncing across a threshold will be greater and the Passage Time will have a smaller Variance.  More uncertainty about the evolution of the state translates to less uncertainty about crossing a threshold.  If the Ornstein-Uhlenbeck Process converges slowly, the Passage Time Density is 'fat-tailed' and the Passage Time Variance may not exist.  The uncertainty about crossing a threshold may be unknown.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;PassageTimeVariance(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
+          &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>variance(<i>x</i>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 10px; margin-right: 10px;'>
+            <tr>
+              <td>and</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>variance(<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>variance(<i>z</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;variance(<i>x</i>) is the Passage Time Variance at <i>x</i>;<br>
+          &emsp;&emsp;&emsp;variance(<i>z</i><sub>j</sub>) is the Passage Time Variance for <i>x=z</i><sub>j</sub>."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # APTPercentiles ----
+    else if(infobutton() == "infoAPTPercentilesOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Passage Time Percentiles"),
+        HTML("The Transition Densities and Probabilites for the Ornstein-Uhlenbeck Process are symmetric and easy to interpret.  The only measure of central tendency is the Mean and the only measure of dispersion is the Variance.  Adding and subtracting the square-root of the Variance gives Percentiles above and below the Mean.<span hidden>Transition Density Transition Probability</span>  Passage Time Densities and Probabilities are not symmetric.  There are three measures of central tendency, the Mode, Median and Mean.  Adding and subtracting the square-root of the Variance gives weird results.  If a stochastic process does not converge, its Passage Time Mean and Variance do not exist.<span hidden>Passage Time Density Passage Time Probability</span>  An easier alternative is to calculate Percentiles.  The Median is the time with a 50% chance the threshold has been crossed and a 50% chance it is yet to be crossed.  Higher and lower Percentiles have similar interpretations.  Percentiles for Passage Time Probabilities of 0.841345 and 0.158655 measure the same dispersion as adding and subtracting the square-root of the Variance to the Mean of the Ornstein-Uhlenbeck Process.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;PassageTimePercentile(<i>k,s,x,z,omega,rho,mu,sigma,Ppct</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
+          &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>Ppct</i> is a passage time probability;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>percentile(<i>x</i>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 10px; margin-right: 10px;'>
+            <tr>
+              <td>and</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>percentile(<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>percentile(<i>z</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;percentile(<i>x</i>) is the Passage Time Percentile for Ppct at <i>x</i>;<br>
+          &emsp;&emsp;&emsp;percentile(<i>z</i><sub>j</sub>) are the Passage Time Percentiles for Ppct at <i>x=z</i><sub>j</sub>;<br>"),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # APTDensity ----
+    else if(infobutton() == "infoAPTDensityOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Passage Time Density"),
+        HTML("An additional proportion of time an Ornstein-Uhlenbeck Process spends on the far side of a threshold is the Passage Time Density.  If crossing a threshold is irreversible, it is the First Passage Time Density.  If crossing a threshold can be completely reversed, it is the Visiting Time Density.  In between is the Passage Time Density.  A Passage Time Density is typically skewed, but can also be bi-modal and even negative if the process is attracted away from a threshold.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;PassageTimeDensity(<i>t,k,s,x,z,omega,rho,mu,sigma</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>t</i> are stochastic times;<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
+          &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>x</i>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>x</i>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 10px; margin-right: 10px;'>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>and</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>z</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>p<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>z</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>p<sub>t</sub></i>(<i>t</i>|<i>x</i>) is the Passage Time Density at <i>x</i>;<br>
+          &emsp;&emsp;&emsp;<i>p<sub>t</sub></i>(<i>t</i>|<i>z</i><sub>j</sub>) is the Passage Time Density for <i>x=z</i><sub>j</sub>."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # APTProbability ----
+    else if(infobutton() == "infoAPTProbabilityOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Passage Time Probability"),
+        HTML("The proportion of time an Ornstein-Uhlenbeck Process spends on the far side of a threshold is the Passage Time Probability.  At one extreme is the First Passage Time Probability and at the other is the Visiting Time Probability.  The First Passage Time Probability goes to one because the Ornstein-Uhlenbeck Process will eventually cross the threshold and be trapped on the far side.  A Passage Time Probability does not go to one because the process may return to spend time on the near side.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;PassageTimeProbability(<i>t,k,s,x,z,omega,rho,mu,sigma</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>t</i> are stochastic times;<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
+          &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
+          &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>x</i>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>x</i>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 10px; margin-right: 10px;'>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>and</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>1</sub>|<i>z</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>z</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>P<sub>t</sub></i>(<i>t</i><sub>m</sub>|<i>z</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>P<sub>t</sub></i>(<i>t</i>|<i>x</i>) is the Passage Time Probability at <i>x</i>;<br>
+          &emsp;&emsp;&emsp;<i>P<sub>t</sub></i>(<i>t</i>|<i>z</i><sub>j</sub>) is the Passage Time Probability for <i>x=z</i><sub>j</sub>."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # FDDrift ----
+    else if(infobutton() == "infoFDDriftOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Drift"),
+        HTML("Drift is the expected change in the state of a stochastic process over a brief instant.  It is a component of the partial differential equation solved by the Finite Difference Method.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Drift(<i>x,rho,mu</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>g</i>(<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>g</i>(<i>x</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>g</i> is the Drift."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # FDDiffusion ----
+    else if(infobutton() == "infoFDDiffusionOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Diffusion"),
+        HTML("An error is the difference between the actual and expected changes in the state of a stochastic process.  Diffusion is the error squared over a brief instant.  It is a component of the partial differential equation solved by the Finite Difference Method.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Diffusion(<i>sigma</i>)<br>
+          &emsp;&emsp;with argument:<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>h</i><sup>2</sup></td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>h</i><sup>2</sup></td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>h</i><sup>2</sup> is the Diffusion."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # FDTerminal ----
+    else if(infobutton() == "infoFDTerminalOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Terminal Values"),
+        HTML("Analytical option pricing has a kinked terminal value, but the Finite Difference Method is more flexible.  Any terminal value can be pre-calculated and entered into the option pricing calculations.  Some likely terminal values are programmed here for convenience.<br><br>
+          &emsp;&emsp;The R6 methods:<br>
+          &emsp;&emsp;&emsp;TerminalValue_Linear(<i>x,x</i>o<i>,v</i>s)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Kinked(<i>x,x</i>o<i>,v</i>s<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Stepped(<i>x,x</i>i<i>,v</i>s<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Mitscherlich(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Gompertz(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Logistic(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Transcendental(<i>x,x</i>o<i>,x</i>i<i>,x</i>m<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_YieldIndex(<i>x,x</i>o<i>,x</i>i<i>,x</i>m<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>x</i>o is the state at the origin, kink, or step;<br>
+          &emsp;&emsp;&emsp;<i>x</i>i is the state at the inflection point;<br>
+          &emsp;&emsp;&emsp;<i>x</i>m is the state at the maximum;<br>
+          &emsp;&emsp;&emsp;<i>v</i>s is the slope or the direction of a step;<br>
+          &emsp;&emsp;&emsp;<i>v</i>r is the rate of change;<br>
+          &emsp;&emsp;&emsp;<i>V</i>max is the maximum terminal value;<br>
+          &emsp;&emsp;&emsp;<i>V</i>min is the minimum terminal value;<br>
+          &emsp;&emsp;return:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>V</i>(<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>V</i>(<i>x</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>V</i> is the Terminal Value."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # FDOption ----
+    else if(infobutton() == "infoFDOptionOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Option"),
+        HTML("Options are the value of flexibility&mdash;the value of keeping your options open.  Options with kinked terminal values are a fundamental property of the Ornstein-Uhlenbeck Process and have analytical solutions.  Options with arbitrary terminal values can be calculated using the Finite Difference Method.  However, the Ornstein-Uhlenbeck Process has no boundary conditions, which makes finite difference solutions more difficult.  If possible, the Finite Difference Method should be calibrated with an analytical solution.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Option(<i>s,x,V,rho,mu,sigma,r</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>s</i> are the variable times;<br>
+          &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>V</i> are the terminal values;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>1</sub>,<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>1</sub>,<i>x</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>m</sub>,<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&Oopf;(<i>s</i><sub>m</sub>,<i>x</i><sub>n</sub>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;&Oopf; is an Option."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # FDEnvelope ----
+    else if(infobutton() == "infoFDEnvelopeOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Option Envelope"),
+        HTML("The Option Envelope is the maximum value of either holding or exercising an option for all possible states of nature.  Using the Finite Difference Method, a matrix of Options is first calculated at discrete nodes.  Then the nodes are searched.  The discrete nodes limit the accuracy of the Option Envelope compared with an analytical solution.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;OptionEnvelope(<i>x,V,rho,mu,sigma,r</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>V</i> are the terminal values;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>x</i><sub>1</sub>)</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>x</i><sub>n</sub>)</td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;\u00D4 is an Option on the Envelope."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # FDDecision ----
+    else if(infobutton() == "infoFDDecisionOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Decision Threshold"),
+        HTML("The Decision Threshold is the point of indifference between holding and exercising a perpetual option.  The Finite Difference Method calculates Options at discrete nodes, which gives an Option Envelope at discrete nodes.  Choosing a node as the indifference point is inaccurate.  To improve the accuracy, a polynomial interpolation of the Option Envelope is used to approximate the Decision Threshold. For reliability, the Finite Difference Method with a Kinked Terminal Value can be calibrated against an Analytical solution.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;DecisionThreshold(<i>x,V,rho,mu,sigma,r,phi</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
+          &emsp;&emsp;&emsp;<i>V</i> are the terminal values;<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
+          &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option, = 0 for either;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>k</i></td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>\u00D4(<i>k</i>)</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
+          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # MLData ----
+    else if(infobutton() == "infoMLDataOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Data"),
+        HTML("The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
+          Data must be a time-series, with observations of times and states of nature.  Within the time-series, each observation has its own initial time and state, and its own terminal time and state.  Typically, the terminal time and state of one observation will be the initial time and state of the next observation.  Therefore, if measurements are taken at <i>m</i>  times, there will be <i>m</i>-1 observations.<br><br>
+          Data is read from 'csv' (comma separated value) files.  Typically the files would be organized as in this table.
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>tau</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>1</sub></td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>z</i><sub>n</sub></td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>1</td>
+              <td style='padding: 0px 4px 0px 4px;'>16.3</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>12.7</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>2</td>
+              <td style='padding: 0px 4px 0px 4px;'>5.1</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>13.9</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&nbsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&dtdot;</td>
+              <td style='padding: 0px 4px 0px 4px;'>&emsp;&vellip;</td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>m</i></td>
+              <td style='padding: 0px 4px 0px 4px;'>14.3</td>
+              <td style='padding: 0px 4px 0px 4px;'>&hellip;</td>
+              <td style='padding: 0px 4px 0px 4px;'>8.9</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          Names are in the first row.  Numbers start in the second row.  Time is in the first column and states start in the second column.  There can be more than one time column.  There must be <i>m</i>+1 rows in all columns, but there can be blank elements if there is no measurment at that time.  Data is sorted by time and time intervals can be unequal.  Indeed, unequal time intervals seem to improve the estimation.<br><br>
+          How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # MLLikelihood ----
+    else if(infobutton() == "infoMLLikelihoodOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Log Likelihood"),
+        HTML("The Likelihood is the joint probability of observing a time-series as a random sample.  For numerical reasons, the natural logarithm of the Likelihood, or Log Likelihood, is calculated instead.  The Log Likelihood can be maximized to estimate the parameters of the Ornstein-Uhlenbeck Process.  It can be calculated for a restricted set of parameters to test hypotheses.  An example would compare two sets of parameters by calculating their Log Likelihoods and conducting a Likelihood Ratio Test.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;LogLikelihood(<i>rho,mu,sigma,tau,z</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the random rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the random location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the random scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>tau</i> are the fixed times;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are the fixed states;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>ln<i>L</i></td>
+              <td style='border-top: solid silver; border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;ln<i>L</i> is the Log Likelihood."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # MLEstimates ----
+    else if(infobutton() == "infoMLEstimatesOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Estimates"),
+        HTML("Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood.  Some or all the parameters can be fixed to constants and other parameters re-estimated.  This gives the Restricted Log Likelihood, which must be less than the Unrestricted Log Likelihood.  The probability distribution of a Log Likelihood is identified by parameter <i>&alpha;</i>, where <i>&alpha;</i>=0.5 for a <i>&chi;</i><sup>2</sup> distribution, <i>&alpha;</i>=1 for an Erlang distribution and 0.5&lt;<i>&alpha;</i>&lt;1 for a Gamma distribution.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;Estimates(<i>tau,z,rhor,mur,sigmar,rhos,mus,sigmas</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>tau</i> are the fixed times;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are the fixed states;<br>
+          &emsp;&emsp;and optional arguments:<br>
+          &emsp;&emsp;&emsp;<i>rhor</i> is a constant for the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mur</i> is a constant for the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigmar</i> is a constant for the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>rhos</i> is a starting value for the rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mus</i> is a starting value for the location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigmas</i> is a starting value for the scale parameter;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='float: left; margin-left: 60px;'>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>rhohat</i></td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>muhat</i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>sigmahat</i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>ln<i>Lhat</i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>ku</i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>alphau</i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>m</i>-1</td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+          </table>
+          <table style='float: left; margin-left: 10px; margin-right: 10px;'>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>or</td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>rhobar</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i>or</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i>rhor</i></td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>mubar</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i>or</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i>mur</i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>sigmabar</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i>or</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i>sigmar</i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'>ln<i>Lbar</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i></i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i></i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>kr</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i></i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i></i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>alphar</i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i></i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i></i></td>
+              <td style='border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 4px;'><i>m</i>-1</td>
+              <td style='padding: 0px 4px 0px 4px;'><i></i></td>
+              <td style='padding: 0px 4px 0px 4px;'><i></i></td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>rhohat</i>, <i>muhat</i> and <i>sigmahat</i> are estimates with no restrictions;<br>
+          &emsp;&emsp;&emsp;ln<i>Lhat</i> is the maximized unrestricted Log Likelihood;<br>
+          &emsp;&emsp;&emsp;<i>ku</i> is the number of parameters before restrictions;<br>
+          &emsp;&emsp;&emsp;<i>alphau</i> identifies the distribution of <i>ln</i>Lhat;<br>
+          &emsp;&emsp;&emsp;<i>rhobar</i>, <i>mubar</i> and <i>sigmabar</i> are estimates with other paramerts restricted;<br>
+          &emsp;&emsp;&emsp;ln<i>Lbar</i> is the maximized restricted Log Likelihood;<br>
+          &emsp;&emsp;&emsp;<i>kr</i> is the number of estimated parameters after restrictions;<br>
+          &emsp;&emsp;&emsp;<i>alphar</i> identifies the distribution of <i>ln</i>Lbar;<br>
+          &emsp;&emsp;&emsp;<i>m</i>-1 is the number of observations."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # MLGoodness ----
+    else if(infobutton() == "infoMLGoodnessOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Goodness-of-Fit"),
+        HTML("Goodness of Fit compares the Log Likelihood of the estimated parameters to the Invariant Log Likelihood and to the Log Likelihood of Scaled Brownian Motion.  Comparing with the Invariant Likelihood tests the null hypothesis H<sub>0</sub>:  'the Ornstein-Uhlenbeck Process has converged'.  Comparing with the Likelihood of Scaled Brownian Motion tests the null hypothesis H<sub>0</sub>:  'the Ornstein-Uhlenbeck does not converge'.  Goodness of Fit is summarized by two Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistics and two probabilities.  A null hypothesis is rejected if the <i>R</i>&hairsp;<sup>2</sup> is at least 0.5 and the probability is small.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;GoodnessOfFit(<i>rho,mu,sigma,tau,z</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;<i>rho</i> is the random rate parameter;<br>
+          &emsp;&emsp;&emsp;<i>mu</i> is the random location parameter;<br>
+          &emsp;&emsp;&emsp;<i>sigma</i> is the random scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>tau</i> are the fixed times;<br>
+          &emsp;&emsp;&emsp;<i>z</i> are the fixed states;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <th>&nbsp;</th>
+              <th style='padding: 0px 4px 0px 4px;'>Invariant</th>
+              <th style='padding: 0px 4px 0px 4px;'>Scaled BM</th>
+              <th>&nbsp;</th>
+            </tr>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 30px;'><i>R</i>&hairsp;<sup>2</sup><sub>&infin;</sub></td>
+              <td style='padding: 0px 4px 0px 30px;'><i>R</i>&hairsp;<sup>2</sup><sub>0</sub></td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 30px;'>1-<i>P</i><sub>&infin;</sub></td>
+              <td style='padding: 0px 4px 0px 30px;'>1-<i>P</i><sub>0</sub></td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>R</i>&hairsp;<sup>2</sup><sub>&infin;</sub> and <i>R</i>&hairsp;<sup>2</sup><sub>0</sub> are Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistics;<br>
+          &emsp;&emsp;&emsp;1-<i>P</i><sub>&infin;</sub> and 1-<i>P</i><sub>0</sub> are the right-tails of Gamma probabilities."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # MLRatio ----
+    else if(infobutton() == "infoMLRatioOUP")
+    {
+      content <- modalDialog(
+        title=div(img(src="Roar32x32.png"),"Likelihood Ratio Test"),
+        HTML("Hypothesis tests are constrained optimization with restrictions placed on the parameters.  One form of the null hypothesis is H<sub>0</sub>:  'parameters can take their restricted values'. The alternate hypothesis is H<sub>1</sub>:  'parameters cannot take their restricted values'.  A Likelihood Ratio Test rejects the null hypothesis if the restricted Log Likelihood is significantly smaller than the unrestricted Log Likelihood.  A null hypothesis is rejected if the <i>R</i>&hairsp;<sup>2</sup> is at least 0.5 and the probability is small.<br><br>
+          &emsp;&emsp;The R6 method:<br>
+          &emsp;&emsp;&emsp;LikelihoodRatioTest(ln<i>Lu,</i>ln<i>Lr,alphar,m1</i>)<br>
+          &emsp;&emsp;with arguments:<br>
+          &emsp;&emsp;&emsp;ln<i>Lu</i> is the unrestricted Log Likelihood;<br>
+          &emsp;&emsp;&emsp;ln<i>Lr</i> is the restricted Log Likelihood;<br>
+          &emsp;&emsp;&emsp;<i>alphar</i> identifies the distribution of ln<i>Lr</i>;<br>
+          &emsp;&emsp;&emsp;<i>m1</i> is <i>m</i>-1, the number of observations;<br>
+          &emsp;&emsp;returns:<br>
+          <table style='margin-left: 60px;'>
+            <tr>
+              <th>&nbsp;</th>
+              <th style='padding: 0px 4px 0px 4px;'>Restricted</th>
+              <th>&nbsp;</th>
+            </tr>
+            <tr>
+              <td style='border-top: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 30px;'><i>R</i>&hairsp;<sup>2</sup></td>
+              <td style='border-top: solid silver; border-right: solid silver'>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style='border-bottom: solid silver; border-left: solid silver'>&nbsp;</td>
+              <td style='padding: 0px 4px 0px 30px;'>1-<i>P</i></td>
+              <td style='border-bottom: solid silver; border-right: solid silver'>&nbsp;</td>
+              <td style='padding-left: 2px;'>;</td>
+            </tr>
+          </table>
+          &emsp;&emsp;where:<br>
+          &emsp;&emsp;&emsp;<i>R</i>&hairsp;<sup>2</sup> is a Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistic;<br>
+          &emsp;&emsp;&emsp;1-<i>P</i> is the right-tail of a Gamma probability."),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # About ----
+    else if(infobutton() == "tabAboutOUP")
+    {
+      content <- modalDialog(
+        title = div(img(src="Roar64x64.png"),"Real Options for Adoption and Resilience"),
+        HTML("Description:  R Shiny implementation of the R6 objects, OUProcess, Analytical, FiniteDifference, MaximumLikelihood and MonteCarlo&mdash;a complete set of functions for maximum likelihood estimation and the calculation of probabilities, option prices, decision thresholds, visiting times, first passage times and more&mdash;everything for a real options analysis.<br><br>
+          Version:  1.3.5.0 (stochastic process.modules.help.bugs)<br>
+          License:  GPLv3<br><br>
+          Author:  Greg Hertzler<br>
+          email:  ghertzlerau@gmail.com<br>
+          Roles:  author, creator<br>
+          ORCID:  0000-0003-3123-7898<br><br>
+          Author:  Tim Capon<br>
+          email:  Tim.Capon@csiro.au<br>
+          Roles:  contributor<br><br>
+          This project was supported by:<br>
+          &mdash;resources and expertise provided by CSIRO IMT Scientific Computing;<br>
+          &mdash;resources provided by CSIRO Environment.
+        "),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # License ----
+    else if(infobutton() == "tabLicenseOUP")
+    {
+      content <- modalDialog(
+        title = "GNU General Public Licence version 3 (GPLv3)",
+        HTML("This software is copyright (c) Greg Hertzler<br><br>
+          Except where otherwise indicated, the copyright holder grants you a licence to the Software on the terms of the GNU General Public Licence version 3 (GPLv3), distributed at: http://www.gnu.org/licenses/gpl.html.
+        "),
+        footer = modalButton("Close"),
+        easyClose = TRUE,
+        size = "xl"
+      )
+    }
+    # end ----
+    showModal(content,session)
+  }) %>% bindEvent(ibutton(), infobutton())
 })
