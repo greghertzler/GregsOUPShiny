@@ -1,7 +1,8 @@
+$(document).ready(function() {
   lastEvent = "";
 // dark mode
   fresh = "#223344";
-  stale = "#888888";
+  stale = "#334455";
   dm = "dark";
 // bootstrap tabs
   barIdOUP="tabROOUP";
@@ -30,13 +31,13 @@
           for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor=fresh; };
           wells = document.getElementsByClassName("well wellTableOUP");
           for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor=fresh; };
-  }
+        }
   function wellstale(){
           wells = document.getElementsByClassName("well wellPlotOUP");
           for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor=stale; };
           wells = document.getElementsByClassName("well wellTableOUP");
           for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor=stale; };
-  }
+        }
 // send plot click
   function plotit(){
           if(barIdOUP == "tabROOUP")
@@ -77,7 +78,7 @@
           if(activeEl.tagName == "BUTTON")
           {
             btnClass=activeEl.attributes[0].value;
-            if(btnClass.includes("btn-success")) { wellfresh(); };
+            if(btnClass.includes("btn-success")) { wellfresh(); }
           }
           else if(activeEl.tagName == "A") { wellfresh(); };
           lastEvent = "click";
@@ -96,21 +97,28 @@
           };
           lastEvent = "keyup";
         });
-// transition
+// transition for darkmodeswitch which does not share its toys
   $(document).on("transitionrun",function(){
-          if($("#darkmodeswitch").attr("mode") != dm)
+          activeEl=document.activeElement;
+          if(activeEl.id == "darkmodeswitch")
           {
-            if(dm == "dark")
+            if(activeEl.mode != dm)
             {
-              fresh = "#ddeeff";
-              dm = "light";
-            }
-            else
-            {
-              fresh = "#223344";
-              dm = "dark";
-            }
-            plotit();
-            wellfresh();
-          }
+              if(dm == "dark")
+              {
+                fresh = "#ddeeff";
+                stale = "#ccddee";
+                dm = "light";
+              }
+              else
+              {
+                fresh = "#223344";
+                stale = "#334455";
+                dm = "dark";
+              }
+              plotit();
+              wellfresh();
+            };
+          };
         });
+});

@@ -11,13 +11,14 @@ shinyUI(
       nav_panel("Real Options",
         tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
                   tags$link(rel="stylesheet",type="text/css",href="styles.css")),
+        tags$script(src="script.js"),
         add_busy_spinner(spin="swapping-squares",color="rgb(115,33,38)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
         navset_pill_list(
           # Data ----
           nav_panel("Data",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoRODataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(actionButton("fileinfoRODataOUP","i",width="100%",class="btn-primary"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesRODataOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeRODataOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateRODataOUP",label="State",choices=""),title="state variable",width=3)
@@ -46,7 +47,7 @@ shinyUI(
           nav_panel("Estimates",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoROEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(actionButton("fileinfoROEstimatesOUP","i",width="100%",class="btn-primary"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesROEstimatesOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeROEstimatesOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateROEstimatesOUP",label="State",choices=""),title="state variable",width=3)
@@ -1195,7 +1196,7 @@ shinyUI(
           nav_panel("Data",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLDataOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(actionButton("fileinfoMLDataOUP","i",width="100%",class="btn-primary"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesMLDataOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLDataOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLDataOUP",label="State",choices=""),title="state variable",width=3)
@@ -1224,7 +1225,7 @@ shinyUI(
           nav_panel("Log Likelihood",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLLikelihoodOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(actionButton("fileinfoMLLikelihoodOUP","i",width="100%",class="btn-primary"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesMLLikelihoodOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLLikelihoodOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLLikelihoodOUP",label="State",choices=""),title="state variable",width=3)
@@ -1255,7 +1256,7 @@ shinyUI(
           nav_panel("Estimates",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLEstimatesOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(actionButton("fileinfoMLEstimatesOUP","i",width="100%",class="btn-primary"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesMLEstimatesOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLEstimatesOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLEstimatesOUP",label="State",choices=""),title="state variable",width=3)
@@ -1284,7 +1285,7 @@ shinyUI(
           nav_panel("Goodness-of-Fit",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLGoodnessOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(actionButton("fileinfoMLGoodnessOUP","i",width="100%",class="btn-primary"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesMLGoodnessOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLGoodnessOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLGoodnessOUP",label="State",choices=""),title="state variable",width=3)
@@ -1314,7 +1315,7 @@ shinyUI(
           nav_panel("Likelihood Ratio Test",
             # file, time and state
             fixedRow(
-              column(actionButton("fileinfoMLRatioOUP","i",width="100%",class="btn-default"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
+              column(actionButton("fileinfoMLRatioOUP","i",width="100%",class="btn-primary"),title="File info",style="padding-right: 2px; padding-top: 32px;",width=1),
               column(selectInput("filesMLRatioOUP",label="File",choices=""),title="data files",width=5),
               column(selectInput("timeMLRatioOUP",label="Time",choices=""),title="time variable",width=3),
               column(selectInput("stateMLRatioOUP",label="State",choices=""),title="state variable",width=3)
@@ -1357,8 +1358,7 @@ shinyUI(
         value="tabAboutOUP"
       ),
       nav_panel("License",
-        value="tabLicenseOUP",
-        tags$script(src="script.js")
+        value="tabLicenseOUP"
       )
     ),
     nav_item(input_dark_mode(id="darkmodeswitch")),
