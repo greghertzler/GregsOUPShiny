@@ -1352,7 +1352,7 @@ shinyUI(
         a(href="https://greghertzler.github.io/GregsOUPShiny/OUP_ShinyTutorials.html","Tutorials",target="_blank")
       ),
       nav_item(
-        a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Ribbon Help",target="_blank")
+        a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Reference",target="_blank")
       ),
       nav_panel("About",
         value="tabAboutOUP"

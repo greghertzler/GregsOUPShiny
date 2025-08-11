@@ -49,6 +49,7 @@ LRT_params <- c(NA,NA,NA)
 # gloval reactive values for modal dialogs
 ibutton <- reactiveVal("")
 infobutton <- reactiveVal("")
+infotoggle <- reactiveVal(FALSE)
 
 # events ----
   observeEvent(input$navBar,{
@@ -322,10 +323,14 @@ infobutton <- reactiveVal("")
           observe({
             ibutton(input$filesRODataOUP)
             infobutton("")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$fileinfoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             ibutton("")
             infobutton("infoRODataOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Estimates ----
@@ -593,10 +598,14 @@ infobutton <- reactiveVal("")
           observe({
             ibutton(input$filesROEstimatesOUP)
             infobutton("")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$fileinfoROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             ibutton("")
             infobutton("infoROEstimatesOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             removeModal(session)
@@ -796,6 +805,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoRORegimeOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             removeModal(session)
@@ -1022,6 +1033,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoRODecisionOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             removeModal(session)
@@ -1226,6 +1239,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoROPassageTimeOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             removeModal(session)
@@ -1346,6 +1361,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoADriftOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Diffusion ----
@@ -1508,6 +1525,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoADiffusionOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Mean ----
@@ -1713,6 +1732,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAMeanOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Mean convergence----
@@ -1834,6 +1855,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAMeanCOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAMeanCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Variance ----
@@ -2041,6 +2064,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAVarianceOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Variance convergence----
@@ -2162,6 +2187,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAVarianceCOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAVarianceCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Transition Density ----
@@ -2363,6 +2390,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoADensityOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoADensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Transition Probability ----
@@ -2564,6 +2593,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAProbabilityOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Double Integral ----
@@ -2765,6 +2796,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoADoubleOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoADoubleOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option ----
@@ -3025,6 +3058,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAOptionOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option Envelope----
@@ -3281,6 +3316,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAEnvelopeOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Decision Threshold ----
@@ -3464,6 +3501,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoADecisionOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Obligation ----
@@ -3720,6 +3759,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAObligationOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAObligationOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Mode, Median and Mean ----
@@ -3935,6 +3976,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAPTModeMedianMeanOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAPTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Variance ----
@@ -4118,6 +4161,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAPTVarianceOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAPTVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Percentiles ----
@@ -4339,6 +4384,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAPTPercentilesOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAPTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Density ----
@@ -4552,6 +4599,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAPTDensityOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAPTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time Probability ----
@@ -4759,6 +4808,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoAPTProbabilityOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAPTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
@@ -4881,6 +4932,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoFDDriftOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Diffusion ----
@@ -5046,6 +5099,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoFDDiffusionOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Terminal Values ----
@@ -5203,6 +5258,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoFDTerminalOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option ----
@@ -5458,6 +5515,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoFDOptionOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option Envelope ----
@@ -5712,6 +5771,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoFDEnvelopeOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Decision Threshold ----
@@ -5910,6 +5971,8 @@ infobutton <- reactiveVal("")
           observe({
             ibutton("")
             infobutton("infoFDDecisionOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
@@ -6186,10 +6249,14 @@ infobutton <- reactiveVal("")
           observe({
             ibutton(input$filesMLDataOUP)
             infobutton("")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$fileinfoMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             ibutton("")
             infobutton("infoMLDataOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Log Likelihood ----
@@ -6518,10 +6585,14 @@ infobutton <- reactiveVal("")
           observe({
             ibutton(input$filesMLLikelihoodOUP)
             infobutton("")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$fileinfoMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             ibutton("")
             infobutton("infoMLLikelihoodOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Estimates ----
@@ -6801,10 +6872,14 @@ infobutton <- reactiveVal("")
           observe({
             ibutton(input$filesMLEstimatesOUP)
             infobutton("")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$fileinfoMLEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             ibutton("")
             infobutton("infoMLEstimatesOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoMLEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Goodness-of-Fit ----
@@ -7063,10 +7138,14 @@ infobutton <- reactiveVal("")
           observe({
             ibutton(input$filesMLGoodnessOUP)
             infobutton("")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$fileinfoMLGoodnessOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             ibutton("")
             infobutton("infoMLGoodnessOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoMLGoodnessOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Likelihood Ratio Test ----
@@ -7404,10 +7483,14 @@ infobutton <- reactiveVal("")
           observe({
             ibutton(input$filesMLRatioOUP)
             infobutton("")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$fileinfoMLRatioOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             ibutton("")
             infobutton("infoMLRatioOUP")
+            if(infotoggle()) { infotoggle(FALSE) }
+            else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoMLRatioOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
@@ -9073,5 +9156,5 @@ infobutton <- reactiveVal("")
     }
     # end ----
     showModal(content,session)
-  }) %>% bindEvent(ibutton(), infobutton())
+  }) %>% bindEvent(ibutton(),infobutton(),infotoggle())
 })
