@@ -37,9 +37,8 @@ shinyUI(
               column(actionButton("infoRODataOUP","Info",width="100%",class="btn-primary"),title="about Data",style="padding-top: 32px;",width=2)
             ),
             # plot
-            wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyRODataOUP")
+            fluidRow(
+              wellPanel(class="wellPlotOUP",style="height: 402px;",plotlyOutput("plotlyRODataOUP"))
             ),
             value="RODataOUP"
           ),
@@ -66,9 +65,8 @@ shinyUI(
               column(actionButton("infoROEstimatesOUP","Info",width="100%",class="btn-primary"),title="about Estimates",style="padding-top: 32px;",width=2)
             ),
             # plot
-            wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyROEstimatesOUP")
+            fluidRow(
+              wellPanel(class="wellPlotOUP",style="height: 402px;",plotlyOutput("plotlyROEstimatesOUP"))
             ),
             value="ROEstimatesOUP"
           ),
@@ -108,8 +106,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyRORegimeOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyRORegimeOUP")
             ),
             value="RORegimeOUP"
           ),
@@ -149,8 +146,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyRODecisionOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyRODecisionOUP")
             ),
             value="RODecisionOUP"
           ),
@@ -190,8 +186,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyROPassageTimeOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyROPassageTimeOUP")
             ),
             value="ROPassageTimeOUP"
           ),
@@ -230,8 +225,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyADriftOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADriftOUP")
             ),
             value="ADriftOUP"
           ),
@@ -263,8 +257,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyADiffusionOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADiffusionOUP")
             ),
             value="ADiffusionOUP"
           ),
@@ -307,8 +300,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAMeanOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAMeanOUP")
             ),
             value="AMeanOUP"
           ),
@@ -349,8 +341,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAMeanCOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAMeanCOUP")
             ),
             value="AMeanCOUP"
           ),
@@ -393,8 +384,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAVarianceOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAVarianceOUP")
             ),
             value="AVarianceOUP"
           ),
@@ -434,8 +424,7 @@ shinyUI(
               column(actionButton("plotAVarianceCOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
             ),
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAVarianceCOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAVarianceCOUP")
             ),
             value="AVarianceCOUP"
           ),
@@ -478,8 +467,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyADensityOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADensityOUP")
             ),
             value="ADensityOUP"
           ),
@@ -522,8 +510,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAProbabilityOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAProbabilityOUP")
             ),
             value="AProbabilityOUP"
           ),
@@ -566,8 +553,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyADoubleOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADoubleOUP")
             ),
             value="ADoubleOUP"
           ),
@@ -610,8 +596,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAOptionOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAOptionOUP")
             ),
             value="AOptionOUP"
           ),
@@ -654,8 +639,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAEnvelopeOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAEnvelopeOUP")
             ),
             value="AEnvelopeOUP"
           ),
@@ -692,8 +676,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyADecisionOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADecisionOUP")
             ),
             value="ADecisionOUP"
           ),
@@ -736,8 +719,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAObligationOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAObligationOUP")
             ),
             value="AObligationOUP"
           ),
@@ -780,8 +762,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAPTModeMedianMeanOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTModeMedianMeanOUP")
             ),
             value="APTModeMedianMeanOUP"
           ),
@@ -819,8 +800,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAPTVarianceOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTVarianceOUP")
             ),
             value="APTVarianceOUP"
           ),
@@ -863,8 +843,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAPTPercentilesOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTPercentilesOUP")
             ),
             value="APTPercentilesOUP"
           ),
@@ -907,8 +886,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAPTDensityOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTDensityOUP")
             ),
             value="APTDensityOUP"
           ),
@@ -951,8 +929,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyAPTProbabilityOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTProbabilityOUP")
             ),
             value="APTProbabilityOUP"
           ),
@@ -990,8 +967,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyFDDriftOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDriftOUP")
             ),
             value="FDDriftOUP"
           ),
@@ -1022,8 +998,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyFDDiffusionOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDiffusionOUP")
             ),
             value="FDDiffusionOUP"
           ),
@@ -1031,7 +1006,7 @@ shinyUI(
           nav_panel("Terminal Values",
             # User input
             fixedRow(style="height: 136px;",
-              column(uiOutput("VFDTerminalOUP"),title="terminal values",width=4),
+              column(selectInput("VFDTerminalOUP",label="V",choices=""),title="terminal values",width=4),
               column(numericInput("xFromFDTerminalOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDTerminalOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDTerminalOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
@@ -1053,8 +1028,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyFDTerminalOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDTerminalOUP")
             ),
             value="FDTerminalOUP"
           ),
@@ -1062,7 +1036,7 @@ shinyUI(
           nav_panel("Option",
             # User input
             fixedRow(style="height: 60px;",
-              column(uiOutput("VFDOptionOUP"),title="terminal values",width=4),
+              column(selectInput("VFDOptionOUP",label="V",choices=""),title="terminal values",width=4),
               column(numericInput("xFromFDOptionOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDOptionOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDOptionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2),
@@ -1096,8 +1070,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyFDOptionOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDOptionOUP")
             ),
             value="FDOptionOUP"
           ),
@@ -1105,7 +1078,7 @@ shinyUI(
           nav_panel("Option Envelope",
             # User input
             fixedRow(style="height: 60px;",
-              column(uiOutput("VFDEnvelopeOUP"),title="terminal values",width=4),
+              column(selectInput("VFDEnvelopeOUP",label="V",choices=""),title="terminal values",width=4),
               column(numericInput("xFromFDEnvelopeOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDEnvelopeOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDEnvelopeOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2),
@@ -1139,8 +1112,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyFDEnvelopeOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDEnvelopeOUP")
             ),
             value="FDEnvelopeOUP"
           ),
@@ -1148,7 +1120,7 @@ shinyUI(
           nav_panel("Decision Threshold",
             # User input
             fixedRow(style="height: 60px;",
-              column(uiOutput("VFDDecisionOUP"),title="terminal values",width=4),
+              column(selectInput("VFDDecisionOUP",label="V",choices=""),title="terminal values",width=4),
               column(numericInput("xFromFDDecisionOUP",label="x:From",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xToFDDecisionOUP",label="x:To",value="",step="any",width="100%"),title="stochastic states",width=2),
               column(numericInput("xByFDDecisionOUP",label="x:By",value="",step="any",width="100%"),title="state increment",width=2)
@@ -1177,8 +1149,7 @@ shinyUI(
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyFDDecisionOUP")
+              style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDecisionOUP")
             ),
             value="FDDecisionOUP"
           ),
@@ -1215,9 +1186,8 @@ shinyUI(
               column(actionButton("infoMLDataOUP","Info",width="100%",class="btn-primary"),title="about Data",style="padding-top: 32px;",width=2)
             ),
             # plot
-            wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyMLDataOUP")
+            fluidRow(
+              wellPanel(class="wellPlotOUP",style="height: 402px;",plotlyOutput("plotlyMLDataOUP"))
             ),
             value="MLDataOUP"
           ),
@@ -1246,9 +1216,8 @@ shinyUI(
               column(actionButton("infoMLLikelihoodOUP","Info",width="100%",class="btn-primary"),title="about Log Likelihood",style="padding-top: 32px;",width=2)
             ),
             # plot
-            wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyMLLikelihoodOUP")
+            fluidRow(
+              wellPanel(class="wellPlotOUP",style="height: 402px;",plotlyOutput("plotlyMLLikelihoodOUP"))
             ),
             value="MLLikelihoodOUP"
           ),
@@ -1263,8 +1232,7 @@ shinyUI(
             ),
             # parameters, likelihood and such
             fixedRow(
-              column(width=2),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLEstimatesOUP")),width=8)
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLEstimatesOUP")),width=12)
             ),
             # buttons, begin and end dates
             fixedRow(
@@ -1275,9 +1243,8 @@ shinyUI(
               column(actionButton("infoMLEstimatesOUP","Info",width="100%",class="btn-primary"),title="about Estimates",style="padding-top: 32px;",width=2)
             ),
             # plot
-            wellPanel(class="wellPlotOUP",
-              style="margin: 0 auto; height: 402px; width: 580px;",
-              plotlyOutput("plotlyMLEstimatesOUP")
+            fluidRow(
+              wellPanel(class="wellPlotOUP",style="height: 402px;",plotlyOutput("plotlyMLEstimatesOUP"))
             ),
             value="MLEstimatesOUP"
           ),
@@ -1291,9 +1258,8 @@ shinyUI(
               column(selectInput("stateMLGoodnessOUP",label="State",choices=""),title="state variable",width=3)
             ),
             # parameters, likelihood and such
-            fixedRow(style="height: 99px;",
-              column(width=2),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLGoodnessOUP")),width=8)
+            fixedRow(style="height: 98px;",
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLGoodnessOUP")),width=12)
             ),
             # buttons
             fixedRow(
@@ -1307,7 +1273,7 @@ shinyUI(
             # table
             fixedRow(
               column(width=3),
-              column(wellPanel(class="wellTableOUP",style="margin-top: 25px; padding: 6px 0px 18px 0px; width=100%;",uiOutput("goodsMLGoodnessOUP")),width=6)
+              column(wellPanel(class="wellTableOUP",style="margin-top: 26px; padding: 6px 0px 18px 0px; width=100%;",uiOutput("goodsMLGoodnessOUP")),width=6)
             ),
             value="MLGoodnessOUP"
           ),
@@ -1322,8 +1288,7 @@ shinyUI(
             ),
             # parameters, likelihood and such
             fixedRow(
-              column(width=2),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLRatioOUP")),width=8)
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramMLRatioOUP")),width=12)
             ),
             # restrictions and buttons
             fixedRow(

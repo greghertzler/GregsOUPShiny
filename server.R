@@ -5109,7 +5109,7 @@ infotoggle <- reactiveVal(FALSE)
           # dynamic UI ----
           V_info <- FD$get_V_info()
           names <- V_info[[3]]
-          output$VFDTerminalOUP <- renderUI({ selectInput("VFDTerminalOUP",label="V",choices=names) })
+          updateSelectInput(session,"VFDTerminalOUP",label="V",choices=names)
           # define set/get functions ----
           FromR6toUI <- function()
           {
@@ -5129,11 +5129,6 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"xFromFDTerminalOUP",value=xFrom)
             updateNumericInput(session,"xToFDTerminalOUP",value=xTo)
             updateNumericInput(session,"xByFDTerminalOUP",value=xBy)
-            updateNumericInput(session,"V1FDTerminalOUP",label="~",value=NA)
-            updateNumericInput(session,"V2FDTerminalOUP",label="~",value=NA)
-            updateNumericInput(session,"V3FDTerminalOUP",label="~",value=NA)
-            updateNumericInput(session,"V4FDTerminalOUP",label="~",value=NA)
-            updateNumericInput(session,"V5FDTerminalOUP",label="~",value=NA)
             n <- length(V_args)
             i <- 0
             while(i < n)
@@ -5150,11 +5145,11 @@ infotoggle <- reactiveVal(FALSE)
             while(i < 5)
             {
               i <- i+1
-              if(i == 1) { updateNumericInput(session,"V1FDTerminalOUP",label="~",value=NA) }
-              else if(i == 2) { updateNumericInput(session,"V2FDTerminalOUP",label="~",value=NA) }
-              else if(i == 3) { updateNumericInput(session,"V3FDTerminalOUP",label="~",value=NA) }
-              else if(i == 4) { updateNumericInput(session,"V4FDTerminalOUP",label="~",value=NA) }
-              else if(i == 5) { updateNumericInput(session,"V5FDTerminalOUP",label="~",value=NA) }
+              if(i == 1) { updateNumericInput(session,"V1FDTerminalOUP",label="~",value="") }
+              else if(i == 2) { updateNumericInput(session,"V2FDTerminalOUP",label="~",value="") }
+              else if(i == 3) { updateNumericInput(session,"V3FDTerminalOUP",label="~",value="") }
+              else if(i == 4) { updateNumericInput(session,"V4FDTerminalOUP",label="~",value="") }
+              else if(i == 5) { updateNumericInput(session,"V5FDTerminalOUP",label="~",value="") }
             }
           }
           FromUItoR6 <- function()
@@ -5194,15 +5189,15 @@ infotoggle <- reactiveVal(FALSE)
               }
             }
             v1 <- input$V1FDTerminalOUP
-            if(!is.numeric(v1)) { v1 <- NULL }
+            if(is.na(v1)) { v1 <- NULL }
             v2 <- input$V2FDTerminalOUP
-            if(!is.numeric(v2)) { v2 <- NULL }
+            if(is.na(v2)) { v2 <- NULL }
             v3 <- input$V3FDTerminalOUP
-            if(!is.numeric(v3)) { v3 <- NULL }
+            if(is.na(v3)) { v3 <- NULL }
             v4 <- input$V4FDTerminalOUP
-            if(!is.numeric(v4)) { v4 <- NULL }
+            if(is.na(v4)) { v4 <- NULL }
             v5 <- input$V5FDTerminalOUP
-            if(!is.numeric(v5)) { v5 <- NULL }
+            if(is.na(v5)) { v5 <- NULL }
             # Set to OUP ----
             if(xOK) { FD$set_x_stoch_args(x=seq(from=xFrom,to=xTo,by=xBy)) }
             else { FD$axes_x_stoch() }
@@ -5268,7 +5263,7 @@ infotoggle <- reactiveVal(FALSE)
           # dynamic UI ----
           V_info <- FD$get_V_info()
           names <- V_info[[3]]
-          output$VFDOptionOUP <- renderUI({ selectInput("VFDOptionOUP",label="V",choices=names) })
+          updateSelectInput(session,"VFDOptionOUP",label="V",choices=names)
           # define set/get functions ----
           FromR6toUI <- function()
           {
@@ -5307,10 +5302,6 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"xToFDOptionOUP",value=xTo)
             updateNumericInput(session,"xByFDOptionOUP",value=xBy)
             updateNumericInput(session,"v1FDOptionOUP",label="~",value=NA)
-            updateNumericInput(session,"v2FDOptionOUP",label="~",value=NA)
-            updateNumericInput(session,"v3FDOptionOUP",label="~",value=NA)
-            updateNumericInput(session,"v4FDOptionOUP",label="~",value=NA)
-            updateNumericInput(session,"v5FDOptionOUP",label="~",value=NA)
             n <- length(V_args)
             i <- 0
             while(i < n)
@@ -5327,11 +5318,11 @@ infotoggle <- reactiveVal(FALSE)
             while(i < 5)
             {
               i <- i+1
-              if(i == 1) { updateNumericInput(session,"V1FDOptionOUP",label="~",value=NA) }
-              else if(i == 2) { updateNumericInput(session,"V2FDOptionOUP",label="~",value=NA) }
-              else if(i == 3) { updateNumericInput(session,"V3FDOptionOUP",label="~",value=NA) }
-              else if(i == 4) { updateNumericInput(session,"V4FDOptionOUP",label="~",value=NA) }
-              else if(i == 5) { updateNumericInput(session,"V5FDOptionOUP",label="~",value=NA) }
+              if(i == 1) { updateNumericInput(session,"V1FDOptionOUP",label="~",value="") }
+              else if(i == 2) { updateNumericInput(session,"V2FDOptionOUP",label="~",value="") }
+              else if(i == 3) { updateNumericInput(session,"V3FDOptionOUP",label="~",value="") }
+              else if(i == 4) { updateNumericInput(session,"V4FDOptionOUP",label="~",value="") }
+              else if(i == 5) { updateNumericInput(session,"V5FDOptionOUP",label="~",value="") }
             }
           }
           FromUItoR6 <- function()
@@ -5391,15 +5382,15 @@ infotoggle <- reactiveVal(FALSE)
             r <- input$rFDOptionOUP
             if(!is.numeric(r)) { r <- 0 }
             v1 <- input$V1FDOptionOUP
-            if(!is.numeric(v1)) { v1 <- NULL }
+            if(is.na(v1)) { v1 <- NULL }
             v2 <- input$V2FDOptionOUP
-            if(!is.numeric(v2)) { v2 <- NULL }
+            if(is.na(v2)) { v2 <- NULL }
             v3 <- input$V3FDOptionOUP
-            if(!is.numeric(v3)) { v3 <- NULL }
+            if(is.na(v3)) { v3 <- NULL }
             v4 <- input$V4FDOptionOUP
-            if(!is.numeric(v4)) { v4 <- NULL }
+            if(is.na(v4)) { v4 <- NULL }
             v5 <- input$V5FDOptionOUP
-            if(!is.numeric(v5)) { v5 <- NULL }
+            if(is.na(v5)) { v5 <- NULL }
             # Set to OUP ----
             FD$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             if(xOK)
@@ -5413,7 +5404,7 @@ infotoggle <- reactiveVal(FALSE)
             else
             {
               FD$axes_x_stoch()
-              FD$set_x_stoch_args(r=r,skip=skip)
+              FD$set_x_stoch_args(r=r)
             }
             FD$set_V_args(NULL,NULL,v1,v2,v3,v4,v5)
           }
@@ -5525,7 +5516,7 @@ infotoggle <- reactiveVal(FALSE)
           # dynamic UI ----
           V_info <- FD$get_V_info()
           names <- V_info[[3]]
-          output$VFDEnvelopeOUP <- renderUI({ selectInput("VFDEnvelopeOUP",label="V",choices=names) })
+          updateSelectInput(session,"VFDEnvelopeOUP",label="V",choices=names)
           # define set/get functions ----
           FromR6toUI <- function()
           {
@@ -5563,11 +5554,6 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"xFromFDEnvelopeOUP",value=xFrom)
             updateNumericInput(session,"xToFDEnvelopeOUP",value=xTo)
             updateNumericInput(session,"xByFDEnvelopeOUP",value=xBy)
-            updateNumericInput(session,"v1FDEnvelopeOUP",label="~",value=NA)
-            updateNumericInput(session,"v2FDEnvelopeOUP",label="~",value=NA)
-            updateNumericInput(session,"v3FDEnvelopeOUP",label="~",value=NA)
-            updateNumericInput(session,"v4FDEnvelopeOUP",label="~",value=NA)
-            updateNumericInput(session,"v5FDEnvelopeOUP",label="~",value=NA)
             n <- length(V_args)
             i <- 0
             while(i < n)
@@ -5584,11 +5570,11 @@ infotoggle <- reactiveVal(FALSE)
             while(i < 5)
             {
               i <- i+1
-              if(i == 1) { updateNumericInput(session,"V1FDEnvelopeOUP",label="~",value=NA) }
-              else if(i == 2) { updateNumericInput(session,"V2FDEnvelopeOUP",label="~",value=NA) }
-              else if(i == 3) { updateNumericInput(session,"V3FDEnvelopeOUP",label="~",value=NA) }
-              else if(i == 4) { updateNumericInput(session,"V4FDEnvelopeOUP",label="~",value=NA) }
-              else if(i == 5) { updateNumericInput(session,"V5FDEnvelopeOUP",label="~",value=NA) }
+              if(i == 1) { updateNumericInput(session,"V1FDEnvelopeOUP",label="~",value="") }
+              else if(i == 2) { updateNumericInput(session,"V2FDEnvelopeOUP",label="~",value="") }
+              else if(i == 3) { updateNumericInput(session,"V3FDEnvelopeOUP",label="~",value="") }
+              else if(i == 4) { updateNumericInput(session,"V4FDEnvelopeOUP",label="~",value="") }
+              else if(i == 5) { updateNumericInput(session,"V5FDEnvelopeOUP",label="~",value="") }
             }
           }
           FromUItoR6 <- function()
@@ -5601,11 +5587,11 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(mu)) { mu <- 0 }
             sigma <- input$sigmaFDEnvelopeOUP
             if(!is.numeric(sigma)) { sigma <- 0 }
-            sFrom <- input$sFromFDOptionOUP
+            sFrom <- input$sFromFDEnvelopeOUP
             if(!is.numeric(sFrom)) { sFrom <- 0 }
-            sTo <- input$sToFDOptionOUP
+            sTo <- input$sToFDEnvelopeOUP
             if(!is.numeric(sTo)) { sTo <- 0 }
-            sBy <- input$sByFDOptionOUP
+            sBy <- input$sByFDEnvelopeOUP
             if(!is.numeric(sBy)) { sBy <- 0 }
             if(abs(sTo-sFrom) < abs(sBy)) { sBy <- sTo-sFrom }
             if(abs(sTo-sFrom)/100 > abs(sBy)) { sBy <- (sTo-sFrom)/100 }
@@ -5647,19 +5633,16 @@ infotoggle <- reactiveVal(FALSE)
             }
             r <- input$rFDEnvelopeOUP
             if(!is.numeric(r)) { r <- 0 }
-            skip <- as.integer(sBy/xBy*100)
-            if(skip < 1) { skip <- 1 }
-            else if(skip >20) { skip <- 20 }
             v1 <- input$V1FDEnvelopeOUP
-            if(!is.numeric(v1)) { v1 <- NULL }
+            if(is.na(v1)) { v1 <- NULL }
             v2 <- input$V2FDEnvelopeOUP
-            if(!is.numeric(v2)) { v2 <- NULL }
+            if(is.na(v2)) { v2 <- NULL }
             v3 <- input$V3FDEnvelopeOUP
-            if(!is.numeric(v3)) { v3 <- NULL }
+            if(is.na(v3)) { v3 <- NULL }
             v4 <- input$V4FDEnvelopeOUP
-            if(!is.numeric(v4)) { v4 <- NULL }
+            if(is.na(v4)) { v4 <- NULL }
             v5 <- input$V5FDEnvelopeOUP
-            if(!is.numeric(v5)) { v5 <- NULL }
+            if(is.na(v5)) { v5 <- NULL }
             # Set to OUP ----
             FD$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             if(xOK)
@@ -5673,7 +5656,7 @@ infotoggle <- reactiveVal(FALSE)
             else
             {
               FD$axes_x_stoch()
-              FD$set_x_stoch_args(r=r,skip=skip)
+              FD$set_x_stoch_args(r=r)
             }
             FD$set_V_args(NULL,NULL,v1,v2,v3,v4,v5)
           }
@@ -5781,7 +5764,7 @@ infotoggle <- reactiveVal(FALSE)
           # dynamic UI ----
           V_info <- FD$get_V_info()
           names <- V_info[[3]]
-          output$VFDDecisionOUP <- renderUI({ selectInput("VFDDecisionOUP",label="V",choices=names) })
+          updateSelectInput(session,"VFDDecisionOUP",choices=names)
           # define set/get functions ----
           FromR6toUI <- function()
           {
@@ -5812,11 +5795,6 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"xFromFDDecisionOUP",value=xFrom)
             updateNumericInput(session,"xToFDDecisionOUP",value=xTo)
             updateNumericInput(session,"xByFDDecisionOUP",value=xBy)
-            updateNumericInput(session,"v1FDDecisionOUP",label="~",value=NA)
-            updateNumericInput(session,"v2FDDecisionOUP",label="~",value=NA)
-            updateNumericInput(session,"v3FDDecisionOUP",label="~",value=NA)
-            updateNumericInput(session,"v4FDDecisionOUP",label="~",value=NA)
-            updateNumericInput(session,"v5FDDecisionOUP",label="~",value=NA)
             n <- length(V_args)
             i <- 0
             while(i < n)
@@ -5833,11 +5811,11 @@ infotoggle <- reactiveVal(FALSE)
             while(i < 5)
             {
               i <- i+1
-              if(i == 1) { updateNumericInput(session,"V1FDDecisionOUP",label="~",value=NA) }
-              else if(i == 2) { updateNumericInput(session,"V2FDDecisionOUP",label="~",value=NA) }
-              else if(i == 3) { updateNumericInput(session,"V3FDDecisionOUP",label="~",value=NA) }
-              else if(i == 4) { updateNumericInput(session,"V4FDDecisionOUP",label="~",value=NA) }
-              else if(i == 5) { updateNumericInput(session,"V5FDDecisionOUP",label="~",value=NA) }
+              if(i == 1) { updateNumericInput(session,"V1FDDecisionOUP",label="~",value="") }
+              else if(i == 2) { updateNumericInput(session,"V2FDDecisionOUP",label="~",value="") }
+              else if(i == 3) { updateNumericInput(session,"V3FDDecisionOUP",label="~",value="") }
+              else if(i == 4) { updateNumericInput(session,"V4FDDecisionOUP",label="~",value="") }
+              else if(i == 5) { updateNumericInput(session,"V5FDDecisionOUP",label="~",value="") }
             }
           }
           FromUItoR6 <- function()
@@ -5895,15 +5873,15 @@ infotoggle <- reactiveVal(FALSE)
             else if(phi < 0) { phi <- -1 }
             else if(phi > 0) { phi <- 1 }
             v1 <- input$V1FDDecisionOUP
-            if(!is.numeric(v1)) { v1 <- NULL }
+            if(is.na(v1)) { v1 <- NULL }
             v2 <- input$V2FDDecisionOUP
-            if(!is.numeric(v2)) { v2 <- NULL }
+            if(is.na(v2)) { v2 <- NULL }
             v3 <- input$V3FDDecisionOUP
-            if(!is.numeric(v3)) { v3 <- NULL }
+            if(is.na(v3)) { v3 <- NULL }
             v4 <- input$V4FDDecisionOUP
-            if(!is.numeric(v4)) { v4 <- NULL }
+            if(is.na(v4)) { v4 <- NULL }
             v5 <- input$V5FDDecisionOUP
-            if(!is.numeric(v5)) { v5 <- NULL }
+            if(is.na(v5)) { v5 <- NULL }
             # Set to OUP ----
             FD$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             if(xOK)
@@ -7012,7 +6990,7 @@ infotoggle <- reactiveVal(FALSE)
                 updateSelectInput(session,"filesMLGoodnessOUP",choices=filelist,selected=dataname)
                 updateSelectInput(session,"timeMLGoodnessOUP",choices=framenames,selected=timename)
                 updateSelectInput(session,"stateMLGoodnessOUP",choices=framenames,selected=statename)
-                updateNumericInput(session,"rhorMLGoodnessOUP",value=NA)
+                updateNumericInput(session,"rhorMLGoodnessOUP",value="")
                 bounce[1] <<- 1
                 bounce[2] <<- 1
                 bounce[3] <<- 1
@@ -7259,9 +7237,9 @@ infotoggle <- reactiveVal(FALSE)
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
                 updateSelectInput(session,"timeMLRatioOUP",choices=framenames,selected=tname[7])
                 updateSelectInput(session,"stateMLRatioOUP",choices=framenames,selected=sname[7])
-                updateNumericInput(session,"rhorMLRatioOUP",value=NA)
-                updateNumericInput(session,"murMLRatioOUP",value=NA)
-                updateNumericInput(session,"sigmarMLRatioOUP",value=NA)
+                updateNumericInput(session,"rhorMLRatioOUP",value="")
+                updateNumericInput(session,"murMLRatioOUP",value="")
+                updateNumericInput(session,"sigmarMLRatioOUP",value="")
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
@@ -7294,9 +7272,9 @@ infotoggle <- reactiveVal(FALSE)
                 ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[7],timename=tname[7],statename=sname[7],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-                updateNumericInput(session,"rhorMLRatioOUP",value=NA)
-                updateNumericInput(session,"murMLRatioOUP",value=NA)
-                updateNumericInput(session,"sigmarMLRatioOUP",value=NA)
+                updateNumericInput(session,"rhorMLRatioOUP",value="")
+                updateNumericInput(session,"murMLRatioOUP",value="")
+                updateNumericInput(session,"sigmarMLRatioOUP",value="")
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
@@ -7327,9 +7305,9 @@ infotoggle <- reactiveVal(FALSE)
                 ML$set_timeseries_info(tbeg=beg,tend=end,dataname=dname[7],timename=tname[7],statename=sname[7],NULL)
 # df_info <- ML$get_timeseries_info()
 # message(df_info$tbeg,df_info$tend,df_info$dataname,df_info$timename,df_info$statename)
-                updateNumericInput(session,"rhorMLRatioOUP",value=NA)
-                updateNumericInput(session,"murMLRatioOUP",value=NA)
-                updateNumericInput(session,"sigmarMLRatioOUP",value=NA)
+                updateNumericInput(session,"rhorMLRatioOUP",value="")
+                updateNumericInput(session,"murMLRatioOUP",value="")
+                updateNumericInput(session,"sigmarMLRatioOUP",value="")
                 lnL_params[1] <<- 0
                 lnL_params[2] <<- 0
                 lnL_params[3] <<- 0
@@ -7364,9 +7342,9 @@ infotoggle <- reactiveVal(FALSE)
               LRT_params[1] <<- NA
               LRT_params[2] <<- NA
               LRT_params[3] <<- NA
-              updateNumericInput(session,"rhorMLRatioOUP",value=NA)
-              updateNumericInput(session,"murMLRatioOUP",value=NA)
-              updateNumericInput(session,"sigmarMLRatioOUP",value=NA)
+              updateNumericInput(session,"rhorMLRatioOUP",value="")
+              updateNumericInput(session,"murMLRatioOUP",value="")
+              updateNumericInput(session,"sigmarMLRatioOUP",value="")
             }
             else
             {
@@ -7507,12 +7485,12 @@ infotoggle <- reactiveVal(FALSE)
     }
     # end ----
   })
-  # dark mode switch
+  # dark mode switch ----
   observeEvent(input$darkmodeswitch, {
     if (input$darkmodeswitch == "light") { A$set_plot_info(theme="light") }
     else { A$set_plot_info(theme="dark") }
   })
-  # modal dialogs
+  # modal dialog ----
   observe({
     content <- ""
     # file info ----
@@ -8658,8 +8636,10 @@ infotoggle <- reactiveVal(FALSE)
         HTML("Analytical option pricing has a kinked terminal value, but the Finite Difference Method is more flexible.  Any terminal value can be pre-calculated and entered into the option pricing calculations.  Some likely terminal values are programmed here for convenience.<br><br>
           &emsp;&emsp;The R6 methods:<br>
           &emsp;&emsp;&emsp;TerminalValue_Linear(<i>x,x</i>o<i>,v</i>s)<br>
-          &emsp;&emsp;&emsp;TerminalValue_Kinked(<i>x,x</i>o<i>,v</i>s<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Degenerate(<i>x,x</i>o<i>,V</i>max<i>,V</i>min)<br>
           &emsp;&emsp;&emsp;TerminalValue_Stepped(<i>x,x</i>i<i>,v</i>s<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Kinked(<i>x,x</i>o<i>,v</i>s<i>,V</i>max<i>,V</i>min)<br>
+          &emsp;&emsp;&emsp;TerminalValue_Butterfly(<i>x,x</i>i<i>,x</i>m<i>,v</i>s<i>,V</i>max<i>,V</i>min)<br>
           &emsp;&emsp;&emsp;TerminalValue_Mitscherlich(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
           &emsp;&emsp;&emsp;TerminalValue_Gompertz(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
           &emsp;&emsp;&emsp;TerminalValue_Logistic(<i>x,x</i>i<i>,v</i>r<i>,V</i>max<i>,V</i>min)<br>
@@ -8669,7 +8649,7 @@ infotoggle <- reactiveVal(FALSE)
           &emsp;&emsp;&emsp;<i>x</i> are the stochastic states;<br>
           &emsp;&emsp;&emsp;<i>x</i>o is the state at the origin, kink, or step;<br>
           &emsp;&emsp;&emsp;<i>x</i>i is the state at the inflection point;<br>
-          &emsp;&emsp;&emsp;<i>x</i>m is the state at the maximum;<br>
+          &emsp;&emsp;&emsp;<i>x</i>m is the state at the maximum or kink;<br>
           &emsp;&emsp;&emsp;<i>v</i>s is the slope or the direction of a step;<br>
           &emsp;&emsp;&emsp;<i>v</i>r is the rate of change;<br>
           &emsp;&emsp;&emsp;<i>V</i>max is the maximum terminal value;<br>
