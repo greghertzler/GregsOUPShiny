@@ -5108,8 +5108,8 @@ infotoggle <- reactiveVal(FALSE)
         {
           # dynamic UI ----
           V_info <- FD$get_V_info()
-          names <- V_info[[3]]
-          updateSelectInput(session,"VFDTerminalOUP",label="V",choices=names)
+          choices <- V_info[[3]]
+          updateSelectInput(session,"VFDTerminalOUP",label="V",choices=choices)
           # define set/get functions ----
           FromR6toUI <- function()
           {
@@ -5123,9 +5123,9 @@ infotoggle <- reactiveVal(FALSE)
             xTo <- x[n]
             if(n > 1) { xBy <- (xTo-xFrom)/(n-1) }
             else  {xBy <- 0 }
-            Ix <- V_info[[1]]
+            name <- V_info[[2]]
             # Set to UI ----
-            updateSelectInput(session,"VFDTerminalOUP",selected=names[Ix])
+            updateSelectInput(session,"VFDTerminalOUP",selected=name)
             updateNumericInput(session,"xFromFDTerminalOUP",value=xFrom)
             updateNumericInput(session,"xToFDTerminalOUP",value=xTo)
             updateNumericInput(session,"xByFDTerminalOUP",value=xBy)
@@ -5207,7 +5207,7 @@ infotoggle <- reactiveVal(FALSE)
           FromR6toUI()
           # select ----
           observe({
-            FD$set_V_info(input$VFDTerminalOUP)
+            FD$set_V_info(NULL,input$VFDTerminalOUP)
             FromR6toUI()
           }) %>% bindEvent(input$VFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # observe undo, axes and plot (or enter key) ----
@@ -5262,8 +5262,8 @@ infotoggle <- reactiveVal(FALSE)
         {
           # dynamic UI ----
           V_info <- FD$get_V_info()
-          names <- V_info[[3]]
-          updateSelectInput(session,"VFDOptionOUP",label="V",choices=names)
+          choices <- V_info[[3]]
+          updateSelectInput(session,"VFDOptionOUP",label="V",choices=choices)
           # define set/get functions ----
           FromR6toUI <- function()
           {
@@ -5288,9 +5288,9 @@ infotoggle <- reactiveVal(FALSE)
             xTo <- x[n]
             if(n > 1) { xBy <- (xTo-xFrom)/(n-1) }
             else  {xBy <- 0 }
-            Ix <- V_info[[1]]
+            name <- V_info[[2]]
             # Set to UI ----
-            updateSelectInput(session,"VFDOptionOUP",selected=names[Ix])
+            updateSelectInput(session,"VFDOptionOUP",selected=name)
             updateNumericInput(session,"rhoFDOptionOUP",value=rho)
             updateNumericInput(session,"muFDOptionOUP",value=mu)
             updateNumericInput(session,"sigmaFDOptionOUP",value=sigma)
@@ -5412,7 +5412,7 @@ infotoggle <- reactiveVal(FALSE)
           FromR6toUI()
           # select ----
           observe({
-            FD$set_V_info(input$VFDOptionOUP)
+            FD$set_V_info(NULL,input$VFDOptionOUP)
             FromR6toUI()
           }) %>% bindEvent(input$VFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # observe undo, axes, plot (or enter key), left and rght ----
@@ -5515,8 +5515,8 @@ infotoggle <- reactiveVal(FALSE)
         {
           # dynamic UI ----
           V_info <- FD$get_V_info()
-          names <- V_info[[3]]
-          updateSelectInput(session,"VFDEnvelopeOUP",label="V",choices=names)
+          choices <- V_info[[3]]
+          updateSelectInput(session,"VFDEnvelopeOUP",label="V",choices=choices)
           # define set/get functions ----
           FromR6toUI <- function()
           {
@@ -5541,9 +5541,9 @@ infotoggle <- reactiveVal(FALSE)
             xTo <- x[n]
             if(n > 1) { xBy <- (xTo-xFrom)/(n-1) }
             else  {xBy <- 0 }
-            Ix <- V_info[[1]]
+            name <- V_info[[2]]
             # Set to UI ----
-            updateSelectInput(session,"VFDEnvelopeOUP",selected=names[Ix])
+            updateSelectInput(session,"VFDEnvelopeOUP",selected=name)
             updateNumericInput(session,"rhoFDEnvelopeOUP",value=rho)
             updateNumericInput(session,"muFDEnvelopeOUP",value=mu)
             updateNumericInput(session,"sigmaFDEnvelopeOUP",value=sigma)
@@ -5633,6 +5633,9 @@ infotoggle <- reactiveVal(FALSE)
             }
             r <- input$rFDEnvelopeOUP
             if(!is.numeric(r)) { r <- 0 }
+            skip <- as.integer(sBy/xBy*100)
+            if(skip < 1) { skip <- 1 }
+            else if(skip >20) { skip <- 20 }
             v1 <- input$V1FDEnvelopeOUP
             if(is.na(v1)) { v1 <- NULL }
             v2 <- input$V2FDEnvelopeOUP
@@ -5664,7 +5667,7 @@ infotoggle <- reactiveVal(FALSE)
           FromR6toUI()
           # select ----
           observe({
-            FD$set_V_info(input$VFDEnvelopeOUP)
+            FD$set_V_info(NULL,input$VFDEnvelopeOUP)
             FromR6toUI()
           }) %>% bindEvent(input$VFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # observe undo, axes, plot (or enter key), left and rght ----
@@ -5763,8 +5766,8 @@ infotoggle <- reactiveVal(FALSE)
         {
           # dynamic UI ----
           V_info <- FD$get_V_info()
-          names <- V_info[[3]]
-          updateSelectInput(session,"VFDDecisionOUP",choices=names)
+          choices <- V_info[[3]]
+          updateSelectInput(session,"VFDDecisionOUP",choices=choices)
           # define set/get functions ----
           FromR6toUI <- function()
           {
@@ -5784,9 +5787,9 @@ infotoggle <- reactiveVal(FALSE)
             xTo <- x[n]
             if(n > 1) { xBy <- (xTo-xFrom)/(n-1) }
             else  {xBy <- 0 }
-            Ix <- V_info[[1]]
+            name <- V_info[[2]]
             # Set to UI ----
-            updateSelectInput(session,"VFDDecisionOUP",selected=names[Ix])
+            updateSelectInput(session,"VFDDecisionOUP",selected=name)
             updateNumericInput(session,"rhoFDDecisionOUP",value=rho)
             updateNumericInput(session,"muFDDecisionOUP",value=mu)
             updateNumericInput(session,"sigmaFDDecisionOUP",value=sigma)
@@ -5903,7 +5906,7 @@ infotoggle <- reactiveVal(FALSE)
           FromR6toUI()
           # select ----
           observe({
-            FD$set_V_info(input$VFDDecisionOUP)
+            FD$set_V_info(NULL,input$VFDDecisionOUP)
             FromR6toUI()
           }) %>% bindEvent(input$VFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # observe undo, axes and plot (or enter key) ----
