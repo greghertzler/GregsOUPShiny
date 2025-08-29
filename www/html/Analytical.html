@@ -234,13 +234,13 @@ see the demo names and then type something like demo(A_DecisionThreshold).
 <li> <p><a href="#method-Analytical-sync_zyxt_stoch"><code>Analytical$sync_zyxt_stoch()</code></a>
 </p>
 </li>
-<li> <p><a href="#method-Analytical-get_default"><code>Analytical$get_default()</code></a>
+<li> <p><a href="#method-Analytical-undo_clear"><code>Analytical$undo_clear()</code></a>
 </p>
 </li>
-<li> <p><a href="#method-Analytical-default_save"><code>Analytical$default_save()</code></a>
+<li> <p><a href="#method-Analytical-undo_save"><code>Analytical$undo_save()</code></a>
 </p>
 </li>
-<li> <p><a href="#method-Analytical-default_read"><code>Analytical$default_read()</code></a>
+<li> <p><a href="#method-Analytical-undo_undo"><code>Analytical$undo_undo()</code></a>
 </p>
 </li>
 <li> <p><a href="#method-Analytical-Drift"><code>Analytical$Drift()</code></a>
@@ -1031,71 +1031,71 @@ see the demo names and then type something like demo(A_DecisionThreshold).
 
 
 <hr>
-<a id="method-Analytical-get_default"></a>
+<a id="method-Analytical-undo_clear"></a>
 
 
 
-<h4>Method <code>get_default()</code></h4>
+<h4>Method <code>undo_clear()</code></h4>
 
-<p>Get default
+<p>Clear undo list and save current arguments to list
 </p>
 
 
 <h5>Usage</h5>
 
-<div class="r"><pre>Analytical$get_default()</pre></div>
+<div class="r"><pre>Analytical$undo_clear()</pre></div>
 
 
 
 <h5>Returns</h5>
 
-<p>list(oup_params,z_stoch_args,y_stoch_args,x_stoch_args,t_stoch_args)
+<p>1
 </p>
 
 
 <hr>
-<a id="method-Analytical-default_save"></a>
+<a id="method-Analytical-undo_save"></a>
 
 
 
-<h4>Method <code>default_save()</code></h4>
+<h4>Method <code>undo_save()</code></h4>
 
-<p>Save to_default&ndash;current arguments are stored as defaults
+<p>Save current arguments to undo list
 </p>
 
 
 <h5>Usage</h5>
 
-<div class="r"><pre>Analytical$default_save()</pre></div>
+<div class="r"><pre>Analytical$undo_save()</pre></div>
 
 
 
 <h5>Returns</h5>
 
-<p>NULL
+<p>number of argument sets
 </p>
 
 
 <hr>
-<a id="method-Analytical-default_read"></a>
+<a id="method-Analytical-undo_undo"></a>
 
 
 
-<h4>Method <code>default_read()</code></h4>
+<h4>Method <code>undo_undo()</code></h4>
 
-<p>Read from default&ndash;defaults replace current arguments
+<p>Replace current arguments from undo list
 </p>
 
 
 <h5>Usage</h5>
 
-<div class="r"><pre>Analytical$default_read()</pre></div>
+<div class="r"><pre>Analytical$undo_undo()</pre></div>
 
 
 
 <h5>Returns</h5>
 
-<p>NULL
+<p>c(index of this argument set, number of argument sets)
 </p>
 
 

@@ -19,7 +19,7 @@ terminal values can also be entered.
 </p>
 
 
-<h3>Formaulas and methods:</h3>
+<h3>Formulas and methods:</h3>
 
 <div class="sourceCode"><pre>x stochastic
   Drift
@@ -28,6 +28,7 @@ terminal values can also be entered.
   TerminalValue_Degenerate
   TerminalValue_Stepped
   TerminalValue_Kinked
+  TerminalValue_Butterfly
   TerminalValue_Mitscherlich
   TerminalValue_Gompertz
   TerminalValue_Logistic
@@ -66,7 +67,7 @@ terminal values can also be entered.
   sigma: scale parameter
   xo:    state at the intercept, spike, step or kink
   xi:    state at the inflection point
-  xm:    state at the maximum
+  xm:    state at the maximum or kink
   vs:    slope or direction of a step
   vr:    rate of change
   Vmax:  maximum terminal value
@@ -181,6 +182,9 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 <li> <p><a href="#method-FiniteDifference-set_V_kinked_args"><code>FiniteDifference$set_V_kinked_args()</code></a>
 </p>
 </li>
+<li> <p><a href="#method-FiniteDifference-set_V_butterfly_args"><code>FiniteDifference$set_V_butterfly_args()</code></a>
+</p>
+</li>
 <li> <p><a href="#method-FiniteDifference-set_V_mitscherlich_args"><code>FiniteDifference$set_V_mitscherlich_args()</code></a>
 </p>
 </li>
@@ -226,6 +230,9 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 <li> <p><a href="#method-FiniteDifference-get_V_kinked_args"><code>FiniteDifference$get_V_kinked_args()</code></a>
 </p>
 </li>
+<li> <p><a href="#method-FiniteDifference-get_V_butterfly_args"><code>FiniteDifference$get_V_butterfly_args()</code></a>
+</p>
+</li>
 <li> <p><a href="#method-FiniteDifference-get_V_mitscherlich_args"><code>FiniteDifference$get_V_mitscherlich_args()</code></a>
 </p>
 </li>
@@ -256,13 +263,13 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 <li> <p><a href="#method-FiniteDifference-axes_x_stoch"><code>FiniteDifference$axes_x_stoch()</code></a>
 </p>
 </li>
-<li> <p><a href="#method-FiniteDifference-get_default"><code>FiniteDifference$get_default()</code></a>
+<li> <p><a href="#method-FiniteDifference-undo_clear"><code>FiniteDifference$undo_clear()</code></a>
 </p>
 </li>
-<li> <p><a href="#method-FiniteDifference-default_save"><code>FiniteDifference$default_save()</code></a>
+<li> <p><a href="#method-FiniteDifference-undo_save"><code>FiniteDifference$undo_save()</code></a>
 </p>
 </li>
-<li> <p><a href="#method-FiniteDifference-default_read"><code>FiniteDifference$default_read()</code></a>
+<li> <p><a href="#method-FiniteDifference-undo_undo"><code>FiniteDifference$undo_undo()</code></a>
 </p>
 </li>
 <li> <p><a href="#method-FiniteDifference-Drift"><code>FiniteDifference$Drift()</code></a>
@@ -281,6 +288,9 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 </p>
 </li>
 <li> <p><a href="#method-FiniteDifference-TerminalValue_Kinked"><code>FiniteDifference$TerminalValue_Kinked()</code></a>
+</p>
+</li>
+<li> <p><a href="#method-FiniteDifference-TerminalValue_Butterfly"><code>FiniteDifference$TerminalValue_Butterfly()</code></a>
 </p>
 </li>
 <li> <p><a href="#method-FiniteDifference-TerminalValue_Mitscherlich"><code>FiniteDifference$TerminalValue_Mitscherlich()</code></a>
@@ -656,6 +666,56 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 
 
 <hr>
+<a id="method-FiniteDifference-set_V_butterfly_args"></a>
+
+
+
+<h4>Method <code>set_V_butterfly_args()</code></h4>
+
+<p>Set V butterfly arguments
+</p>
+
+
+<h5>Usage</h5>
+
+<div class="r"><pre>FiniteDifference$set_V_butterfly_args(
+  xo = NULL,
+  xm = NULL,
+  vs = NULL,
+  Vmax = NULL,
+  Vmin = NULL
+)</pre></div>
+
+
+
+<h5>Arguments</h5>
+
+<div class="arguments">
+
+<dl>
+<dt><code>xo</code></dt><dd><p>state at the left wing</p>
+</dd>
+<dt><code>xm</code></dt><dd><p>state at the right wing</p>
+</dd>
+<dt><code>vs</code></dt><dd><p>slope</p>
+</dd>
+<dt><code>Vmax</code></dt><dd><p>maximum terminal value</p>
+</dd>
+<dt><code>Vmin</code></dt><dd><p>minimum terminal value</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+<h5>Returns</h5>
+
+<p>list(xo,xm,vs,Vmax,Vmin)
+</p>
+
+
+<hr>
 <a id="method-FiniteDifference-set_V_mitscherlich_args"></a>
 
 
@@ -948,7 +1008,7 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 
 <h5>Returns</h5>
 
-<p>list(xo,xi,xm,vs,vr,Vmax,Vmin)
+<p>list(Ix,name,v1,v2,v3,v4,v5)
 </p>
 
 
@@ -1080,7 +1140,7 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 
 <h5>Returns</h5>
 
-<p>list(x_stoch_args,abm_params,gbm_params,oup_params,ggp_params,V_linear_args,V_stepped_args,V_kinked_args,V_mitscherlich_args,V_gompertz_args,V_logistic_args,V_transcendental_args,V_yieldindex_args,plot_info)
+<p>list(oup_params,x_stoch_args,V_linear_args,V_stepped_args,V_kinked_args,V_butterfly_args,V_mitscherlich_args,V_gompertz_args,V_logistic_args,V_transcendental_args,V_yieldindex_args,plot_info)
 </p>
 
 
@@ -1219,6 +1279,29 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 <h5>Returns</h5>
 
 <p>list(xo,vs,Vmax,Vmin)
+</p>
+
+
+<hr>
+<a id="method-FiniteDifference-get_V_butterfly_args"></a>
+
+
+
+<h4>Method <code>get_V_butterfly_args()</code></h4>
+
+<p>Get V butterfly arguments
+</p>
+
+
+<h5>Usage</h5>
+
+<div class="r"><pre>FiniteDifference$get_V_butterfly_args()</pre></div>
+
+
+
+<h5>Returns</h5>
+
+<p>list(xo,xm,vs,Vmax,Vmin)
 </p>
 
 
@@ -1468,71 +1551,71 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 
 
 <hr>
-<a id="method-FiniteDifference-get_default"></a>
+<a id="method-FiniteDifference-undo_clear"></a>
 
 
 
-<h4>Method <code>get_default()</code></h4>
+<h4>Method <code>undo_clear()</code></h4>
 
-<p>Get default
+<p>Clear undo list and save current arguments to list
 </p>
 
 
 <h5>Usage</h5>
 
-<div class="r"><pre>FiniteDifference$get_default()</pre></div>
+<div class="r"><pre>FiniteDifference$undo_clear()</pre></div>
 
 
 
 <h5>Returns</h5>
 
-<p>list(oup_params,x_stoch_args,V_linear_args,V_degenerate_args,,V_stepped_args,V_kinked_args,V_mitscherlich_args,V_gompertz_args,V_logistic_args,V_transcendental_args,V_yieldindex_args,V_info)
+<p>1
 </p>
 
 
 <hr>
-<a id="method-FiniteDifference-default_save"></a>
+<a id="method-FiniteDifference-undo_save"></a>
 
 
 
-<h4>Method <code>default_save()</code></h4>
+<h4>Method <code>undo_save()</code></h4>
 
-<p>Save to_default-&gt;current arguments are stored as defaults
+<p>Save current arguments to undo list
 </p>
 
 
 <h5>Usage</h5>
 
-<div class="r"><pre>FiniteDifference$default_save()</pre></div>
+<div class="r"><pre>FiniteDifference$undo_save()</pre></div>
 
 
 
 <h5>Returns</h5>
 
-<p>NULL
+<p>number of argument sets
 </p>
 
 
 <hr>
-<a id="method-FiniteDifference-default_read"></a>
+<a id="method-FiniteDifference-undo_undo"></a>
 
 
 
-<h4>Method <code>default_read()</code></h4>
+<h4>Method <code>undo_undo()</code></h4>
 
-<p>Read from default&lt;-defaults replace current arguments
+<p>Replace current arguments from undo list
 </p>
 
 
 <h5>Usage</h5>
 
-<div class="r"><pre>FiniteDifference$default_read()</pre></div>
+<div class="r"><pre>FiniteDifference$undo_undo()</pre></div>
 
 
 
 <h5>Returns</h5>
 
-<p>NULL
+<p>c(index of this argument set, number of argument sets)
 </p>
 
 
@@ -1800,6 +1883,62 @@ see the demo names and then type something like demo(FD_DecisionThreshold).
 <dt><code>x</code></dt><dd><p>vector of n states</p>
 </dd>
 <dt><code>xo</code></dt><dd><p>state at the kink</p>
+</dd>
+<dt><code>vs</code></dt><dd><p>slope</p>
+</dd>
+<dt><code>Vmax</code></dt><dd><p>maximum terminal value</p>
+</dd>
+<dt><code>Vmin</code></dt><dd><p>minimum terminal value</p>
+</dd>
+<dt><code>plotit</code></dt><dd><p>TRUE or</p>
+</dd>
+</dl>
+
+</div>
+
+
+
+<h5>Returns</h5>
+
+<p>list(V(1xn))
+</p>
+
+
+<hr>
+<a id="method-FiniteDifference-TerminalValue_Butterfly"></a>
+
+
+
+<h4>Method <code>TerminalValue_Butterfly()</code></h4>
+
+<p>Create and plot butterfly terminal values
+</p>
+
+
+<h5>Usage</h5>
+
+<div class="r"><pre>FiniteDifference$TerminalValue_Butterfly(
+  x = NULL,
+  xo = NULL,
+  xm = NULL,
+  vs = NULL,
+  Vmax = NULL,
+  Vmin = NULL,
+  plotit = TRUE
+)</pre></div>
+
+
+
+<h5>Arguments</h5>
+
+<div class="arguments">
+
+<dl>
+<dt><code>x</code></dt><dd><p>vector of n states</p>
+</dd>
+<dt><code>xo</code></dt><dd><p>state at the left wing</p>
+</dd>
+<dt><code>xm</code></dt><dd><p>state at the right wing</p>
 </dd>
 <dt><code>vs</code></dt><dd><p>slope</p>
 </dd>
