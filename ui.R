@@ -12,7 +12,7 @@ shinyUI(
         tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
                   tags$link(rel="stylesheet",type="text/css",href="styles.css")),
         tags$script(src="script.js"),
-        add_busy_spinner(spin="swapping-squares",color="rgb(115,33,38)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
+        add_busy_spinner(spin="swapping-squares",color="rgb(115,33,38)",timeout=500,position=c("top-right"),margins=c(500,450),height="128px",width="128px"),
         navset_pill_list(
           # Data ----
           nav_panel("Data",
@@ -53,8 +53,7 @@ shinyUI(
             ),
             # parameters
             fixedRow(
-              column(width=2),
-              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramROEstimatesOUP")),width=8)
+              column(wellPanel(class="wellTableOUP",style="padding: 0px; width: 100%;",uiOutput("paramROEstimatesOUP")),width=12)
             ),
             # buttons, begin and end dates
             fixedRow(
@@ -201,7 +200,7 @@ shinyUI(
       nav_panel("Analytical",
         tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
                   tags$link(rel="stylesheet",type="text/css",href="styles.css")),
-        add_busy_spinner(spin="radar",color="rgb(0,90,46)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
+        add_busy_spinner(spin="radar",color="rgb(0,90,46)",timeout=500,position=c("top-right"),margins=c(500,450),height="128px",width="128px"),
         navset_pill_list(
           # Drift ----
           nav_panel("Drift",
@@ -961,7 +960,7 @@ shinyUI(
       nav_panel("Finite Difference",
         tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
                   tags$link(rel="stylesheet",type="text/css",href="styles.css")),
-        add_busy_spinner(spin="flower",color="rgb(115,33,38)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
+        add_busy_spinner(spin="flower",color="rgb(115,33,38)",timeout=500,position=c("top-right"),margins=c(500,450),height="128px",width="128px"),
         navset_pill_list(
           # Drift ----
           nav_panel("Drift",
@@ -1187,7 +1186,7 @@ shinyUI(
       nav_panel("Maximum Likelihood",
         tags$head(HTML('<html lang="en"> <link rel="icon" href="favicon.png" type="image/png" sizes="16x16">'),
                   tags$link(rel="stylesheet",type="text/css",href="styles.css")),
-        add_busy_spinner(spin="fulfilling-bouncing-circle",color="rgb(0,86,136)",timeout=500,position=c("top-right"),margins=c(500,200),height="128px",width="128px"),
+        add_busy_spinner(spin="fulfilling-bouncing-circle",color="rgb(0,86,136)",timeout=500,position=c("top-right"),margins=c(500,450),height="128px",width="128px"),
         navset_pill_list(
           # Data ----
           nav_panel("Data",

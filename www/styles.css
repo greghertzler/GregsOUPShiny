@@ -11,3 +11,6 @@
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="APTProbabilityOUP"] { border-bottom: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="FDDecisionOUP"] { border-bottom: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MLRatioOUP"] { border-bottom: thin solid; }
+#shiny-notification-ROundo { position: fixed; top: 360px; left: calc(26%); }
+#shiny-notification-Aundo { position: fixed; top: 360px; left: calc(26%); }
+#shiny-notification-FDundo { position: fixed; top: 360px; left: calc(38%); }

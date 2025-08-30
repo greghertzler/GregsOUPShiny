@@ -571,23 +571,26 @@ infotoggle <- reactiveVal(FALSE)
             rho <- format(est[[1]],digits=6)
             mu <- format(est[[2]],digits=6)
             sigma <- format(est[[3]],digits=6)
+            alpha <- format(est[[6]],digits=6)
             lnL_params[1] <<- est[[1]]
             lnL_params[2] <<- est[[2]]
             lnL_params[3] <<- est[[3]]
             output$paramROEstimatesOUP <- renderUI({
               HTML(paste(sep="",
                 "<table align='center'>
-                  <tr style='border-bottom: 1px solid grey;'>
+                  <tr>
                     <th></th>
-                    <th style='text-align: right; padding: 2px 6px 2px 8px;'>rho</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>mu</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>sigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>rho</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>mu</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>sigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
                   </tr>
                   <tr>
-                    <td style='text-align: right; padding: 8px 6px 8px 8px;'><b>Parameters:</b></td>
+                    <td style='text-align: right; padding: 8px 6px 8px 8px;'><b>Parameters</b></td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",rho,"</td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",mu,"</td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",sigma,"</td>
+                    <td style='text-align: right; padding: 8px 6px 8px 6px;'>",alpha,"</td>
                   </tr>
                 </table>"
               ))
@@ -764,19 +767,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="ROundo",duration=2)
           }) %>% bindEvent(input$clearRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="ROundo",duration=2)
           }) %>% bindEvent(input$saveRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyRORegimeOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="ROundo",duration=2)
             }
             else if(axesButton())
             {
@@ -989,19 +992,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="ROundo",duration=2)
           }) %>% bindEvent(input$clearRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="ROundo",duration=2)
           }) %>% bindEvent(input$saveRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyRODecisionOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="ROundo",duration=2)
             }
             else if(syncButton())
             {
@@ -1205,19 +1208,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="ROundo",duration=2)
           }) %>% bindEvent(input$clearROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="ROundo",duration=2)
           }) %>% bindEvent(input$saveROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyROPassageTimeOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="ROundo",duration=2)
             }
             else if(syncButton())
             {
@@ -1381,19 +1384,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes or plot (or enter key) ----
           output$plotlyADriftOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -1533,19 +1536,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyADiffusionOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -1748,19 +1751,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
                     }) %>% bindEvent(input$saveAMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAMeanOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -1905,19 +1908,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAMeanCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAMeanCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes or plot (or enter key) ----
           output$plotlyAMeanCOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -2098,19 +2101,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAVarianceOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -2257,19 +2260,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAVarianceCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAVarianceCOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes or plot (or enter key) ----
           output$plotlyAVarianceCOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -2444,19 +2447,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearADensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyADensityOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -2657,19 +2660,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAProbabilityOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -2870,19 +2873,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearADoubleOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADoubleOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyADoubleOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -3142,19 +3145,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAOptionOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -3414,19 +3417,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAEnvelopeOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -3631,19 +3634,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes or plot (or enter key) ----
           output$plotlyADecisionOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -3873,19 +3876,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAObligationOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAObligationOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAObligationOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -4096,19 +4099,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAPTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTModeMedianMeanOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -4299,19 +4302,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAPTVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTVarianceOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -4524,19 +4527,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAPTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTPercentilesOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -4751,19 +4754,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAPTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTDensityOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -4970,19 +4973,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             A$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="Aundo",duration=2)
           }) %>% bindEvent(input$clearAPTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- A$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, sync, axes, plot (or enter key), left or rght ----
           output$plotlyAPTProbabilityOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- A$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="Aundo",duration=2)
             }
             else if(syncButton())
             {
@@ -5138,19 +5141,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             FD$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="FDundo",duration=2)
           }) %>% bindEvent(input$clearFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- FD$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, axes or plot (or enter key) ----
           output$plotlyFDDriftOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- FD$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="FDundo",duration=2)
             }
             else if(axesButton())
             {
@@ -5293,19 +5296,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             FD$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="FDundo",duration=2)
           }) %>% bindEvent(input$clearFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- FD$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyFDDiffusionOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- FD$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="FDundo",duration=2)
             }
             else if(axesButton())
             {
@@ -5479,19 +5482,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             FD$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="FDundo",duration=2)
           }) %>% bindEvent(input$clearFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- FD$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, axes or plot (or enter key) ----
           output$plotlyFDTerminalOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- FD$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="FDundo",duration=2)
             }
             else if(axesButton())
             {
@@ -5716,19 +5719,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             FD$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="FDundo",duration=2)
           }) %>% bindEvent(input$clearFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- FD$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyFDOptionOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- FD$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="FDundo",duration=2)
             }
             else if(axesButton())
             {
@@ -5981,19 +5984,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             FD$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="FDundo",duration=2)
           }) %>% bindEvent(input$clearFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- FD$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, axes, plot (or enter key), left or rght ----
           output$plotlyFDEnvelopeOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- FD$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="FDundo",duration=2)
             }
             else if(axesButton())
             {
@@ -6208,19 +6211,19 @@ infotoggle <- reactiveVal(FALSE)
           observe({
             FromUItoR6()
             FD$undo_clear()
-            showNotification("argument set 1 out of 1.",id="undo")
+            showNotification("argument set 1 out of 1.",id="FDundo",duration=2)
           }) %>% bindEvent(input$clearFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             FromUItoR6()
             n <- FD$undo_save()
-            showNotification(paste("argument set ",n," out of ",n,"."),id="undo")
+            showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks undo, axes or plot (or enter key) ----
           output$plotlyFDDecisionOUP <- renderPlotly({
             if(undoButton())
             {
               Ixn <- FD$undo_undo()
-              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="undo")
+              showNotification(paste("argument set ",Ixn[1]," out of ",Ixn[2],"."),id="FDundo",duration=2)
             }
             else if(axesButton())
             {
@@ -7110,18 +7113,18 @@ infotoggle <- reactiveVal(FALSE)
             output$paramMLEstimatesOUP <- renderUI({
               HTML(paste(sep="",
                 "<table align='center'>
-                  <tr style='border-bottom: 1px solid grey;'>
+                  <tr>
                     <th></th>
-                    <th style='text-align: right; padding: 2px 6px 2px 8px;'>rho</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>mu</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>sigma</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>LnL</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>k</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>alpha</th>
-                    <th style='text-align: right; padding: 2px 8px 2px 6px;'>m-1</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>rho</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>mu</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>sigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>LnL</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>k</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
+                    <th style='text-align: right; padding: 2px 8px 2px 6px; border-bottom: 1px solid grey;'>m-1</th>
                   </tr>
                   <tr>
-                    <td style='text-align: right; padding: 8px 6px 8px 8px;'><b>Unrestricted:</b></td>
+                    <td style='text-align: right; padding: 8px 6px 8px 8px;'><b>Unrestricted</b></td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",rho,"</td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",mu,"</td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",sigma,"</td>
@@ -7172,15 +7175,15 @@ infotoggle <- reactiveVal(FALSE)
             output$paramMLGoodnessOUP <- renderUI({
               HTML(paste(sep="",
                 "<table align='center'>
-                  <tr style='border-bottom: 1px solid grey;'>
+                  <tr>
                     <th></th>
-                    <th style='text-align: right; padding: 2px 6px 2px 8px;'>rho</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>mu</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>sigma</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>LnL</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>k</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>alpha</th>
-                    <th style='text-align: right; padding: 2px 8px 2px 6px;'>m-1</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>rho</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>mu</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>sigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>LnL</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>k</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
+                    <th style='text-align: right; padding: 2px 8px 2px 6px; border-bottom: 1px solid grey;'>m-1</th>
                   </tr>
                   <tr>
                     <td style='text-align: right; padding: 8px 6px 8px 8px;'><b>Unrestricted</b></td>
@@ -7694,15 +7697,15 @@ infotoggle <- reactiveVal(FALSE)
             output$paramMLRatioOUP <- renderUI({
               HTML(paste(sep="",
                 "<table align='center'>
-                  <tr style='border-bottom: 1px solid grey;'>
+                  <tr>
                     <th></th>
-                    <th style='text-align: right; padding: 2px 6px 2px 8px;'>rho</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>mu</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>sigma</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>LnL</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>k</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px;'>alpha</th>
-                    <th style='text-align: right; padding: 2px 8px 2px 6px;'>m-1</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>rho</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>mu</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>sigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>LnL</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>k</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
+                    <th style='text-align: right; padding: 2px 8px 2px 6px; border-bottom: 1px solid grey;'>m-1</th>
                   </tr>
                   <tr>
                     <td style='text-align: right; padding: 8px 6px 2px 8px;'><b>Unrestricted</b></td>
