@@ -3,7 +3,7 @@ library(bslib)
 library(plotly)
 library(tools)
 library(rvest)
-library(GregsOUPR6)
+library(GregsOUP)
 
 # server
 shinyServer(function(input,output,session){
@@ -17,9 +17,11 @@ ML <- OUP$get_MaximumLikelihood()
 MC <- OUP$get_MonteCarlo()
 A$set_plot_info(opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
-ouppath <- system.file(package="GregsOUPR6")
+ouppath <- system.file(package="GregsOUP")
 datapath <- paste(sep="",ouppath,"/data/")
-htmlpath <- paste(sep="",getwd(),"/www/html/")
+htmlpath <- paste(sep="",ouppath,"/html/")
+tutorialspath <- paste(sep="","file://",ouppath,"/shinytutorials/OUP_Shiny.html")
+helppath <- paste(sep="","file://",ouppath,"/ribbonhelp/OUP_Help.html")
 uploadname <- "MyData"
 uploadpath <- paste(sep="",datapath,"MyData.csv")
 agrlist <- file_path_sans_ext(list.files(datapath,pattern="Agric_"))
@@ -46,6 +48,8 @@ tname <- c("tau","tau","tau","tau","tau","tau","tau")
 sname <- c("z","z","z","z","z","z","z")
 lnL_params <- c(0,0,0)
 LRT_params <- c(NA,NA,NA)
+# global for regime
+regime <- 0
 # gloval reactive values for modal dialogs and messages
 ibutton <- reactiveVal("")
 infobutton <- reactiveVal("")
@@ -701,7 +705,7 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(r)) { r <- 0 }
             phi <- input$phiRORegimeOUP
             if(!is.numeric(phi)) { phi <- -1 }
-            else if(phi < 0) { phi <- -1 }
+            else if(phi <= 0) { phi <- -1 }
             else if(phi > 0) { phi <- 1 }
             b <- input$bRORegimeOUP
             if(!is.numeric(b)) { b <- 0 }
@@ -789,19 +793,13 @@ infotoggle <- reactiveVal(FALSE)
             else if(plotButton()) { FromUItoR6()  }
             else if(leftButton())
             {
-              FromUItoR6()
-              phi <- A$get_x_stoch_args()[[6]]
-              phi <- phi-1
-              if(phi < -1) { phi <- 1 }
-              A$set_x_stoch_args(phi=phi)
+              regime <<- regime-1
+              if(regime < 0) regime <<- 1
             }
             else if(rghtButton())
             {
-              FromUItoR6()
-              phi <- A$get_x_stoch_args()[[6]]
-              phi <- phi+1
-              if(phi > 1) { phi <- -1 }
-              A$set_x_stoch_args(phi=phi)
+              regime <<- regime+1
+              if(regime > 1) regime <<- 0
             }
             undoButton(FALSE)
             axesButton(FALSE)
@@ -810,9 +808,16 @@ infotoggle <- reactiveVal(FALSE)
             rghtButton(FALSE)
             FromR6toUI()
             phi <- A$get_x_stoch_args()[[6]]
-            if(phi < 0) { A$PlotOption(title="Exit Option",type=2) }
-            else if(phi == 0) { A$PlotObligation(title="Obligation",type=2) }
-            else { A$PlotOption(title="Entry Option",type=2) }
+            if(regime > 0)
+            {
+              if(phi > 0) { A$PlotOption(title="Entry Option",type=2) }
+              else { A$PlotOption(title="Exit Option",type=2) }
+            }
+            else
+            {
+              if(phi > 0) { A$PlotObligation(title="Prohibition",type=2) }
+              else { A$PlotObligation(title="Obligation",type=2) }
+            }
           }) %>% bindEvent(input$undoRORegimeOUP,input$axesRORegimeOUP,input$plotRORegimeOUP,input$leftRORegimeOUP,input$rghtRORegimeOUP)
           # observe info ----
           observe({
@@ -860,8 +865,16 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"yRODecisionOUP",value=y)
             updateNumericInput(session,"rRODecisionOUP",value=r)
             updateNumericInput(session,"phiRODecisionOUP",value=phi)
-            updateNumericInput(session,"bRODecisionOUP",value=b)
-            updateNumericInput(session,"cRODecisionOUP",value=c)
+            if(phi > 0)
+            {
+              updateNumericInput(session,"bRODecisionOUP",label="b",value=b)
+              updateNumericInput(session,"cRODecisionOUP",label="~",value=c)
+            }
+            else
+            {
+              updateNumericInput(session,"bRODecisionOUP",label="~",value=b)
+              updateNumericInput(session,"cRODecisionOUP",label="c",value=c)
+            }
           }
           FromUItoR6 <- function()
           {
@@ -912,7 +925,7 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(r)) { r <- 0 }
             phi <- input$phiRODecisionOUP
             if(!is.numeric(phi)) { phi <- -1 }
-            else if(phi < 0) { phi <- -1 }
+            else if(phi <= 0) { phi <- -1 }
             else if(phi > 0) { phi <- 1 }
             b <- input$bRODecisionOUP
             if(!is.numeric(b)) { b <- 0 }
@@ -923,71 +936,63 @@ infotoggle <- reactiveVal(FALSE)
             if(xOK)
             {
               x <- seq(from=xFrom,to=xTo,by=xBy)
-              A$set_x_stoch_args(x=x,y=y,r=r,phi=phi,b=b,c=c)
+              A$set_x_stoch_args(x=x,y=y,r=r,phi=phi)
             }
             else
             {
               A$axes_x_stoch()
-              A$set_x_stoch_args(y=y,r=r,phi=phi,b=b,c=c)
+              A$set_x_stoch_args(y=y,r=r,phi=phi)
             }
+            if(phi > 0) { A$set_x_stoch_args(b=b) }
+            else { A$set_x_stoch_args(c=c) }
           }
           # initialize ----
           FromR6toUI()
-          # observe undo, sync, axes, plot, left or rght ----
+          # observe phi ----
+          observe({
+            if(is.numeric(input$phiRODecisionOUP))
+            {
+              if(input$phiRODecisionOUP > 0)
+              {
+                b <- A$get_x_stoch_args()[[7]]
+                updateNumericInput(session,"bcRODecisionOUP",label="b",value=b)
+              }
+              else
+              {
+                c <- A$get_x_stoch_args()[[8]]
+                updateNumericInput(session,"bcRODecisionOUP",label="c",value=c)
+              }
+            }
+          }) %>% bindEvent(input$phiRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # observe undo, sync, axes, plot ----
           undoButton <- reactiveVal(FALSE)
           syncButton <- reactiveVal(FALSE)
           axesButton <- reactiveVal(FALSE)
           plotButton <- reactiveVal(FALSE)
-          leftButton <- reactiveVal(FALSE)
-          rghtButton <- reactiveVal(FALSE)
           observe({
             undoButton(TRUE)
             syncButton(FALSE)
             axesButton(FALSE)
             plotButton(FALSE)
-            leftButton(FALSE)
-            rghtButton(FALSE)
           }) %>% bindEvent(input$undoRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             undoButton(FALSE)
             syncButton(TRUE)
             axesButton(FALSE)
             plotButton(FALSE)
-            leftButton(FALSE)
-            rghtButton(FALSE)
           }) %>% bindEvent(input$syncRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             undoButton(FALSE)
             syncButton(FALSE)
             axesButton(TRUE)
             plotButton(FALSE)
-            leftButton(FALSE)
-            rghtButton(FALSE)
           }) %>% bindEvent(input$axesRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
             undoButton(FALSE)
             syncButton(FALSE)
             axesButton(FALSE)
             plotButton(TRUE)
-            leftButton(FALSE)
-            rghtButton(FALSE)
           }) %>% bindEvent(input$plotRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          observe({
-            undoButton(FALSE)
-            syncButton(FALSE)
-            axesButton(FALSE)
-            plotButton(FALSE)
-            leftButton(TRUE)
-            rghtButton(FALSE)
-          }) %>% bindEvent(input$leftRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          observe({
-            undoButton(FALSE)
-            syncButton(FALSE)
-            axesButton(FALSE)
-            plotButton(FALSE)
-            leftButton(FALSE)
-            rghtButton(TRUE)
-          }) %>% bindEvent(input$rghtRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks clear or save ----
           observe({
             FromUItoR6()
@@ -999,7 +1004,7 @@ infotoggle <- reactiveVal(FALSE)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="ROundo",duration=2)
           }) %>% bindEvent(input$saveRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undo, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undo, sync, axes, plot (or enter key) ----
           output$plotlyRODecisionOUP <- renderPlotly({
             if(undoButton())
             {
@@ -1017,41 +1022,15 @@ infotoggle <- reactiveVal(FALSE)
               A$axes_x_stoch()
             }
             else if(plotButton()) { FromUItoR6() }
-            else if(leftButton())
-            {
-              FromUItoR6()
-              phi <- A$get_x_stoch_args()[[6]]
-              t_stoch_args <- A$get_t_stoch_args()
-              phi <- phi-1
-              if(phi < -1) { phi <- 1 }
-              else if(phi > -1) { phi <- -1 }
-              k <- t_stoch_args[[2]]
-              x <- t_stoch_args[[4]]
-              A$set_x_stoch_args(phi=phi)
-              A$set_t_stoch_args(k=x,x=k)
-            }
-            else if(rghtButton())
-            {
-              FromUItoR6()
-              phi <- A$get_x_stoch_args()[[6]]
-              t_stoch_args <- A$get_t_stoch_args()
-              phi <- phi+1
-              if(phi > 1) { phi <- -1 }
-              else if(phi < 1) { phi <- 1 }
-              k <- t_stoch_args[[2]]
-              x <- t_stoch_args[[4]]
-              A$set_x_stoch_args(phi=phi)
-              A$set_t_stoch_args(k=x,x=k)
-            }
             undoButton(FALSE)
             syncButton(FALSE)
             axesButton(FALSE)
             plotButton(FALSE)
-            leftButton(FALSE)
-            rghtButton(FALSE)
             FromR6toUI()
-            A$PlotDecisionThreshold()
-          }) %>% bindEvent(input$undoRODecisionOUP,input$syncRODecisionOUP,input$axesRODecisionOUP,input$plotRODecisionOUP,input$leftRODecisionOUP,input$rghtRODecisionOUP)
+            phi <- A$get_x_stoch_args()[[6]]
+            if(phi > 0) { A$PlotDecisionThreshold(title="Entry") }
+            else {A$PlotDecisionThreshold("Exit") }
+          }) %>% bindEvent(input$undoRODecisionOUP,input$syncRODecisionOUP,input$axesRODecisionOUP,input$plotRODecisionOUP)
           # observe info ----
           observe({
             ibutton("")
@@ -1096,10 +1075,10 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"zToROPassageTimeOUP",value=zTo)
             updateNumericInput(session,"zByROPassageTimeOUP",value=zBy)
             updateNumericInput(session,"kROPassageTimeOUP",value=k)
-            updateNumericInput(session,"sROPassageTimeOUP",value=s)
             updateNumericInput(session,"xROPassageTimeOUP",value=x)
             updateNumericInput(session,"omegaROPassageTimeOUP",value=omega)
             updateNumericInput(session,"PpctROPassageTimeOUP",value=Ppct)
+            updateNumericInput(session,"sROPassageTimeOUP",value=s)
           }
           FromUItoR6 <- function()
           {
@@ -1126,13 +1105,6 @@ infotoggle <- reactiveVal(FALSE)
             else { z <- seq(from=zTo,to=zFrom,by=abs(zBy)) }
             k <- input$kROPassageTimeOUP
             if(!is.numeric(k)) { k <- 0 }
-            s <- input$sROPassageTimeOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s != t[1])
-            {
-              tadd <- s-t[1]
-              t <- t+tadd
-            }
             x <- input$xROPassageTimeOUP
             if(!is.numeric(x)) { x <- -mu }
             omega <- input$omegaROPassageTimeOUP
@@ -1143,6 +1115,13 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(Ppct)) { Ppct <- 0.841345 }
             else if(Ppct < 0.01) { Ppct <- 0.01 }
             else if(Ppct > 0.99) { Ppct <- 0.99 }
+            s <- input$sROPassageTimeOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s != t[1])
+            {
+              tadd <- s-t[1]
+              t <- t+tadd
+            }
             # Set to OUP ----
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             A$set_t_stoch_args(t=t,k=k,s=s,x=x,z=z,omega=omega,Ppct=Ppct)
@@ -1238,19 +1217,7 @@ infotoggle <- reactiveVal(FALSE)
               FromUItoR6()
               plot_info <- A$get_plot_info()
               type <- plot_info$plottype[[1]]
-              if(type > 2)
-              {
-                type <- 2
-                phi <- A$get_x_stoch_args()[[6]]
-                t_stoch_args <- A$get_t_stoch_args()
-                phi <- phi-1
-                if(phi < -1) { phi <- 1 }
-                else if(phi > -1) { phi <- -1 }
-                k <- t_stoch_args[[2]]
-                x <- t_stoch_args[[4]]
-                A$set_x_stoch_args(phi=phi)
-                A$set_t_stoch_args(k=x,x=k)
-              }
+              if(type > 2) { type <- 2 }
               else { type <- 3 }
               A$set_plot_info(type=type)
             }
@@ -1259,19 +1226,7 @@ infotoggle <- reactiveVal(FALSE)
               FromUItoR6()
               plot_info <- A$get_plot_info()
               type <- plot_info$plottype[[1]]
-              if(type < 3)
-              {
-                type <- 3
-                phi <- A$get_x_stoch_args()[[6]]
-                t_stoch_args <- A$get_t_stoch_args()
-                phi <- phi+1
-                if(phi > 1) { phi <- -1 }
-                else if(phi < 1) { phi <- 1 }
-                k <- t_stoch_args[[2]]
-                x <- t_stoch_args[[4]]
-                A$set_x_stoch_args(phi=phi)
-                A$set_t_stoch_args(k=x,x=k)
-              }
+              if(type < 3) { type <- 3 }
               else { type <- 2 }
               A$set_plot_info(type=type)
             }
@@ -1634,10 +1589,10 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromAMeanOUP",value=tFrom)
             updateNumericInput(session,"tToAMeanOUP",value=tTo)
             updateNumericInput(session,"tByAMeanOUP",value=tBy)
+            updateNumericInput(session,"sAMeanOUP",value=s)
             updateNumericInput(session,"yFromAMeanOUP",value=yFrom)
             updateNumericInput(session,"yToAMeanOUP",value=yTo)
             updateNumericInput(session,"yByAMeanOUP",value=yBy)
-            updateNumericInput(session,"sAMeanOUP",value=s)
             updateNumericInput(session,"xAMeanOUP",value=x)
             updateNumericInput(session,"psiAMeanOUP",value=psi)
             updateNumericInput(session,"pmaxAMeanOUP",value=pmax)
@@ -1663,6 +1618,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sAMeanOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             yFrom <- input$yFromAMeanOUP
             if(!is.numeric(yFrom)) { yFrom <- 0 }
             yTo <- input$yToAMeanOUP
@@ -1674,9 +1632,6 @@ infotoggle <- reactiveVal(FALSE)
             if(yTo > yFrom) { y <- seq(from=yFrom,to=yTo,by=abs(yBy)) }
             else if(yTo == yFrom) { y <- yFrom }
             else { y <- seq(from=yTo,to=yFrom,by=abs(yBy)) }
-            s <- input$sAMeanOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xAMeanOUP
             if(!is.numeric(x)) { x <- 0 }
             psi <- input$psiAMeanOUP
@@ -1984,10 +1939,10 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromAVarianceOUP",value=tFrom)
             updateNumericInput(session,"tToAVarianceOUP",value=tTo)
             updateNumericInput(session,"tByAVarianceOUP",value=tBy)
+            updateNumericInput(session,"sAVarianceOUP",value=s)
             updateNumericInput(session,"yFromAVarianceOUP",value=yFrom)
             updateNumericInput(session,"yToAVarianceOUP",value=yTo)
             updateNumericInput(session,"yByAVarianceOUP",value=yBy)
-            updateNumericInput(session,"sAVarianceOUP",value=s)
             updateNumericInput(session,"xAVarianceOUP",value=x)
             updateNumericInput(session,"psiAVarianceOUP",value=psi)
             updateNumericInput(session,"pmaxAVarianceOUP",value=pmax)
@@ -2013,6 +1968,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sAVarianceOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             yFrom <- input$yFromAVarianceOUP
             if(!is.numeric(yFrom)) { yFrom <- 0 }
             yTo <- input$yToAVarianceOUP
@@ -2024,9 +1982,6 @@ infotoggle <- reactiveVal(FALSE)
             if(yTo > yFrom) { y <- seq(from=yFrom,to=yTo,by=abs(yBy)) }
             else if(yTo == yFrom) { y <- yFrom }
             else { y <- seq(from=yTo,to=yFrom,by=abs(yBy)) }
-            s <- input$sAVarianceOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xAVarianceOUP
             if(!is.numeric(x)) { x <- 0 }
             psi <- input$psiAVarianceOUP
@@ -2335,10 +2290,10 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromADensityOUP",value=tFrom)
             updateNumericInput(session,"tToADensityOUP",value=tTo)
             updateNumericInput(session,"tByADensityOUP",value=tBy)
+            updateNumericInput(session,"sADensityOUP",value=s)
             updateNumericInput(session,"yFromADensityOUP",value=yFrom)
             updateNumericInput(session,"yToADensityOUP",value=yTo)
             updateNumericInput(session,"yByADensityOUP",value=yBy)
-            updateNumericInput(session,"sADensityOUP",value=s)
             updateNumericInput(session,"xADensityOUP",value=x)
             updateNumericInput(session,"pmaxADensityOUP",value=pmax)
           }
@@ -2363,6 +2318,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sADensityOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             yFrom <- input$yFromADensityOUP
             if(!is.numeric(yFrom)) { yFrom <- 0 }
             yTo <- input$yToADensityOUP
@@ -2374,9 +2332,6 @@ infotoggle <- reactiveVal(FALSE)
             if(yTo > yFrom) { y <- seq(from=yFrom,to=yTo,by=abs(yBy)) }
             else if(yTo == yFrom) { y <- yFrom }
             else { y <- seq(from=yTo,to=yFrom,by=abs(yBy)) }
-            s <- input$sADensityOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xADensityOUP
             if(!is.numeric(x)) { x <- 0 }
             pmax <- input$pmaxADensityOUP
@@ -2547,10 +2502,10 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromAProbabilityOUP",value=tFrom)
             updateNumericInput(session,"tToAProbabilityOUP",value=tTo)
             updateNumericInput(session,"tByAProbabilityOUP",value=tBy)
+            updateNumericInput(session,"sAProbabilityOUP",value=s)
             updateNumericInput(session,"yFromAProbabilityOUP",value=yFrom)
             updateNumericInput(session,"yToAProbabilityOUP",value=yTo)
             updateNumericInput(session,"yByAProbabilityOUP",value=yBy)
-            updateNumericInput(session,"sAProbabilityOUP",value=s)
             updateNumericInput(session,"xAProbabilityOUP",value=x)
             updateNumericInput(session,"psiAProbabilityOUP",value=psi)
           }
@@ -2575,6 +2530,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sAProbabilityOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             yFrom <- input$yFromAProbabilityOUP
             if(!is.numeric(yFrom)) { yFrom <- 0 }
             yTo <- input$yToAProbabilityOUP
@@ -2586,9 +2544,6 @@ infotoggle <- reactiveVal(FALSE)
             if(yTo > yFrom) { y <- seq(from=yFrom,to=yTo,by=abs(yBy)) }
             else if(yTo == yFrom) { y <- yFrom }
             else { y <- seq(from=yTo,to=yFrom,by=abs(yBy)) }
-            s <- input$sAProbabilityOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xAProbabilityOUP
             if(!is.numeric(x)) { x <- 0 }
             psi <- input$psiAProbabilityOUP
@@ -2760,10 +2715,10 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromADoubleOUP",value=tFrom)
             updateNumericInput(session,"tToADoubleOUP",value=tTo)
             updateNumericInput(session,"tByADoubleOUP",value=tBy)
+            updateNumericInput(session,"sADoubleOUP",value=s)
             updateNumericInput(session,"yFromADoubleOUP",value=yFrom)
             updateNumericInput(session,"yToADoubleOUP",value=yTo)
             updateNumericInput(session,"yByADoubleOUP",value=yBy)
-            updateNumericInput(session,"sADoubleOUP",value=s)
             updateNumericInput(session,"xADoubleOUP",value=x)
             updateNumericInput(session,"psiADoubleOUP",value=psi)
           }
@@ -2788,6 +2743,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sADoubleOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             yFrom <- input$yFromADoubleOUP
             if(!is.numeric(yFrom)) { yFrom <- 0 }
             yTo <- input$yToADoubleOUP
@@ -2799,9 +2757,6 @@ infotoggle <- reactiveVal(FALSE)
             if(yTo > yFrom) { y <- seq(from=yFrom,to=yTo,by=abs(yBy)) }
             else if(yTo == yFrom) { y <- yFrom }
             else { y <- seq(from=yTo,to=yFrom,by=abs(yBy)) }
-            s <- input$sADoubleOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xADoubleOUP
             if(!is.numeric(x)) { x <- 0 }
             psi <- input$psiADoubleOUP
@@ -2976,15 +2931,23 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"sFromAOptionOUP",value=sFrom)
             updateNumericInput(session,"sToAOptionOUP",value=sTo)
             updateNumericInput(session,"sByAOptionOUP",value=sBy)
+            updateNumericInput(session,"tAOptionOUP",value=t)
             updateNumericInput(session,"xFromAOptionOUP",value=xFrom)
             updateNumericInput(session,"xToAOptionOUP",value=xTo)
             updateNumericInput(session,"xByAOptionOUP",value=xBy)
-            updateNumericInput(session,"tAOptionOUP",value=t)
             updateNumericInput(session,"yAOptionOUP",value=y)
             updateNumericInput(session,"rAOptionOUP",value=r)
             updateNumericInput(session,"phiAOptionOUP",value=phi)
-            if(phi > 0) { updateNumericInput(session,"bcAOptionOUP",label="b",value=b) }
-            else { updateNumericInput(session,"bcAOptionOUP",label="c",value=c) }
+            if(phi > 0)
+            {
+              updateNumericInput(session,"bAOptionOUP",label="b",value=b)
+              updateNumericInput(session,"cAOptionOUP",label="~",value=c)
+            }
+            else
+            {
+              updateNumericInput(session,"bAOptionOUP",label="~",value=b)
+              updateNumericInput(session,"cAOptionOUP",label="c",value=c)
+            }
           }
           FromUItoR6 <- function()
           {
@@ -3007,6 +2970,9 @@ infotoggle <- reactiveVal(FALSE)
             if(sTo > sFrom) { s <- seq(from=sTo,to=sFrom,by=-abs(sBy)) }
             else if(sTo == sFrom) { s <- sTo }
             else { s <- seq(from=sFrom,to=sTo,by=-abs(sBy)) }
+            t <- input$tAOptionOUP
+            if(!is.numeric(t)) { t <- s[1] }
+            else if(t < s[1]) { t <- s[1] }
             xFrom <- input$xFromAOptionOUP
             xTo <- input$xToAOptionOUP
             xBy <- input$xByAOptionOUP
@@ -3040,9 +3006,6 @@ infotoggle <- reactiveVal(FALSE)
                 xOK <- TRUE
               }
             }
-            t <- input$tAOptionOUP
-            if(!is.numeric(t)) { t <- s[1] }
-            else if(t < s[1]) { t <- s[1] }
             y <- input$yAOptionOUP
             if(!is.numeric(y)) { y <- 0 }
             r <- input$rAOptionOUP
@@ -3051,8 +3014,10 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(phi)) { phi <- -1 }
             else if(phi <= 0) { phi <- -1 }
             else if(phi > 0) { phi <- 1 }
-            bc <- input$bcAOptionOUP
-            if(!is.numeric(bc)) { bc <- 0 }
+            b <- input$bAOptionOUP
+            if(!is.numeric(b)) { b <- 0 }
+            c <- input$cAOptionOUP
+            if(!is.numeric(c)) { c <- 0 }
             # Set to OUP ----
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             if(xOK)
@@ -3065,8 +3030,8 @@ infotoggle <- reactiveVal(FALSE)
               A$axes_x_stoch()
               A$set_x_stoch_args(t=t,y=y,r=r,phi=phi)
             }
-            if(phi > 0) { A$set_x_stoch_args(b=bc) }
-            else { A$set_x_stoch_args(c=bc) }
+            if(phi > 0) { A$set_x_stoch_args(b=b) }
+            else { A$set_x_stoch_args(c=c) }
           }
           # initialize ----
           FromR6toUI()
@@ -3245,18 +3210,26 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"rhoAEnvelopeOUP",value=rho)
             updateNumericInput(session,"muAEnvelopeOUP",value=mu)
             updateNumericInput(session,"sigmaAEnvelopeOUP",value=sigma)
+            updateNumericInput(session,"tAEnvelopeOUP",value=t)
             updateNumericInput(session,"sFromAEnvelopeOUP",value=sFrom)
             updateNumericInput(session,"sToAEnvelopeOUP",value=sTo)
             updateNumericInput(session,"sByAEnvelopeOUP",value=sBy)
             updateNumericInput(session,"xFromAEnvelopeOUP",value=xFrom)
             updateNumericInput(session,"xToAEnvelopeOUP",value=xTo)
             updateNumericInput(session,"xByAEnvelopeOUP",value=xBy)
-            updateNumericInput(session,"tAEnvelopeOUP",value=t)
             updateNumericInput(session,"yAEnvelopeOUP",value=y)
             updateNumericInput(session,"rAEnvelopeOUP",value=r)
             updateNumericInput(session,"phiAEnvelopeOUP",value=phi)
-            if(phi > 0) { updateNumericInput(session,"bcAEnvelopeOUP",label="b",value=b) }
-            else { updateNumericInput(session,"bcAEnvelopeOUP",label="c",value=c) }
+            if(phi > 0)
+            {
+              updateNumericInput(session,"bAEnvelopeOUP",label="b",value=b)
+              updateNumericInput(session,"cAEnvelopeOUP",label="~",value=c)
+            }
+            else
+            {
+                updateNumericInput(session,"bAEnvelopeOUP",label="~",value=b)
+                updateNumericInput(session,"cAEnvelopeOUP",label="c",value=c)
+            }
           }
           FromUItoR6 <- function()
           {
@@ -3279,6 +3252,9 @@ infotoggle <- reactiveVal(FALSE)
             if(sTo > sFrom) { s <- seq(from=sTo,to=sFrom,by=-abs(sBy)) }
             else if(sTo == sFrom) { s <- sTo }
             else { s <- seq(from=sFrom,to=sTo,by=-abs(sBy)) }
+            t <- input$tAEnvelopeOUP
+            if(!is.numeric(t)) { t <- s[1] }
+            else if(t < s[1]) { t <- s[1] }
             xFrom <- input$xFromAEnvelopeOUP
             xTo <- input$xToAEnvelopeOUP
             xBy <- input$xByAEnvelopeOUP
@@ -3312,9 +3288,6 @@ infotoggle <- reactiveVal(FALSE)
                 xOK <- TRUE
               }
             }
-            t <- input$tAEnvelopeOUP
-            if(!is.numeric(t)) { t <- s[1] }
-            else if(t < s[1]) { t <- s[1] }
             y <- input$yAEnvelopeOUP
             if(!is.numeric(y)) { y <- 0 }
             r <- input$rAEnvelopeOUP
@@ -3323,8 +3296,10 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(phi)) { phi <- -1 }
             else if(phi <= 0) { phi <- -1 }
             else if(phi > 0) { phi <- 1 }
-            bc <- input$bcAEnvelopeOUP
-            if(!is.numeric(bc)) { bc <- 0 }
+            b <- input$bAEnvelopeOUP
+            if(!is.numeric(b)) { b <- 0 }
+            c <- input$cAEnvelopeOUP
+            if(!is.numeric(c)) { c <- 0 }
             # Set to OUP ----
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             if(xOK)
@@ -3337,8 +3312,8 @@ infotoggle <- reactiveVal(FALSE)
               A$axes_x_stoch()
               A$set_x_stoch_args(t=t,y=y,r=r,phi=phi)
             }
-            if(phi > 0) { A$set_x_stoch_args(b=bc) }
-            else { A$set_x_stoch_args(c=bc) }
+            if(phi > 0) { A$set_x_stoch_args(b=b) }
+            else { A$set_x_stoch_args(c=c) }
           }
           # initialize ----
           FromR6toUI()
@@ -3512,8 +3487,16 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"yADecisionOUP",value=y)
             updateNumericInput(session,"rADecisionOUP",value=r)
             updateNumericInput(session,"phiADecisionOUP",value=phi)
-            if(phi > 0) { updateNumericInput(session,"bcADecisionOUP",label="b",value=b) }
-            else { updateNumericInput(session,"bcADecisionOUP",label="c",value=c) }
+            if(phi > 0)
+            {
+              updateNumericInput(session,"bADecisionOUP",label="b",value=b)
+              updateNumericInput(session,"cADecisionOUP",label="~",value=c)
+            }
+            else
+            {
+                updateNumericInput(session,"bADecisionOUP",label="~",value=b)
+                updateNumericInput(session,"cADecisionOUP",label="c",value=c)
+            }
           }
           FromUItoR6 <- function()
           {
@@ -3566,8 +3549,10 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(phi)) { phi <- -1 }
             else if(phi <= 0) { phi <- -1 }
             else if(phi > 0) { phi <- 1 }
-            bc <- input$bcADecisionOUP
-            if(!is.numeric(bc)) { bc <- 0 }
+            b <- input$bADecisionOUP
+            if(!is.numeric(b)) { b <- 0 }
+            c <- input$cADecisionOUP
+            if(!is.numeric(c)) { c <- 0 }
             # Set to OUP ----
             A$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             if(xOK)
@@ -3580,8 +3565,8 @@ infotoggle <- reactiveVal(FALSE)
               A$axes_x_stoch()
               A$set_x_stoch_args(y=y,r=r,phi=phi)
             }
-            if(phi > 0) { A$set_x_stoch_args(b=bc) }
-            else { A$set_x_stoch_args(c=bc) }
+            if(phi > 0) { A$set_x_stoch_args(b=b) }
+            else { A$set_x_stoch_args(c=c) }
           }
           # initialize ----
           FromR6toUI()
@@ -3706,18 +3691,18 @@ infotoggle <- reactiveVal(FALSE)
             # Set to UI ----
             updateNumericInput(session,"rhoAObligationOUP",value=rho)
             updateNumericInput(session,"muAObligationOUP",value=mu)
+            updateNumericInput(session,"tAObligationOUP",value=t)
             updateNumericInput(session,"sFromAObligationOUP",value=sFrom)
             updateNumericInput(session,"sToAObligationOUP",value=sTo)
             updateNumericInput(session,"sByAObligationOUP",value=sBy)
             updateNumericInput(session,"xFromAObligationOUP",value=xFrom)
             updateNumericInput(session,"xToAObligationOUP",value=xTo)
             updateNumericInput(session,"xByAObligationOUP",value=xBy)
-            updateNumericInput(session,"tAObligationOUP",value=t)
             updateNumericInput(session,"yAObligationOUP",value=y)
             updateNumericInput(session,"rAObligationOUP",value=r)
             updateNumericInput(session,"phiAObligationOUP",value=phi)
-            if(phi > 0) { updateNumericInput(session,"bcAObligationOUP",label="b",value=b) }
-            else { updateNumericInput(session,"bcAObligationOUP",label="c",value=c) }
+            updateNumericInput(session,"bAObligationOUP",value=b)
+            updateNumericInput(session,"cAObligationOUP",value=c)
           }
           FromUItoR6 <- function()
           {
@@ -3738,6 +3723,9 @@ infotoggle <- reactiveVal(FALSE)
             if(sTo > sFrom) { s <- seq(from=sTo,to=sFrom,by=-abs(sBy)) }
             else if(sTo == sFrom) { s <- sTo }
             else { s <- seq(from=sFrom,to=sTo,by=-abs(sBy)) }
+            t <- input$tAObligationOUP
+            if(!is.numeric(t)) { t <- s[1] }
+            else if(t < s[1]) { t <- s[1] }
             xFrom <- input$xFromAObligationOUP
             xTo <- input$xToAObligationOUP
             xBy <- input$xByAObligationOUP
@@ -3771,9 +3759,6 @@ infotoggle <- reactiveVal(FALSE)
                 xOK <- TRUE
               }
             }
-            t <- input$tAObligationOUP
-            if(!is.numeric(t)) { t <- s[1] }
-            else if(t < s[1]) { t <- s[1] }
             y <- input$yAObligationOUP
             if(!is.numeric(y)) { y <- 0 }
             r <- input$rAObligationOUP
@@ -3782,22 +3767,22 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(phi)) { phi <- -1 }
             else if(phi <= 0) { phi <- -1 }
             else if(phi > 0) { phi <- 1 }
-            bc <- input$bcAObligationOUP
-            if(!is.numeric(bc)) { bc <- 0 }
+            b <- input$bAObligationOUP
+            if(!is.numeric(b)) { b <- 0 }
+            c <- input$cAObligationOUP
+            if(!is.numeric(c)) { c <- 0 }
             # Set to OUP ----
             A$set_oup_params(rho=rho,mu=mu)
             if(xOK)
             {
               x <- seq(from=xFrom,to=xTo,by=xBy)
-              A$set_x_stoch_args(s=s,x=x,t=t,y=y,r=r,phi=phi)
+              A$set_x_stoch_args(s=s,x=x,t=t,y=y,r=r,phi=phi,b=b,c=c)
             }
             else
             {
               A$axes_x_stoch()
-              A$set_x_stoch_args(t=t,y=y,r=r,phi=phi)
+              A$set_x_stoch_args(t=t,y=y,r=r,phi=phi,b=b,c=c)
             }
-            if(phi > 0) { A$set_x_stoch_args(b=bc) }
-            else { A$set_x_stoch_args(c=bc) }
           }
           # initialize ----
           FromR6toUI()
@@ -3979,11 +3964,11 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromAPTModeMedianMeanOUP",value=tFrom)
             updateNumericInput(session,"tToAPTModeMedianMeanOUP",value=tTo)
             updateNumericInput(session,"tByAPTModeMedianMeanOUP",value=tBy)
+            updateNumericInput(session,"sAPTModeMedianMeanOUP",value=s)
             updateNumericInput(session,"zFromAPTModeMedianMeanOUP",value=zFrom)
             updateNumericInput(session,"zToAPTModeMedianMeanOUP",value=zTo)
             updateNumericInput(session,"zByAPTModeMedianMeanOUP",value=zBy)
             updateNumericInput(session,"kAPTModeMedianMeanOUP",value=k)
-            updateNumericInput(session,"sAPTModeMedianMeanOUP",value=s)
             updateNumericInput(session,"xAPTModeMedianMeanOUP",value=x)
             updateNumericInput(session,"omegaAPTModeMedianMeanOUP",value=omega)
             updateNumericInput(session,"ptmaxAPTModeMedianMeanOUP",value=ptmax)
@@ -4009,6 +3994,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sAPTModeMedianMeanOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             zFrom <- input$zFromAPTModeMedianMeanOUP
             if(!is.numeric(zFrom)) { zFrom <- 0 }
             zTo <- input$zToAPTModeMedianMeanOUP
@@ -4022,9 +4010,6 @@ infotoggle <- reactiveVal(FALSE)
             else { z <- seq(from=zTo,to=zFrom,by=abs(zBy)) }
             k <- input$kAPTModeMedianMeanOUP
             if(!is.numeric(k)) { k <- 0 }
-            s <- input$sAPTModeMedianMeanOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xAPTModeMedianMeanOUP
             if(!is.numeric(x)) { x <- -mu }
             omega <- input$omegaAPTModeMedianMeanOUP
@@ -4195,11 +4180,11 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"rhoAPTVarianceOUP",value=rho)
             updateNumericInput(session,"muAPTVarianceOUP",value=mu)
             updateNumericInput(session,"sigmaAPTVarianceOUP",value=sigma)
+            updateNumericInput(session,"sAPTVarianceOUP",value=s)
             updateNumericInput(session,"zFromAPTVarianceOUP",value=zFrom)
             updateNumericInput(session,"zToAPTVarianceOUP",value=zTo)
             updateNumericInput(session,"zByAPTVarianceOUP",value=zBy)
             updateNumericInput(session,"kAPTVarianceOUP",value=k)
-            updateNumericInput(session,"sAPTVarianceOUP",value=s)
             updateNumericInput(session,"xAPTVarianceOUP",value=x)
             updateNumericInput(session,"omegaAPTVarianceOUP",value=omega)
           }
@@ -4215,6 +4200,9 @@ infotoggle <- reactiveVal(FALSE)
             if(!is.numeric(mu)) { mu <- 0 }
             sigma <- input$sigmaAPTVarianceOUP
             if(!is.numeric(sigma)) { sigma <- 0 }
+            s <- input$sAPTVarianceOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             zFrom <- input$zFromAPTVarianceOUP
             if(!is.numeric(zFrom)) { zFrom <- 0 }
             zTo <- input$zToAPTVarianceOUP
@@ -4228,9 +4216,6 @@ infotoggle <- reactiveVal(FALSE)
             else { z <- seq(from=zTo,to=zFrom,by=abs(zBy)) }
             k <- input$kAPTVarianceOUP
             if(!is.numeric(k)) { k <- 0 }
-            s <- input$sAPTVarianceOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xAPTVarianceOUP
             if(!is.numeric(x)) { x <- -mu }
             omega <- input$omegaAPTVarianceOUP
@@ -4402,11 +4387,11 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromAPTPercentilesOUP",value=tFrom)
             updateNumericInput(session,"tToAPTPercentilesOUP",value=tTo)
             updateNumericInput(session,"tByAPTPercentilesOUP",value=tBy)
+            updateNumericInput(session,"sAPTPercentilesOUP",value=s)
             updateNumericInput(session,"zFromAPTPercentilesOUP",value=zFrom)
             updateNumericInput(session,"zToAPTPercentilesOUP",value=zTo)
             updateNumericInput(session,"zByAPTPercentilesOUP",value=zBy)
             updateNumericInput(session,"kAPTPercentilesOUP",value=k)
-            updateNumericInput(session,"sAPTPercentilesOUP",value=s)
             updateNumericInput(session,"xAPTPercentilesOUP",value=x)
             updateNumericInput(session,"omegaAPTPercentilesOUP",value=omega)
             updateNumericInput(session,"PpctAPTPercentilesOUP",value=Ppct)
@@ -4433,6 +4418,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sAPTPercentilesOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             zFrom <- input$zFromAPTPercentilesOUP
             if(!is.numeric(zFrom)) { zFrom <- 0 }
             zTo <- input$zToAPTPercentilesOUP
@@ -4446,9 +4434,6 @@ infotoggle <- reactiveVal(FALSE)
             else { z <- seq(from=zTo,to=zFrom,by=abs(zBy)) }
             k <- input$kAPTPercentilesOUP
             if(!is.numeric(k)) { k <- 0 }
-            s <- input$sAPTPercentilesOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xAPTPercentilesOUP
             if(!is.numeric(x)) { x <- -mu }
             omega <- input$omegaAPTPercentilesOUP
@@ -4634,11 +4619,11 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromAPTDensityOUP",value=tFrom)
             updateNumericInput(session,"tToAPTDensityOUP",value=tTo)
             updateNumericInput(session,"tByAPTDensityOUP",value=tBy)
+            updateNumericInput(session,"sAPTDensityOUP",value=s)
             updateNumericInput(session,"zFromAPTDensityOUP",value=zFrom)
             updateNumericInput(session,"zToAPTDensityOUP",value=zTo)
             updateNumericInput(session,"zByAPTDensityOUP",value=zBy)
             updateNumericInput(session,"kAPTDensityOUP",value=k)
-            updateNumericInput(session,"sAPTDensityOUP",value=s)
             updateNumericInput(session,"xAPTDensityOUP",value=x)
             updateNumericInput(session,"omegaAPTDensityOUP",value=omega)
             updateNumericInput(session,"ptmaxAPTDensityOUP",value=ptmax)
@@ -4664,6 +4649,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sAPTDensityOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             zFrom <- input$zFromAPTDensityOUP
             if(!is.numeric(zFrom)) { zFrom <- 0 }
             zTo <- input$zToAPTDensityOUP
@@ -4677,9 +4665,6 @@ infotoggle <- reactiveVal(FALSE)
             else { z <- seq(from=zTo,to=zFrom,by=abs(zBy)) }
             k <- input$kAPTDensityOUP
             if(!is.numeric(k)) { k <- 0 }
-            s <- input$sAPTDensityOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xAPTDensityOUP
             if(!is.numeric(x)) { x <- -mu }
             omega <- input$omegaAPTDensityOUP
@@ -4857,11 +4842,11 @@ infotoggle <- reactiveVal(FALSE)
             updateNumericInput(session,"tFromAPTProbabilityOUP",value=tFrom)
             updateNumericInput(session,"tToAPTProbabilityOUP",value=tTo)
             updateNumericInput(session,"tByAPTProbabilityOUP",value=tBy)
+            updateNumericInput(session,"sAPTProbabilityOUP",value=s)
             updateNumericInput(session,"zFromAPTProbabilityOUP",value=zFrom)
             updateNumericInput(session,"zToAPTProbabilityOUP",value=zTo)
             updateNumericInput(session,"zByAPTProbabilityOUP",value=zBy)
             updateNumericInput(session,"kAPTProbabilityOUP",value=k)
-            updateNumericInput(session,"sAPTProbabilityOUP",value=s)
             updateNumericInput(session,"xAPTProbabilityOUP",value=x)
             updateNumericInput(session,"omegaAPTProbabilityOUP",value=omega)
           }
@@ -4886,6 +4871,9 @@ infotoggle <- reactiveVal(FALSE)
             if(tto > tfrom) { t <- seq(from=tfrom,to=tto,by=abs(tby)) }
             else if(tto == tfrom) { t <- tfrom }
             else { t <- seq(from=tto,to=tfrom,by=abs(tby)) }
+            s <- input$sAPTProbabilityOUP
+            if(!is.numeric(s)) { s <- t[1] }
+            else if(s > t[1]) { s <- t[1] }
             zFrom <- input$zFromAPTProbabilityOUP
             if(!is.numeric(zFrom)) { zFrom <- 0 }
             zTo <- input$zToAPTProbabilityOUP
@@ -4899,9 +4887,6 @@ infotoggle <- reactiveVal(FALSE)
             else { z <- seq(from=zTo,to=zFrom,by=abs(zBy)) }
             k <- input$kAPTProbabilityOUP
             if(!is.numeric(k)) { k <- 0 }
-            s <- input$sAPTProbabilityOUP
-            if(!is.numeric(s)) { s <- t[1] }
-            else if(s > t[1]) { s <- t[1] }
             x <- input$xAPTProbabilityOUP
             if(!is.numeric(x)) { x <- -mu }
             omega <- input$omegaAPTProbabilityOUP
@@ -7765,6 +7750,14 @@ infotoggle <- reactiveVal(FALSE)
         }
       })
     }
+    else if(input$navBar == "tabTutorialsOUP")
+    {
+      utils::browseURL(tutorialspath)
+    }
+    else if(input$navBar == "tabReferenceOUP")
+    {
+      utils::browseURL(helppath)
+    }
     else if(input$navBar == "tabAboutOUP")
     {
       ibutton("")
@@ -7869,14 +7862,15 @@ infotoggle <- reactiveVal(FALSE)
     {
       content <- modalDialog(
         title=div(img(src="Roar32x32.png"),"Estimates"),
-        HTML("If you know the parameters of the Ornstein-Uhlenbeck Process, you can enter them directly.  If you have data, you can use it to estimate the parameters.  Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Likelihood of observing the data as a random sample.<br><br>
+        HTML("If you know the parameters of the Ornstein-Uhlenbeck Process, you can enter them directly.  If you have data, you can use it to estimate the parameters.  Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood of observing the data as a random sample.<br><br>
           &emsp;&emsp;Arguments:<br>
           &emsp;&emsp;&emsp;<i>tau</i> are times;<br>
           &emsp;&emsp;&emsp;<i>z</i> are states.<br>
           &emsp;&emsp;Returns:<br>
           &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
           &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
-          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter."),
+          &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
+          &emsp;&emsp;&emsp;<i>alpha</i> identifies the distribution of the Log Likelihood."),
         footer = tagList(actionButton("moreROEstimatesOUP","More",class="btn-primary",title="Maximum Likelihood Data"),modalButton("Close")),
         easyClose = TRUE,
         size = "xl"
@@ -7888,8 +7882,9 @@ infotoggle <- reactiveVal(FALSE)
       content <- modalDialog(
         title=div(img(src="Roar32x32.png"),"Regime"),
         HTML("A Regime is a benefit/cost analysis with options.  The benefit/cost analysis is called an Obligation.  It is how benefits are gained and costs are lost.  An Obligation is linear in the state of nature and, hence, certain.  The options are Exit and Entry Options.   Options value the flexibility to exit from and enter into an Obligation.  Exit and Entry Options are highly convex and, hence, uncertain.<br><br>
-          A Regime consists of an Entry Option, an Obligation and an Exit Option.  An Entry Option without an Exit Option is an Obligation.  Exercising an Exit Option eliminates the Obligation.<br><br>
-	         Entry and Exit Options are perpetual options.  There is no fixed expiry date.  If the value of flexibility exceeds the benefits to be gained or the costs being lost, decision-makers will keep their options open.  Otherwise, they will exercise one of their options.<br><br>
+          An Entry Option without an Exit Option is an Obligation.  Exercising an Exit Option eliminates the Obligation.<br><br>
+          Conversely, an Exit Option without an Entry Option is a Prohibition.  A Prohibition is a negative Obligation.  Exercising an Entry Option eliminates the Prohibition.<br><br>
+	        Entry and Exit Options are perpetual options.  There is no fixed expiry date.  If the value of flexibility exceeds the benefits to be gained or the costs being lost, decision-makers will keep their options open.  Otherwise, they will exercise one of their options.<br><br>
           &emsp;&emsp;Arguments:<br>
           &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
           &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
@@ -7898,16 +7893,7 @@ infotoggle <- reactiveVal(FALSE)
           &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
           &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option;<br>
           &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
-          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option.<br><br>
-	         Policies may alter the arguments to advance or delay entry and exit decisions.<br>
-          &emsp;1)  A contract may require farmers to plant trees and never cut them, eliminating the Exit Option.<br>
-          &emsp;2)  Farmers may be prohibited from ever planting poppies, eliminating the Entry Option.<br>
-          &emsp;3)  A business is obligated to pay fixed costs, delaying exit.<br>
-          &emsp;4)  Subsidising the installation of solar panels advances entry.<br>
-          &emsp;5)  Purchasing excess power from solar panels reduces the break-even point, advancing entry and delaying exit.<br>
-          &emsp;6)  An input tax reduces the location parameter, delaying entry and advancing exit.<br>
-          &emsp;7)  Insurance decreases the scale parameter, advancing both entry and exit.<br>
-          &emsp;8)  Subsidising interest rates for farmers in a drought delays exit."),
+          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option."),
         footer = tagList(actionButton("moreRORegimeOUP","More",class="btn-primary",title="Analytical Option"),modalButton("Close")),
         easyClose = TRUE,
         size = "xl"
@@ -7947,14 +7933,14 @@ infotoggle <- reactiveVal(FALSE)
           If crossing a threshold is irreversible, Passage Times are First Passage Times.  If crossing a threshold is completely reversible, Passage Times are Visiting Times.  If crossing a threshold may be partially reversible, Passage Times are in between First Passage Times and Visiting Times.<br><br>
           &emsp;&emsp;Arguments:<br>
           &emsp;&emsp;&emsp;<i>k</i> is the threshold;<br>
-          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time;<br>
           &emsp;&emsp;&emsp;<i>x</i> is the fixed initial state;<br>
           &emsp;&emsp;&emsp;<i>z</i> are alternate initial states;<br>
           &emsp;&emsp;&emsp;<i>omega</i> is the degree of irreversibility;<br>
           &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
           &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
           &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-          &emsp;&emsp;&emsp;<i>Ppct</i> is a passage time probability.<br>
+          &emsp;&emsp;&emsp;<i>Ppct</i> is a passage time probability;<br>
+          &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time.<br>
           &emsp;&emsp;Returns:<br>
           &emsp;&emsp;&emsp;<i>t</i><sub>0.5</sub> is the Median Passage Time;<br>
           &emsp;&emsp;&emsp;<i>t<sub>Ppct</sub></i> and <i>t</i><sub>1-<i>Ppct</i></sub> are Passage Time Percentiles for <i>Ppct</i> and 1-<i>Ppct</i>."),
@@ -9180,7 +9166,7 @@ infotoggle <- reactiveVal(FALSE)
     {
       content <- modalDialog(
         title=div(img(src="Roar32x32.png"),"Estimates"),
-        HTML("Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood.  Some or all the parameters can be fixed to constants and other parameters re-estimated.  This gives the Restricted Log Likelihood, which must be less than the Unrestricted Log Likelihood.  The probability distribution of a Log Likelihood is identified by parameter <i>&alpha;</i>, where <i>&alpha;</i>=0.5 for a <i>&chi;</i><sup>2</sup> distribution, <i>&alpha;</i>=1 for an Erlang distribution and 0.5&lt;<i>&alpha;</i>&lt;1 for a Gamma distribution.<br><br>
+        HTML("Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood.  Some or all the parameters can be fixed to constants and other parameters re-estimated.  This gives the Restricted Log Likelihood, which must be less than the Unrestricted Log Likelihood.  The probability distribution of a Log Likelihood is identified by parameter <i>&alpha;</i>, where <i>&alpha;</i>=0.5 for a <i>&chi;</i><sup>2</sup> distribution, <i>&alpha;</i>=1 for an Erlang distribution.  These are special cases of 0.5&le;<i>&alpha;</i>&le;1 for a Gamma distribution.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Estimates(<i>tau,z,rhor,mur,sigmar,rhos,mus,sigmas</i>)<br>
           &emsp;&emsp;with arguments:<br>

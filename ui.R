@@ -131,8 +131,8 @@ shinyUI(
               column(numericInput("yRODecisionOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rRODecisionOUP",label="r",value="",step="any",width="100%"),title="discount rate of convergence",width=2),
               column(numericInput("phiRODecisionOUP",label="phi",value="",step="any",width="100%"),title="exit or entry option",width=2),
-              column(numericInput("bRODecisionOUP",label="b",value="",step="any",width="100%"),title="entry benefit",width=2),
-              column(numericInput("cRODecisionOUP",label="c",value="",step="any",width="100%"),title="exit cost",width=2)
+              column(numericInput("bRODecisionOUP",label="~",value="",step="any",width="100%"),title="entry benefit",width=2),
+              column(numericInput("cRODecisionOUP",label="~",value="",step="any",width="100%"),title="exit cost",width=2)
             ),
             # User action
             fixedRow(
@@ -141,9 +141,7 @@ shinyUI(
               column(actionButton("undoRODecisionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
               column(actionButton("syncRODecisionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesRODecisionOUP","Axes",width="100%",class="btn-success"),title="for x",width=2),
-              column(actionButton("plotRODecisionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
-              column(actionButton("leftRODecisionOUP","<",width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
-              column(actionButton("rghtRODecisionOUP",">",width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1)
+              column(actionButton("plotRODecisionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
             ),
             # Plot
             wellPanel(class="wellPlotOUP",
@@ -170,10 +168,10 @@ shinyUI(
             fixedRow(style="height: 68px;",
               column(width=2),
               column(numericInput("kROPassageTimeOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
-              column(numericInput("sROPassageTimeOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xROPassageTimeOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(numericInput("omegaROPassageTimeOUP",label="omega",value="",step="any",width="100%"),title="degree of irreversibility",width=2),
-              column(numericInput("PpctROPassageTimeOUP",label="P pct",value="",step="any",width="100%"),title="passage time probability",width=2)
+              column(numericInput("PpctROPassageTimeOUP",label="P pct",value="",step="any",width="100%"),title="passage time probability",width=2),
+              column(numericInput("sROPassageTimeOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2)
             ),
             # User action
             fixedRow(
@@ -285,11 +283,11 @@ shinyUI(
               column(numericInput("tToAMeanOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("sAMeanOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
+              column(width=2),
               column(numericInput("xAMeanOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
               column(numericInput("psiAMeanOUP",label="psi",value="",step="any",width="100%"),title="-inf to y or y to inf",width=2),
-              column(width=2),
+              column(numericInput("sAMeanOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAMeanOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -329,11 +327,11 @@ shinyUI(
               column(numericInput("tToAMeanCOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("sAMeanCOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
+              column(width=2),
               column(numericInput("xAMeanCOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(numericInput("epsAMeanCOUP",label="epsilon",value="",step="any",width="100%"),title="proportion remaining",width=2),
               column(width=2),
-              column(width=2),
+              column(numericInput("sAMeanCOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAMeanCOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -371,11 +369,11 @@ shinyUI(
               column(numericInput("tToAVarianceOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("sAVarianceOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
+              column(width=2),
               column(numericInput("xAVarianceOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
               column(numericInput("psiAVarianceOUP",label="psi",value="",step="any",width="100%"),title="-inf to y or y to inf",width=2),
-              column(width=2),
+              column(numericInput("sAVarianceOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAVarianceOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -414,11 +412,11 @@ shinyUI(
               column(numericInput("tToAVarianceCOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("sAVarianceCOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
+              column(width=2),
               column(width=2),
               column(numericInput("epsAVarianceCOUP",label="epsilon",value="",step="any",width="100%"),title="proportion remaining",width=2),
               column(width=2),
-              column(width=2),
+              column(numericInput("sAVarianceCOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAVarianceCOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -455,11 +453,11 @@ shinyUI(
               column(numericInput("tToADensityOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("sADensityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
+              column(width=2),
               column(numericInput("xADensityOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
               column(width=2),
-              column(width=2),
+              column(numericInput("sADensityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromADensityOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -499,11 +497,11 @@ shinyUI(
               column(numericInput("tToAProbabilityOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("sAProbabilityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
+              column(width=2),
               column(numericInput("xAProbabilityOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
               column(numericInput("psiAProbabilityOUP",label="psi",value="",step="any",width="100%"),title="-inf to y or y to inf",width=2),
-              column(width=2),
+              column(numericInput("sAProbabilityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAProbabilityOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -543,11 +541,11 @@ shinyUI(
               column(numericInput("tToADoubleOUP",label="t:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("sADoubleOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
+              column(width=2),
               column(numericInput("xADoubleOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(width=2),
               column(numericInput("psiADoubleOUP",label="psi",value="",step="any",width="100%"),title="-inf to y or y to inf",width=2),
-              column(width=2),
+              column(numericInput("sADoubleOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromADoubleOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -583,15 +581,15 @@ shinyUI(
               column(numericInput("rhoAOptionOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAOptionOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAOptionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
-              column(width=2),
+              column(numericInput("tAOptionOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("sToAOptionOUP",label="s:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("tAOptionOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("yAOptionOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rAOptionOUP",label="r",value="",step="any",width="100%"),title="discount rate of convergence",width=2),
               column(numericInput("phiAOptionOUP",label="phi",value="",step="any",width="100%"),title="exit or entry option",width=2),
-              column(numericInput("bcAOptionOUP",label="~",value="",step="any",width="100%"),title="exit cost or entry benefit",width=2),
+              column(numericInput("bAOptionOUP",label="~",value="",step="any",width="100%"),title="entry benefit",width=2),
+              column(numericInput("cAOptionOUP",label="~",value="",step="any",width="100%"),title="exit cost",width=2),
               column(numericInput("sFromAOptionOUP",label="s:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -627,15 +625,15 @@ shinyUI(
               column(numericInput("rhoAEnvelopeOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAEnvelopeOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(numericInput("sigmaAEnvelopeOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2),
-              column(width=2),
+              column(numericInput("tAEnvelopeOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("sToAEnvelopeOUP",label="s:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("tAEnvelopeOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("yAEnvelopeOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rAEnvelopeOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
               column(numericInput("phiAEnvelopeOUP",label="phi",value="",step="any",width="100%"),title="exit or entry option",width=2),
-              column(numericInput("bcAEnvelopeOUP",label="~",value="",step="any",width="100%"),title="exit cost or entry benefit",width=2),
+              column(numericInput("bAEnvelopeOUP",label="~",value="",step="any",width="100%"),title="entry benefit",width=2),
+              column(numericInput("cAEnvelopeOUP",label="~",value="",step="any",width="100%"),title="exit cost",width=2),
               column(numericInput("sFromAEnvelopeOUP",label="s:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -672,11 +670,11 @@ shinyUI(
               column(numericInput("sigmaADecisionOUP",label="sigma",value="",step="any",width="100%"),title="scale",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(width=2),
               column(numericInput("yADecisionOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rADecisionOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
               column(numericInput("phiADecisionOUP",label="phi",value="",step="any",width="100%"),title="exit or entry option",width=2),
-              column(numericInput("bcADecisionOUP",label="~",value="",step="any",width="100%"),title="exit cost or entry benefit",width=2)
+              column(numericInput("bADecisionOUP",label="~",value="",step="any",width="100%"),title="entry benefit",width=2),
+              column(numericInput("cADecisionOUP",label="~",value="",step="any",width="100%"),title="exit cost",width=2)
             ),
             # User action
             fixedRow(
@@ -694,7 +692,7 @@ shinyUI(
             value="ADecisionOUP"
           ),
           # Obligation ----
-          nav_panel("Obligation",
+          nav_panel("Obligation / Prohibition",
             # User input
             fixedRow(style="height: 60px;",
               column(actionButton("infoAObligationOUP","Info",width="100%",class="btn-primary"),title="about Obligation",style="padding-top: 32px;",width=2),
@@ -709,15 +707,15 @@ shinyUI(
               column(numericInput("rhoAObligationOUP",label="rho",value="",step="any",width="100%"),title="rate of convergence",width=2),
               column(numericInput("muAObligationOUP",label="mu",value="",step="any",width="100%"),title="location",width=2),
               column(width=2),
-              column(width=2),
+              column(numericInput("tAObligationOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("sToAObligationOUP",label="s:To",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             fixedRow(style="height: 68px;",
-              column(numericInput("tAObligationOUP",label="t",value="",step="any",width="100%"),title="fixed terminal time",width=2),
               column(numericInput("yAObligationOUP",label="y",value="",step="any",width="100%"),title="fixed terminal state",width=2),
               column(numericInput("rAObligationOUP",label="r",value="",step="any",width="100%"),title="discount rate",width=2),
               column(numericInput("phiAObligationOUP",label="phi",value="",step="any",width="100%"),title="exit or entry option",width=2),
-              column(numericInput("bcAObligationOUP",label="~",value="",step="any",width="100%"),title="exit cost or entry benefit",width=2),
+              column(numericInput("bAObligationOUP",label="b",value="",step="any",width="100%"),title="entry benefit",width=2),
+              column(numericInput("cAObligationOUP",label="c",value="",step="any",width="100%"),title="exit cost",width=2),
               column(numericInput("sFromAObligationOUP",label="s:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -758,10 +756,10 @@ shinyUI(
             ),
             fixedRow(style="height: 68px;",
               column(numericInput("kAPTModeMedianMeanOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
-              column(numericInput("sAPTModeMedianMeanOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTModeMedianMeanOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(numericInput("omegaAPTModeMedianMeanOUP",label="omega",value="",step="any",width="100%"),title="degree of irreversibility",width=2),
               column(width=2),
+              column(numericInput("sAPTModeMedianMeanOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAPTModeMedianMeanOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -799,9 +797,10 @@ shinyUI(
             ),
             fixedRow(style="height: 68px;",
               column(numericInput("kAPTVarianceOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
-              column(numericInput("sAPTVarianceOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTVarianceOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
-              column(numericInput("omegaAPTVarianceOUP",label="omega",value="",step="any",width="100%"),title="degree of irreversibility",width=2)
+              column(numericInput("omegaAPTVarianceOUP",label="omega",value="",step="any",width="100%"),title="degree of irreversibility",width=2),
+              column(width=2),
+              column(numericInput("sAPTVarianceOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2)
             ),
             # User action
             fixedRow(
@@ -841,10 +840,10 @@ shinyUI(
             ),
             fixedRow(style="height: 68px;",
               column(numericInput("kAPTPercentilesOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
-              column(numericInput("sAPTPercentilesOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTPercentilesOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(numericInput("omegaAPTPercentilesOUP",label="omega",value="",step="any",width="100%"),title="degree of irreversibility",width=2),
               column(numericInput("PpctAPTPercentilesOUP",label="P pct",value="",step="any",width="100%"),title="passage time probability",width=2),
+              column(numericInput("sAPTPercentilesOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAPTPercentilesOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -885,10 +884,10 @@ shinyUI(
             ),
             fixedRow(style="height: 68px;",
               column(numericInput("kAPTDensityOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
-              column(numericInput("sAPTDensityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTDensityOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(numericInput("omegaAPTDensityOUP",label="omega",value="",step="any",width="100%"),title="degree of irreversibility",width=2),
               column(width=2),
+              column(numericInput("sAPTDensityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAPTDensityOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -929,10 +928,10 @@ shinyUI(
             ),
             fixedRow(style="height: 68px;",
               column(numericInput("kAPTProbabilityOUP",label="k",value="",step="any",width="100%"),title="threshold",width=2),
-              column(numericInput("sAPTProbabilityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("xAPTProbabilityOUP",label="x",value="",step="any",width="100%"),title="fixed initial state",width=2),
               column(numericInput("omegaAPTProbabilityOUP",label="omega",value="",step="any",width="100%"),title="degree of irreversibility",width=2),
               column(width=2),
+              column(numericInput("sAPTProbabilityOUP",label="s",value="",step="any",width="100%"),title="fixed initial time",width=2),
               column(numericInput("tFromAPTProbabilityOUP",label="t:From",value="",step="any",width="100%"),title="variable times",width=2)
             ),
             # User action
@@ -1338,11 +1337,11 @@ shinyUI(
       )
     ),
     nav_menu("Help",
-      nav_item(
-        a(href="https://greghertzler.github.io/GregsOUPShiny/OUP_Shiny.html","Tutorials",target="_blank")
+      nav_panel("Tutorials",
+        value="tabTutorialsOUP"
       ),
-      nav_item(
-        a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Reference",target="_blank")
+      nav_panel("Reference",
+        value="tabReferenceOUP"
       ),
       nav_panel("About",
         value="tabAboutOUP"
