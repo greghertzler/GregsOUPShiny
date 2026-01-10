@@ -1337,11 +1337,11 @@ shinyUI(
       )
     ),
     nav_menu("Help",
-      nav_panel("Tutorials",
-        value="tabTutorialsOUP"
+      nav_item(
+        a(href="https://greghertzler.github.io/GregsOUPShiny/OUP_Shiny.html","Tutorials",target="_blank")
       ),
-      nav_panel("Reference",
-        value="tabReferenceOUP"
+      nav_item(
+        a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Reference",target="_blank")
       ),
       nav_panel("About",
         value="tabAboutOUP"

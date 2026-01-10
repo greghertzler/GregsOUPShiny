@@ -3,7 +3,7 @@ library(bslib)
 library(plotly)
 library(tools)
 library(rvest)
-library(GregsOUP)
+library(GregsOUPR6)
 
 # server
 shinyServer(function(input,output,session){
@@ -17,11 +17,9 @@ ML <- OUP$get_MaximumLikelihood()
 MC <- OUP$get_MonteCarlo()
 A$set_plot_info(opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
-ouppath <- system.file(package="GregsOUP")
+ouppath <- system.file(package="GregsOUPR6")
 datapath <- paste(sep="",ouppath,"/data/")
-htmlpath <- paste(sep="",ouppath,"/html/")
-tutorialspath <- paste(sep="","file://",ouppath,"/shinytutorials/OUP_Shiny.html")
-helppath <- paste(sep="","file://",ouppath,"/ribbonhelp/OUP_Help.html")
+htmlpath <- paste(sep="",getwd(),"/www/html/")
 uploadname <- "MyData"
 uploadpath <- paste(sep="",datapath,"MyData.csv")
 agrlist <- file_path_sans_ext(list.files(datapath,pattern="Agric_"))
@@ -7749,14 +7747,6 @@ infotoggle <- reactiveVal(FALSE)
           }) %>% bindEvent(input$infoMLRatioOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
-    }
-    else if(input$navBar == "tabTutorialsOUP")
-    {
-      utils::browseURL(tutorialspath)
-    }
-    else if(input$navBar == "tabReferenceOUP")
-    {
-      utils::browseURL(helppath)
     }
     else if(input$navBar == "tabAboutOUP")
     {
