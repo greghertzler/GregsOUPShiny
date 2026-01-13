@@ -19,7 +19,7 @@ A$set_plot_info(opaque=0.0,labels=FALSE)
 # global variables for Maximum Likelihood and Data tabs
 ouppath <- system.file(package="GregsOUPR6")
 datapath <- paste(sep="",ouppath,"/data/")
-htmlpath <- paste(sep="",ouppath,"/html/")
+htmlpath <- datapath
 uploadname <- "MyData"
 uploadpath <- paste(sep="",datapath,"MyData.csv")
 agrlist <- file_path_sans_ext(list.files(datapath,pattern="Agric_"))
@@ -7771,16 +7771,19 @@ infotoggle <- reactiveVal(FALSE)
     # file info ----
     if(ibutton() != "")
     {
+      dataname <- ibutton()
       htmlname <- paste(sep="",htmlpath,ibutton(),".html")
       if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
-      rawtext <- read_html(htmlname)
-      dataname <- ibutton()
-      elms <- html_children(html_element(rawtext,"main"))
-      thistext <- ""
-      for(elm in elms) {
-        elmn <- html_name(elm)
-        if(elmn == "h2" | elmn == "h3" | elmn == "p" | elmn == "ul") {thistext <- paste0(thistext,elm) }
+      if(file.exists(htmlname)) {
+        rawtext <- read_html(htmlname)
+        elms <- html_children(html_element(rawtext,"main"))
+        thistext <- ""
+        for(elm in elms) {
+          elmn <- html_name(elm)
+          if(elmn == "h2" | elmn == "h3" | elmn == "p" | elmn == "ul") {thistext <- paste0(thistext,elm) }
+        }
       }
+      else { thistext <- paste0(htmlname," not found.") }
       style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
       content <- modalDialog(
         title=div(img(src="Roar32x32.png"),dataname),
