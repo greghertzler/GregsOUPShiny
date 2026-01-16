@@ -95,10 +95,11 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearRORegimeOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveRORegimeOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoRORegimeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
-              column(width=2),
+              column(actionButton("clearRORegimeOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveRORegimeOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnRORegimeOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupRORegimeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
+              column(actionButton("syncRORegimeOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesRORegimeOUP","Axes",width="100%",class="btn-success"),title="for x",width=2),
               column(actionButton("plotRORegimeOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
               column(actionButton("leftRORegimeOUP","<",width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
@@ -136,9 +137,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearRODecisionOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveRODecisionOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoRODecisionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearRODecisionOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveRODecisionOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnRODecisionOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupRODecisionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncRODecisionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesRODecisionOUP","Axes",width="100%",class="btn-success"),title="for x",width=2),
               column(actionButton("plotRODecisionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
@@ -175,9 +177,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearROPassageTimeOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveROPassageTimeOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoROPassageTimeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearROPassageTimeOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveROPassageTimeOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnROPassageTimeOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupROPassageTimeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncROPassageTimeOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesROPassageTimeOUP","Axes",width="100%",class="btn-success"),title="for t and z",width=2),
               column(actionButton("plotROPassageTimeOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -192,7 +195,7 @@ shinyUI(
           ),
           id="navROOUP",widths=c(3,9)
         ),
-        value="tabROOUP",
+        value="tabROOUP"
         #end list ----
       ),
       nav_panel("Analytical",
@@ -217,9 +220,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearADriftOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveADriftOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoADriftOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearADriftOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveADriftOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnADriftOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupADriftOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncADriftOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesADriftOUP","Axes",width="100%",class="btn-success"),title="for z",width=2),
               column(actionButton("plotADriftOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
@@ -248,9 +252,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearADiffusionOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveADiffusionOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoADiffusionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearADiffusionOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveADiffusionOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnADiffusionOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupADiffusionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncADiffusionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesADiffusionOUP","Axes",width="100%",class="btn-success"),title="for z",width=2),
               column(actionButton("plotADiffusionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -292,9 +297,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAMeanOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAMeanOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAMeanOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAMeanOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAMeanOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAMeanOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAMeanOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAMeanOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAMeanOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotAMeanOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -336,9 +342,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAMeanCOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAMeanCOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAMeanCOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAMeanCOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAMeanCOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAMeanCOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAMeanCOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAMeanCOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAMeanCOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotAMeanCOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
@@ -378,9 +385,11 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAVarianceOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAVarianceOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAVarianceOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAVarianceOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAVarianceOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAVarianceOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAVarianceOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
+              column(actionButton("syncAVarianceOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAVarianceOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotAVarianceOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
               column(actionButton("leftAVarianceOUP","<",width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
@@ -421,9 +430,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAVarianceCOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAVarianceCOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAVarianceCOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAVarianceCOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAVarianceCOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAVarianceCOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAVarianceCOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAVarianceCOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAVarianceCOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotAVarianceCOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
@@ -462,9 +472,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearADensityOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveADensityOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoADensityOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearADensityOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveADensityOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnADensityOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupADensityOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncADensityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesADensityOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotADensityOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -506,9 +517,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAProbabilityOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAProbabilityOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAProbabilityOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAProbabilityOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAProbabilityOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAProbabilityOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAProbabilityOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAProbabilityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAProbabilityOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotAProbabilityOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -550,9 +562,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearADoubleOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveADoubleOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoADoubleOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearADoubleOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveADoubleOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnADoubleOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupADoubleOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncADoubleOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesADoubleOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotADoubleOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -594,9 +607,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAOptionOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAOptionOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAOptionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAOptionOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAOptionOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAOptionOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAOptionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAOptionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAOptionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotAOptionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -638,9 +652,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAEnvelopeOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAEnvelopeOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAEnvelopeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAEnvelopeOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAEnvelopeOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAEnvelopeOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAEnvelopeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAEnvelopeOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAEnvelopeOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotAEnvelopeOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -678,9 +693,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearADecisionOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveADecisionOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoADecisionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearADecisionOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveADecisionOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnADecisionOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupADecisionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncADecisionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesADecisionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotADecisionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
@@ -720,9 +736,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAObligationOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAObligationOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAObligationOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAObligationOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAObligationOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAObligationOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAObligationOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAObligationOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAObligationOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotAObligationOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -764,9 +781,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAPTModeMedianMeanOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAPTModeMedianMeanOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAPTModeMedianMeanOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAPTModeMedianMeanOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAPTModeMedianMeanOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAPTModeMedianMeanOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAPTModeMedianMeanOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAPTModeMedianMeanOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAPTModeMedianMeanOUP","Axes",width="100%",class="btn-success"),title="for t, z and pt",width=2),
               column(actionButton("plotAPTModeMedianMeanOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -804,9 +822,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAPTVarianceOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAPTVarianceOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAPTVarianceOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAPTVarianceOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAPTVarianceOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAPTVarianceOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAPTVarianceOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAPTVarianceOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAPTVarianceOUP","Axes",width="100%",class="btn-success"),title="for t, z and pt",width=2),
               column(actionButton("plotAPTVarianceOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -848,9 +867,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAPTPercentilesOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAPTPercentilesOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAPTPercentilesOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAPTPercentilesOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAPTPercentilesOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAPTPercentilesOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAPTPercentilesOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAPTPercentilesOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAPTPercentilesOUP","Axes",width="100%",class="btn-success"),title="for t, z and pt",width=2),
               column(actionButton("plotAPTPercentilesOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -892,9 +912,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAPTDensityOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAPTDensityOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAPTDensityOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAPTDensityOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAPTDensityOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAPTDensityOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAPTDensityOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAPTDensityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAPTDensityOUP","Axes",width="100%",class="btn-success"),title="for t, z and pt",width=2),
               column(actionButton("plotAPTDensityOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -936,9 +957,10 @@ shinyUI(
             ),
             # User action
             fixedRow(
-              column(actionButton("clearAPTProbabilityOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveAPTProbabilityOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoAPTProbabilityOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearAPTProbabilityOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveAPTProbabilityOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnAPTProbabilityOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupAPTProbabilityOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("syncAPTProbabilityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAPTProbabilityOUP","Axes",width="100%",class="btn-success"),title="for t, z and pt",width=2),
               column(actionButton("plotAPTProbabilityOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
@@ -978,9 +1000,10 @@ shinyUI(
             # User action
             fixedRow(
               column(actionButton("infoFDDriftOUP","Info",width="100%",class="btn-primary"),title="about Drift",width=2),
-              column(actionButton("clearFDDriftOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveFDDriftOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoFDDriftOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearFDDriftOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveFDDriftOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnFDDriftOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupFDDriftOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDDriftOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDDriftOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
             ),
@@ -1008,9 +1031,10 @@ shinyUI(
             # User action
             fixedRow(
               column(actionButton("infoFDDiffusionOUP","Info",width="100%",class="btn-primary"),title="about Diffusion",width=2),
-              column(actionButton("clearFDDiffusionOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveFDDiffusionOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoFDDiffusionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearFDDiffusionOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveFDDiffusionOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnFDDiffusionOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupFDDiffusionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDDiffusionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDDiffusionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
               column(actionButton("leftFDDiffusionOUP","<",width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
@@ -1041,9 +1065,10 @@ shinyUI(
             # User action
             fixedRow(
               column(actionButton("infoFDTerminalOUP","Info",width="100%",class="btn-primary"),title="about Terminal Values",width=2),
-              column(actionButton("clearFDTerminalOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveFDTerminalOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoFDTerminalOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearFDTerminalOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveFDTerminalOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnFDTerminalOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupFDTerminalOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDTerminalOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDTerminalOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
             ),
@@ -1082,9 +1107,10 @@ shinyUI(
             # User action
             fixedRow(
               column(actionButton("infoFDOptionOUP","Info",width="100%",class="btn-primary"),title="about Option",width=2),
-              column(actionButton("clearFDOptionOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveFDOptionOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoFDOptionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearFDOptionOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveFDOptionOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnFDOptionOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupFDOptionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDOptionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDOptionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
               column(actionButton("leftFDOptionOUP","<",width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
@@ -1125,9 +1151,10 @@ shinyUI(
             # User action
             fixedRow(
               column(actionButton("infoFDEnvelopeOUP","Info",width="100%",class="btn-primary"),title="about Option Envelope",width=2),
-              column(actionButton("clearFDEnvelopeOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveFDEnvelopeOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoFDEnvelopeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearFDEnvelopeOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveFDEnvelopeOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnFDEnvelopeOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupFDEnvelopeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDEnvelopeOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDEnvelopeOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2),
               column(actionButton("leftFDEnvelopeOUP","<",width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
@@ -1165,9 +1192,10 @@ shinyUI(
             # User action
             fixedRow(
               column(actionButton("infoFDDecisionOUP","Info",width="100%",class="btn-primary"),title="about Decision Threshold",width=2),
-              column(actionButton("clearFDDecisionOUP",HTML("&forall;"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
-              column(actionButton("saveFDDecisionOUP",HTML("&Vee;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
-              column(actionButton("undoFDDecisionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="undo",width=2),
+              column(actionButton("clearFDDecisionOUP",HTML("_"),width="100%",class="btn-info"),title="clear and save",style="padding-right: 2px;",width=1),
+              column(actionButton("saveFDDecisionOUP",HTML("&equiv;"),width="100%",class="btn-info"),title="save",style="padding-left: 2px;",width=1),
+              column(actionButton("undnFDDecisionOUP",HTML("&Vee;"),width="100%",class="btn-success"),title="previous",style="padding-right: 2px;",width=1),
+              column(actionButton("unupFDDecisionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDDecisionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDDecisionOUP","Plot",width="100%",class="btn-success"),title="refresh",width=2)
             ),
