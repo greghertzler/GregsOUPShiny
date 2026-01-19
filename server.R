@@ -8354,10 +8354,13 @@ infotoggle <- reactiveVal(FALSE)
         }
       }
       else { thistext <- paste(sep="",dataname,".html was not found.")}
-      style <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
+      h2h3 <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
       content <- modalDialog(
         title=div(img(src="Roar32x32.png"),dataname),
-        HTML(paste(sep="",style,thistext)),
+        div(
+          style = "max-height: 580px; overflow-y: auto;",
+          HTML(paste(sep="",h2h3,thistext)),
+        ),
         footer = modalButton("Close"),
         easyClose = TRUE,
         size = "xl"
