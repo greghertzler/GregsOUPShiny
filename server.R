@@ -334,6 +334,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabMLOUP")
+            updateTabsetPanel(session,"navMLOUP",selected="MLDataOUP")
+          }) %>% bindEvent(input$alsoRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Estimates ----
         if(input$navROOUP == "ROEstimatesOUP")
@@ -616,7 +621,7 @@ infotoggle <- reactiveVal(FALSE)
             removeModal(session)
             updateTabsetPanel(session,"navBar",selected="tabMLOUP")
             updateTabsetPanel(session,"navMLOUP",selected="MLEstimatesOUP")
-          }) %>% bindEvent(input$moreROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          }) %>% bindEvent(input$alsoROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Regime ----
         else if(input$navROOUP == "RORegimeOUP")
@@ -870,7 +875,7 @@ infotoggle <- reactiveVal(FALSE)
             removeModal(session)
             updateTabsetPanel(session,"navBar",selected="tabAOUP")
             updateTabsetPanel(session,"navAOUP",selected="AOptionOUP")
-          }) %>% bindEvent(input$moreRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          }) %>% bindEvent(input$alsoRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Decision Threshold ----
         else if(input$navROOUP == "RODecisionOUP")
@@ -1100,7 +1105,7 @@ infotoggle <- reactiveVal(FALSE)
             removeModal(session)
             updateTabsetPanel(session,"navBar",selected="tabAOUP")
             updateTabsetPanel(session,"navAOUP",selected="ADecisionOUP")
-          }) %>% bindEvent(input$moreRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          }) %>% bindEvent(input$alsoRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Passage Time ----
         else if(input$navROOUP == "ROPassageTimeOUP")
@@ -1330,7 +1335,7 @@ infotoggle <- reactiveVal(FALSE)
             removeModal(session)
             updateTabsetPanel(session,"navBar",selected="tabAOUP")
             updateTabsetPanel(session,"navAOUP",selected="APTPercentilesOUP")
-          }) %>% bindEvent(input$moreROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          }) %>% bindEvent(input$alsoROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
        })
     }
@@ -1476,6 +1481,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabFDOUP")
+            updateTabsetPanel(session,"navFDOUP",selected="FDDriftOUP")
+          }) %>% bindEvent(input$alsoADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Diffusion ----
         else if(input$navAOUP == "ADiffusionOUP")
@@ -1672,6 +1682,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabFDOUP")
+            updateTabsetPanel(session,"navFDOUP",selected="FDDiffusionOUP")
+          }) %>% bindEvent(input$alsoADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Mean ----
         else if(input$navAOUP == "AMeanOUP")
@@ -3463,6 +3478,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabFDOUP")
+            updateTabsetPanel(session,"navFDOUP",selected="FDOptionOUP")
+          }) %>% bindEvent(input$alsoAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option Envelope----
         else if(input$navAOUP == "AEnvelopeOUP")
@@ -3763,6 +3783,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabFDOUP")
+            updateTabsetPanel(session,"navFDOUP",selected="FDEnvelopeOUP")
+          }) %>% bindEvent(input$alsoAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Decision Threshold ----
         else if(input$navAOUP == "ADecisionOUP")
@@ -3986,6 +4011,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabFDOUP")
+            updateTabsetPanel(session,"navFDOUP",selected="FDDecisionOUP")
+          }) %>% bindEvent(input$alsoADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Obligation ----
         else if(input$navAOUP == "AObligationOUP")
@@ -5635,6 +5665,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabAOUP")
+            updateTabsetPanel(session,"navAOUP",selected="ADriftOUP")
+          }) %>% bindEvent(input$alsoFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Diffusion ----
         if(input$navFDOUP == "FDDiffusionOUP")
@@ -5832,6 +5867,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabAOUP")
+            updateTabsetPanel(session,"navAOUP",selected="ADiffusionOUP")
+          }) %>% bindEvent(input$alsoFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Terminal Values ----
         if(input$navFDOUP == "FDTerminalOUP")
@@ -6295,6 +6335,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabAOUP")
+            updateTabsetPanel(session,"navAOUP",selected="AOptionOUP")
+          }) %>% bindEvent(input$alsoFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Option Envelope ----
         if(input$navFDOUP == "FDEnvelopeOUP")
@@ -6576,6 +6621,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabAOUP")
+            updateTabsetPanel(session,"navAOUP",selected="AEnvelopeOUP")
+          }) %>% bindEvent(input$alsoFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
         # Decision Threshold ----
         if(input$navFDOUP == "FDDecisionOUP")
@@ -6797,6 +6847,11 @@ infotoggle <- reactiveVal(FALSE)
             if(infotoggle()) { infotoggle(FALSE) }
             else { infotoggle(TRUE) }
           }) %>% bindEvent(input$infoFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          observe({
+            removeModal(session)
+            updateTabsetPanel(session,"navBar",selected="tabAOUP")
+            updateTabsetPanel(session,"navAOUP",selected="ADecisionOUP")
+          }) %>% bindEvent(input$alsoFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
         }
       })
     }
@@ -8337,11 +8392,23 @@ infotoggle <- reactiveVal(FALSE)
   })
   # modal dialog ----
   observe({
-    content <- ""
+    tabName <- ""
+    # splash screen ----
+      bodyText <- "Greetings!<br><br>
+          The Ornstein-Uhlenbeck menu:<br>
+          &emsp;&emsp;Real Options:  A selection of tabs for quick results;<br>
+          &emsp;&emsp;Analytical:  Formulas for most problems;<br>
+          &emsp;&emsp;Finite Difference:  Method for trickier problems;<br>
+          &emsp;&emsp;Maximum Likelihood: Estimation and hypothesis testing.<br><br>
+          The Help menu:<br>
+          &emsp;&emsp;Tutorials:  Case Studies for solved problems and Methods for solving problems;<br>
+          &emsp;&emsp;Reference:  Explanations in more detail than you probably want;<br>
+          &emsp;&emsp;About:  Who we are, how to contact us and how to cite us;<br>
+          &emsp;&emsp;License:  Your rights and our rights."
+    seeAlso <- ""
     # file info ----
     if(ibutton() != "")
     {
-      dataname <- ibutton()
       htmlname <- paste(sep="",htmlpath,ibutton(),".html")
       if(!file.exists(htmlname)) { htmlname <- paste(sep="",htmlpath,"MyData.html") }
       if(file.exists(htmlname)) {
@@ -8353,25 +8420,16 @@ infotoggle <- reactiveVal(FALSE)
           if(elmn == "h2" | elmn == "h3" | elmn == "p" | elmn == "ul") {thistext <- paste0(thistext,elm) }
         }
       }
-      else { thistext <- paste(sep="",dataname,".html was not found.")}
+      else { thistext <- paste(sep="",ibutton(),".html was not found.")}
+      tabName <- ibutton()
       h2h3 <- "<style>h2 { font-size: 120% } h3 { font-size: 110% }</style>"
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),dataname),
-        div(
-          style = "max-height: 580px; overflow-y: auto;",
-          HTML(paste(sep="",h2h3,thistext)),
-        ),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+      bodyText <- (paste(sep="",h2h3,thistext))
     }
     # ROData ----
     else if(infobutton() == "infoRODataOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Data"),
-        HTML("The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
+      tabName <- "Data"
+      bodyText <- "The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
           Data must be a time-series, with observations of times and states of nature.  Within the time-series, each observation has its own initial time and state, and its own terminal time and state.  Typically, the terminal time and state of one observation will be the initial time and state of the next observation.  Therefore, if measurements are taken at <i>m</i>  times, there will be <i>m</i>-1 observations.<br><br>
           Data is read from 'csv' (comma separated value) files.  Typically the files would be organized as in this table.
           <table style='margin-left: 60px;'>
@@ -8418,18 +8476,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           Names are in the first row.  Numbers start in the second row.  Time is in the first column and states start in the second column.  There can be more than one time column.  There must be <i>m</i>+1 rows in all columns, but there can be blank elements if there is no measurment at that time.  Data is sorted by time and time intervals can be unequal.  Indeed, unequal time intervals seem to improve the estimation.<br><br>
-          How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."
+      seeAlso <- "alsoRODataOUP"
     }
     # ROEstimates ----
     else if(infobutton() == "infoROEstimatesOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Estimates"),
-        HTML("If you know the parameters of the Ornstein-Uhlenbeck Process, you can enter them directly.  If you have data, you can use it to estimate the parameters.  Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood of observing the data as a random sample.<br><br>
+      tabName <- "Estimates"
+      bodyText <- "If you know the parameters of the Ornstein-Uhlenbeck Process, you can enter them directly.  If you have data, you can use it to estimate the parameters.  Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood of observing the data as a random sample.<br><br>
           &emsp;&emsp;Arguments:<br>
           &emsp;&emsp;&emsp;<i>tau</i> are times;<br>
           &emsp;&emsp;&emsp;<i>z</i> are states.<br>
@@ -8437,18 +8491,14 @@ infotoggle <- reactiveVal(FALSE)
           &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
           &emsp;&emsp;&emsp;<i>mu</i> is the location parameter;<br>
           &emsp;&emsp;&emsp;<i>sigma</i> is the scale parameter;<br>
-          &emsp;&emsp;&emsp;<i>alpha</i> identifies the distribution of the Log Likelihood."),
-        footer = tagList(actionButton("moreROEstimatesOUP","More",class="btn-primary",title="Maximum Likelihood Data"),modalButton("Close")),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>alpha</i> identifies the distribution of the Log Likelihood."
+      seeAlso <- "alsoROEstimatesOUP"
     }
     # RORegime ----
     else if(infobutton() == "infoRORegimeOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Regime"),
-        HTML("A Regime is a benefit/cost analysis with options.  The benefit/cost analysis is called an Obligation.  It is how benefits are gained and costs are lost.  An Obligation is linear in the state of nature and, hence, certain.  The options are Exit and Entry Options.   Options value the flexibility to exit from and enter into an Obligation.  Exit and Entry Options are highly convex and, hence, uncertain.<br><br>
+      tabName <- "Regime"
+      bodyText <- "A Regime is a benefit/cost analysis with options.  The benefit/cost analysis is called an Obligation.  It is how benefits are gained and costs are lost.  An Obligation is linear in the state of nature and, hence, certain.  The options are Exit and Entry Options.   Options value the flexibility to exit from and enter into an Obligation.  Exit and Entry Options are highly convex and, hence, uncertain.<br><br>
           An Entry Option without an Exit Option is an Obligation.  Exercising an Exit Option eliminates the Obligation.<br><br>
           Conversely, an Exit Option without an Entry Option is a Prohibition.  A Prohibition is a negative Obligation.  Exercising an Entry Option eliminates the Prohibition.<br><br>
 	        Entry and Exit Options are perpetual options.  There is no fixed expiry date.  If the value of flexibility exceeds the benefits to be gained or the costs being lost, decision-makers will keep their options open.  Otherwise, they will exercise one of their options.<br><br>
@@ -8460,18 +8510,14 @@ infotoggle <- reactiveVal(FALSE)
           &emsp;&emsp;&emsp;<i>r</i> is the discount rate;<br>
           &emsp;&emsp;&emsp;<i>phi</i> is < 0 for an Exit Option, > 0 for an Entry Option;<br>
           &emsp;&emsp;&emsp;<i>b</i> is a benefit or subsidy for an Entry Option;<br>
-          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option."),
-        footer = tagList(actionButton("moreRORegimeOUP","More",class="btn-primary",title="Analytical Option"),modalButton("Close")),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option."
+      seeAlso <- "alsoRORegimeOUP"
     }
     # RODecision ----
     else if(infobutton() == "infoRODecisionOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Decision Threshold"),
-        HTML("The Decision Threshold is the state of the system where a decision-maker will be indifferent between holding or exercising an Entry or Exit Option.  The Option value at the threshold is the price of flexibility&mdash;the price of keeping options open.  It is the most a decision-maker will pay in costs rather than exit prematurely, or the most a decision-maker will forego in benefits rather than enter prematurely.<br><br>
+      tabName <- "Decision Threshold"
+      bodyText <- "The Decision Threshold is the state of the system where a decision-maker will be indifferent between holding or exercising an Entry or Exit Option.  The Option value at the threshold is the price of flexibility&mdash;the price of keeping options open.  It is the most a decision-maker will pay in costs rather than exit prematurely, or the most a decision-maker will forego in benefits rather than enter prematurely.<br><br>
           &emsp;&emsp;Arguments:<br>
           &emsp;&emsp;&emsp;<i>y</i> is the break-even point;<br>
           &emsp;&emsp;&emsp;<i>rho</i> is the rate parameter;<br>
@@ -8483,18 +8529,14 @@ infotoggle <- reactiveVal(FALSE)
           &emsp;&emsp;&emsp;<i>c</i> is a cost or tax for an Exit Option.<br>
           &emsp;&emsp;Returns:<br>
           &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
-          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
-        footer = tagList(actionButton("moreRODecisionOUP","More",class="btn-primary",title="Analytical Decision Threshold"),modalButton("Close")),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."
+      seeAlso <- "alsoRODecisionOUP"
     }
     # ROPassageTime ----
     else if(infobutton() == "infoROPassageTimeOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Passage Times"),
-        HTML("A Passage Time is the time until a system crosses a threshold.  The longer the passage time, the more resilient the system.  Passage Times will be longer if the state of the system is far from the threshold, is moving slowly and is less stochastic.<br><br>
+      tabName <- "Passage Times"
+      bodyText <- "A Passage Time is the time until a system crosses a threshold.  The longer the passage time, the more resilient the system.  Passage Times will be longer if the state of the system is far from the threshold, is moving slowly and is less stochastic.<br><br>
           The probabilities of the Ornstein-Uhlenbeck Process are symmetric.  The measure of central tendency is the Mean and the measure of dispersion is the Variance.  The probabilities of Passage Times are not symmetric.  There are three measures of central tendency, the Mode, Median and Mean.  However, the Mean and Variance may not exist.<br><br>
           Percentiles are a reliable alternative. The Median is the Passage Time with a 50% chance the threshold has been crossed and a 50% chance it is yet to be crossed.  Higher and lower Percentiles have similar interpretations.<br><br>
           If crossing a threshold is irreversible, Passage Times are First Passage Times.  If crossing a threshold is completely reversible, Passage Times are Visiting Times.  If crossing a threshold may be partially reversible, Passage Times are in between First Passage Times and Visiting Times.<br><br>
@@ -8510,18 +8552,14 @@ infotoggle <- reactiveVal(FALSE)
           &emsp;&emsp;&emsp;<i>s</i> is the fixed initial time.<br>
           &emsp;&emsp;Returns:<br>
           &emsp;&emsp;&emsp;<i>t</i><sub>0.5</sub> is the Median Passage Time;<br>
-          &emsp;&emsp;&emsp;<i>t<sub>Ppct</sub></i> and <i>t</i><sub>1-<i>Ppct</i></sub> are Passage Time Percentiles for <i>Ppct</i> and 1-<i>Ppct</i>."),
-        footer = tagList(actionButton("moreROPassageTimeOUP","More",class="btn-primary",title="Analytical Passage Time Percentiles"),modalButton("Close")),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>t<sub>Ppct</sub></i> and <i>t</i><sub>1-<i>Ppct</i></sub> are Passage Time Percentiles for <i>Ppct</i> and 1-<i>Ppct</i>."
+      seeAlso <- "alsoROPassageTimeOUP"
     }
     # ADrift ----
     else if(infobutton() == "infoADriftOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Drift"),
-        HTML("Drift is the expected change in the state of a stochastic process over a brief instant.  It is also called the Instantaneous Mean.  For the Ornstein-Uhlenbeck Process, it depends upon the current state <i>z</i>.<br><br>
+      tabName <- "Drift"
+      bodyText <- "Drift is the expected change in the state of a stochastic process over a brief instant.  It is also called the Instantaneous Mean.  For the Ornstein-Uhlenbeck Process, it depends upon the current state <i>z</i>.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Drift(<i>z,rho,mu</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8540,18 +8578,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>g</i> is the Drift."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>g</i> is the Drift."
+      seeAlso <- "alsoADriftOUP"
     }
     # ADiffusion ----
     else if(infobutton() == "infoADiffusionOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Diffusion"),
-        HTML("An error is the difference between the actual and expected changes in the state of a stochastic process.  Diffusion is the error squared over a brief instant.  It is also called the Instantaneous Variance.  For the Ornstein-Uhlenbeck Process, it is constant.<br><br>
+      tabName <- "Diffusion"
+      bodyText <- "An error is the difference between the actual and expected changes in the state of a stochastic process.  Diffusion is the error squared over a brief instant.  It is also called the Instantaneous Variance.  For the Ornstein-Uhlenbeck Process, it is constant.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Diffusion(<i>sigma</i>)<br>
           &emsp;&emsp;with argument:<br>
@@ -8568,18 +8602,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>h</i><sup>2</sup> is the Diffusion."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>h</i><sup>2</sup> is the Diffusion."
+      seeAlso <- "alsoADiffusionOUP"
     }
     # AMean ----
     else if(infobutton() == "infoAMeanOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Mean"),
-        HTML("A Mean of a stochastic process is the expected state <i>y</i> at time <i>t</i> in the future.  For all stochastic processes, including the Ornstein-Uhlenbeck Process, it depends upon the initial time <i>s</i> and the initial state <i>x</i>.<br><br>
+      tabName <- "Mean"
+      bodyText <- "A Mean of a stochastic process is the expected state <i>y</i> at time <i>t</i> in the future.  For all stochastic processes, including the Ornstein-Uhlenbeck Process, it depends upon the initial time <i>s</i> and the initial state <i>x</i>.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Mean(<i>t,s,x,rho,mu</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8608,18 +8638,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>G</i> is the Mean."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>G</i> is the Mean."
     }
     # AMeanC ----
     else if(infobutton() == "infoAMeanCOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Mean Convergence"),
-        HTML("Statistical methods applied to time series usually assume weak stationarity.  This requires the Mean to have converged to its Asymptotic Mean, while the Variance may still be converging.  The time for the Mean to converge indicates the required time interval between measurements for observations to become approximately stationary.  For the Ornstein-Uhlenbeck Process, the Asymptotic Mean is location <i>mu</i> and the Mean converges at rate <i>rho</i>.<br><br>
+      tabName <- "Mean Convergence"
+      bodyText <- "Statistical methods applied to time series usually assume weak stationarity.  This requires the Mean to have converged to its Asymptotic Mean, while the Variance may still be converging.  The time for the Mean to converge indicates the required time interval between measurements for observations to become approximately stationary.  For the Ornstein-Uhlenbeck Process, the Asymptotic Mean is location <i>mu</i> and the Mean converges at rate <i>rho</i>.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;MeanToConverge(<i>s,rho,epsilon</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8636,18 +8661,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>t</i><sub>epsilon</sub> is the time to converge by 1-epsilon."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>t</i><sub>epsilon</sub> is the time to converge by 1-epsilon."
     }
     # AVariance ----
     else if(infobutton() == "infoAVarianceOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Variance"),
-        HTML("An error is the difference between the actual and expected state of a stochastic process for time <i>t</i> in the future.  A Variance is the error squared.  For the Ornstein-Uhlenbeck Process, it depends upon the initial time <i>s</i>.<br><br>
+      tabName <- "Variance"
+      bodyText <- "An error is the difference between the actual and expected state of a stochastic process for time <i>t</i> in the future.  A Variance is the error squared.  For the Ornstein-Uhlenbeck Process, it depends upon the initial time <i>s</i>.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Variance(<i>t,s,rho,sigma</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8675,18 +8695,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>H</i>&hairsp;<sup>2</sup> is the Variance."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>H</i>&hairsp;<sup>2</sup> is the Variance."
     }
     # AVarianceC ----
     else if(infobutton() == "infoAVarianceCOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Variance Convergence"),
-        HTML("In statistical methods applied to time series, weak stationarity assumes the Mean has converged to the Asymptotic Mean. Strong stationarity assumes the Variance has also converged to the Asymptotic Variance.  For the Ornstein-Uhlenbeck Process, the Asymptotic Variance is <i>sigma</i><sup>2</sup>/2<i>rho</i> and the Variance converges at rate 2<i>rho</i>.  The Variance converges twice as fast as the Mean.  Therefore, if the Ornstein-Uhlenbeck Process is weaky stationary, it is also strongly stationary.<br><br>
+      tabName <- "Variance Convergence"
+      bodyText <- "In statistical methods applied to time series, weak stationarity assumes the Mean has converged to the Asymptotic Mean. Strong stationarity assumes the Variance has also converged to the Asymptotic Variance.  For the Ornstein-Uhlenbeck Process, the Asymptotic Variance is <i>sigma</i><sup>2</sup>/2<i>rho</i> and the Variance converges at rate 2<i>rho</i>.  The Variance converges twice as fast as the Mean.  Therefore, if the Ornstein-Uhlenbeck Process is weaky stationary, it is also strongly stationary.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;VarianceToConverge(<i>s,rho,epsilon</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8703,18 +8718,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>t</i><sub>epsilon</sub> is the time to converge by 1-epsilon."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>t</i><sub>epsilon</sub> is the time to converge by 1-epsilon."
     }
     # ADensity ----
     else if(infobutton() == "infoADensityOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Transition Density"),
-        HTML("The Transition Density is the probability of state <i>y</i> being observed at time <i>t</i>.  At initial time <i>t</i> equal to <i>s</i>, the probability of <i>y</i> equal to <i>x</i> is one and the probability of <i>y</i> not equal to <i>x</i> is zero.  The Transition Density is the Dirac or Degenerate Density.  As time passes, the probability of <i>y</i> equal to <i>x</i> decreases, the probability of <i>y</i> not equal to <i>x</i> increases and the Transition Density widens and moves away from <i>x</i>.  In the limit as <i>t</i> goes to infinity, the Transition Density loses its dependence on <i>s</i> and <i>x</i> and converges to its Invariant Density, with Asymptotic Mean <i>mu</i> and Asymptotic Variance <i>sigma</i><sup>2</sup>/2<i>rho</i>.<br><br>
+      tabName <- "Transition Density"
+      bodyText <- "The Transition Density is the probability of state <i>y</i> being observed at time <i>t</i>.  At initial time <i>t</i> equal to <i>s</i>, the probability of <i>y</i> equal to <i>x</i> is one and the probability of <i>y</i> not equal to <i>x</i> is zero.  The Transition Density is the Dirac or Degenerate Density.  As time passes, the probability of <i>y</i> equal to <i>x</i> decreases, the probability of <i>y</i> not equal to <i>x</i> increases and the Transition Density widens and moves away from <i>x</i>.  In the limit as <i>t</i> goes to infinity, the Transition Density loses its dependence on <i>s</i> and <i>x</i> and converges to its Invariant Density, with Asymptotic Mean <i>mu</i> and Asymptotic Variance <i>sigma</i><sup>2</sup>/2<i>rho</i>.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Density(<i>t,y,s,x,rho,mu,sigma</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8751,18 +8761,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>p</i> is the Transition Density."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>p</i> is the Transition Density."
     }
     # AProbability ----
     else if(infobutton() == "infoAProbabilityOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Transition Probability"),
-        HTML("The Transition Probability integrates the Transition Density.  It sums the probabilities of observing states less than or equal to <i>y</i> at time <i>t</i>.  Alternatively, it sums the probabilities greater than or equal to <i>y</i>.  At initial time <i>t</i> equal to <i>s</i>, it sums the Dirac Density to become the Heavyside or Step Function, which steps from zero to one at <i>y</i> equal to the initial state <i>x</i>.  As time passes, the Transition Probability widens and moves away from <i>x</i>.  For the Ornstein-Uhlenbeck Process, as <i>t</i> goes to infinity, the Transition Probability converges to its Invariant Probability, with Asymptotic Mean <i>mu</i> and Asymptotic Variance <i>sigma</i><sup>2</sup>/2<i>rho</i>.<br><br>
+      tabName <- "Transition Probability"
+      bodyText <- "The Transition Probability integrates the Transition Density.  It sums the probabilities of observing states less than or equal to <i>y</i> at time <i>t</i>.  Alternatively, it sums the probabilities greater than or equal to <i>y</i>.  At initial time <i>t</i> equal to <i>s</i>, it sums the Dirac Density to become the Heavyside or Step Function, which steps from zero to one at <i>y</i> equal to the initial state <i>x</i>.  As time passes, the Transition Probability widens and moves away from <i>x</i>.  For the Ornstein-Uhlenbeck Process, as <i>t</i> goes to infinity, the Transition Probability converges to its Invariant Probability, with Asymptotic Mean <i>mu</i> and Asymptotic Variance <i>sigma</i><sup>2</sup>/2<i>rho</i>.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Probability(<i>t,y,s,x,rho,mu,sigma,phi</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8800,18 +8805,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>P</i> is the Transition Probability."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>P</i> is the Transition Probability."
     }
     # ADouble ----
     else if(infobutton() == "infoADoubleOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Double Integral"),
-        HTML("The Double Integral sums the probabilities one more time.  The effect is easiest to see at initial time <i>t</i> equal to <i>s</i>, when the Transition Density is the Dirac Density and the Transition Probability is the Heavyside Function.  Integrating the Dirac Density gives the Heavyside Function and integrating the Heavyside Function gives the Threshold Function.  The Threshold Function is kinked, like a payoff function for an option, and the Double Integral is the precursor to an analytical option pricing formula.  Thresholds are a property of stochastic processes, including the Ornstein-Uhlenbeck Process, and in a world of uncertainty over time, Options are not optional.<br><br>
+      tabName <- "Double Integral"
+      bodyText <- "The Double Integral sums the probabilities one more time.  The effect is easiest to see at initial time <i>t</i> equal to <i>s</i>, when the Transition Density is the Dirac Density and the Transition Probability is the Heavyside Function.  Integrating the Dirac Density gives the Heavyside Function and integrating the Heavyside Function gives the Threshold Function.  The Threshold Function is kinked, like a payoff function for an option, and the Double Integral is the precursor to an analytical option pricing formula.  Thresholds are a property of stochastic processes, including the Ornstein-Uhlenbeck Process, and in a world of uncertainty over time, Options are not optional.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;DoubleIntegral(<i>t,y,s,x,rho,mu,sigma,psi</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8849,18 +8849,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;&Popf; is the Double Integral."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;&Popf; is the Double Integral."
     }
     # AOption ----
     else if(infobutton() == "infoAOptionOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Option"),
-        HTML("Probabilities are an initial-value problem with fixed initial time and state.  Options are a terminal-value problem with fixed terminal time and state.  A Double Integral becomes an Option by reinterpreting time <i>s</i> and state <i>x</i> as variable and time <i>t</i> and state <i>y</i> as fixed.  Multiplying by a discount factor gives the value of an Option discounted to time <i>s</i>.  The Ornstein-Uhlenbeck Process has a Double Integral and, hence, an analytical Option pricing formula.<br><br>
+      tabName <- "Option"
+      bodyText <- "Probabilities are an initial-value problem with fixed initial time and state.  Options are a terminal-value problem with fixed terminal time and state.  A Double Integral becomes an Option by reinterpreting time <i>s</i> and state <i>x</i> as variable and time <i>t</i> and state <i>y</i> as fixed.  Multiplying by a discount factor gives the value of an Option discounted to time <i>s</i>.  The Ornstein-Uhlenbeck Process has a Double Integral and, hence, an analytical Option pricing formula.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Option(<i>s,x,t,y,rho,mu,sigma,r,phi,b,c</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8901,18 +8896,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;&Oopf; is an Option."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;&Oopf; is an Option."
+      seeAlso <- "alsoAOptionOUP"
     }
     # AEnvelope ----
     else if(infobutton() == "infoAEnvelopeOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Option Envelope"),
-        HTML("A Financial Option is a contract between a buyer and a seller with a fixed expiry date.  A Real Option is not a contract.  There is neither buyer nor seller.  There is no fixed expiry date.  It is a Perpetual Option that a decision-maker can exercise whenever they choose.  If the maximum value of the Option is the payoff function, it should be exercised immediately.  If the maximum value of the Option is greater than the payoff function, it should be held and possibly exercised in the future.  The Option Envelope is the maximum value of either exercising or holding the option for all states, <i>x</i>.<br><br>
+      tabName <- "Option Envelope"
+      bodyText <- "A Financial Option is a contract between a buyer and a seller with a fixed expiry date.  A Real Option is not a contract.  There is neither buyer nor seller.  There is no fixed expiry date.  It is a Perpetual Option that a decision-maker can exercise whenever they choose.  If the maximum value of the Option is the payoff function, it should be exercised immediately.  If the maximum value of the Option is greater than the payoff function, it should be held and possibly exercised in the future.  The Option Envelope is the maximum value of either exercising or holding the option for all states, <i>x</i>.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;OptionEnvelope(<i>x,y,rho,mu,sigma,r,phi,b,c</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8937,18 +8928,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;\u00D4 is an Option on the Envelope."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;\u00D4 is an Option on the Envelope."
+      seeAlso <- "alsoAEnvelopeOUP"
     }
     # ADecision ----
     else if(infobutton() == "infoADecisionOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Decision Threshold"),
-        HTML("The Decision Threshold is the state <i>k</i> where a decision-maker will be indifferent between holding or exercising a Real Option.  The Option value at the threshold is the price of flexibility&mdash;the price of keeping options open.  It is the most a decision-maker will pay in costs rather than exit prematurely, or the most a decision-maker will forego in benefits rather than enter prematurely.<br><br>
+      tabName <- "Decision Threshold"
+      bodyText <- "The Decision Threshold is the state <i>k</i> where a decision-maker will be indifferent between holding or exercising a Real Option.  The Option value at the threshold is the price of flexibility&mdash;the price of keeping options open.  It is the most a decision-maker will pay in costs rather than exit prematurely, or the most a decision-maker will forego in benefits rather than enter prematurely.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;DecisionThreshold(<i>y,rho,mu,sigma,r,phi,b,c</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -8976,18 +8963,14 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
-          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."
+      seeAlso <- "alsoADecisionOUP"
     }
     # AObligation ----
     else if(infobutton() == "infoAObligationOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Obligation"),
-        HTML("In finance, the call/put parity transforms options from one to the other.  In Real Options, the intermediate formula in the transformation is called the Obligation&mdash;the obligation to take losses.  An Obligation equals the Entry Option minus the Exit Option.  Another name for an Obligation is a Benefit/Cost Analysis.  A negative Obligation is a Prohibition&mdash;the prohibition from taking gains.  A Prohibition equals the Exit Option minus the Entry Option.  Neither an Obligation nor a Prohibition is uncertain.  All uncertainty is in the options.<br><br>
+      tabName <- "Obligation"
+      bodyText <- "In finance, the call/put parity transforms options from one to the other.  In Real Options, the intermediate formula in the transformation is called the Obligation&mdash;the obligation to take losses.  An Obligation equals the Entry Option minus the Exit Option.  Another name for an Obligation is a Benefit/Cost Analysis.  A negative Obligation is a Prohibition&mdash;the prohibition from taking gains.  A Prohibition equals the Exit Option minus the Entry Option.  Neither an Obligation nor a Prohibition is uncertain.  All uncertainty is in the options.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Obligation(<i>s,x,t,y,rho,mu,r,phi,b,c</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9060,18 +9043,13 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;\uD835\uDD39 is an Obligation with positive benefits and negative costs;<br>
-          &emsp;&emsp;&emsp;<strong>\u2102</strong> is a Prohibition with positive costs and negative benefits."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<strong>\u2102</strong> is a Prohibition with positive costs and negative benefits."
     }
     # APTModeMedianMean ----
     else if(infobutton() == "infoAPTModeMedianMeanOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Passage Time Mode, Median and Mean"),
-        HTML("If crossing a threshold is irreversible, the Mode is the most likely time to cross, the Median is the time with a 50% chance the threshold has already been crossed and the Mean is the expected time to cross.<br><br>
+      tabName <- "Passage Time Mode, Median and Mean"
+      bodyText <- "If crossing a threshold is irreversible, the Mode is the most likely time to cross, the Median is the time with a 50% chance the threshold has already been crossed and the Mean is the expected time to cross.<br><br>
           If crossing is partially or completely reversible, net visits are crossings to the far side minus returns to the near side.  The Mode is when net visits are greatest.  The Median is when net visits reach 50% of the long-term proportion of time spent on the far side.  The Mean is the expected time of net visits to the far side.<br><br>
           If the Ornstein-Uhlenbeck Process is attracted across a threshold, the Mode is less than the Median is less than the Mean.  If, however, the process is attracted to a location away from the threshold, the Mean can be less than the Median can be less than the Mode.  If the process is not attracted at all, with a rate of convergence of zero, the Mean does not exist and the expected time to cross a threshold is unknown.<br><br>
           &emsp;&emsp;The R6 methods:<br>
@@ -9156,18 +9134,13 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;mode(<i>x</i>), median(<i>x</i>) and mean(<i>x</i>) are the Passage Time Mode, Median and Mean at <i>x</i>;<br>
-          &emsp;&emsp;&emsp;mode(<i>z</i><sub>j</sub>), median(<i>z</i><sub>j</sub>) and mean(<i>z</i><sub>j</sub>) are the Passage Time Mode, Median and Mean for <i>x=z</i><sub>j</sub>;<br>"),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;mode(<i>z</i><sub>j</sub>), median(<i>z</i><sub>j</sub>) and mean(<i>z</i><sub>j</sub>) are the Passage Time Mode, Median and Mean for <i>x=z</i><sub>j</sub>."
     }
     # APTVariance ----
     else if(infobutton() == "infoAPTVarianceOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Passage Time Variance"),
-        HTML("If the Ornstein-Uhlenbeck Process has a larger Variance, the chance of bouncing across a threshold will be greater and the Passage Time will have a smaller Variance.  More uncertainty about the evolution of the state translates to less uncertainty about crossing a threshold.  If the Ornstein-Uhlenbeck Process converges slowly, the Passage Time Density is 'fat-tailed' and the Passage Time Variance may not exist.  The uncertainty about crossing a threshold may be unknown.<br><br>
+      tabName <- "Passage Time Variance"
+      bodyText <- "If the Ornstein-Uhlenbeck Process has a larger Variance, the chance of bouncing across a threshold will be greater and the Passage Time will have a smaller Variance.  More uncertainty about the evolution of the state translates to less uncertainty about crossing a threshold.  If the Ornstein-Uhlenbeck Process converges slowly, the Passage Time Density is 'fat-tailed' and the Passage Time Variance may not exist.  The uncertainty about crossing a threshold may be unknown.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;PassageTimeVariance(<i>k,s,x,z,omega,rho,mu,sigma</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9204,18 +9177,13 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;variance(<i>x</i>) is the Passage Time Variance at <i>x</i>;<br>
-          &emsp;&emsp;&emsp;variance(<i>z</i><sub>j</sub>) is the Passage Time Variance for <i>x=z</i><sub>j</sub>."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;variance(<i>z</i><sub>j</sub>) is the Passage Time Variance for <i>x=z</i><sub>j</sub>."
     }
     # APTPercentiles ----
     else if(infobutton() == "infoAPTPercentilesOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Passage Time Percentiles"),
-        HTML("The Transition Densities and Probabilites for the Ornstein-Uhlenbeck Process are symmetric and easy to interpret.  The only measure of central tendency is the Mean and the only measure of dispersion is the Variance.  Adding and subtracting the square-root of the Variance gives Percentiles above and below the Mean.<br><br>
+      tabName <- "Passage Time Percentiles"
+      bodyText <- "The Transition Densities and Probabilites for the Ornstein-Uhlenbeck Process are symmetric and easy to interpret.  The only measure of central tendency is the Mean and the only measure of dispersion is the Variance.  Adding and subtracting the square-root of the Variance gives Percentiles above and below the Mean.<br><br>
           Passage Time Densities and Probabilities are not symmetric.  There are three measures of central tendency, the Mode, Median and Mean.  Adding and subtracting the square-root of the Variance gives weird results.  If a stochastic process does not converge, its Passage Time Mean and Variance do not exist.<br><br>
           An easier alternative is to calculate Percentiles.  The Median is the time with a 50% chance the threshold has been crossed and a 50% chance it is yet to be crossed.  Higher and lower Percentiles have similar interpretations.<br><br>
           &emsp;&emsp;The R6 method:<br>
@@ -9255,18 +9223,13 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;percentile(<i>x</i>) is the Passage Time Percentile for Ppct at <i>x</i>;<br>
-          &emsp;&emsp;&emsp;percentile(<i>z</i><sub>j</sub>) are the Passage Time Percentiles for Ppct at <i>x=z</i><sub>j</sub>;<br>"),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;percentile(<i>z</i><sub>j</sub>) are the Passage Time Percentiles for Ppct at <i>x=z</i><sub>j</sub>."
     }
     # APTDensity ----
     else if(infobutton() == "infoAPTDensityOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Passage Time Density"),
-        HTML("An additional proportion of time an Ornstein-Uhlenbeck Process spends on the far side of a threshold is the Passage Time Density.  If crossing a threshold is irreversible, it is the First Passage Time Density.  If crossing a threshold can be completely reversed, it is the Visiting Time Density.  In between is the Passage Time Density.  A Passage Time Density is typically skewed, but can also be bi-modal and even negative if the process is attracted away from a threshold.<br><br>
+      tabName <- "Passage Time Density"
+      bodyText <- "An additional proportion of time an Ornstein-Uhlenbeck Process spends on the far side of a threshold is the Passage Time Density.  If crossing a threshold is irreversible, it is the First Passage Time Density.  If crossing a threshold can be completely reversed, it is the Visiting Time Density.  In between is the Passage Time Density.  A Passage Time Density is typically skewed, but can also be bi-modal and even negative if the process is attracted away from a threshold.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;PassageTimeDensity(<i>t,k,s,x,z,omega,rho,mu,sigma</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9334,18 +9297,13 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;<i>p<sub>t</sub></i>(<i>t</i>|<i>x</i>) is the Passage Time Density at <i>x</i>;<br>
-          &emsp;&emsp;&emsp;<i>p<sub>t</sub></i>(<i>t</i>|<i>z</i><sub>j</sub>) is the Passage Time Density for <i>x=z</i><sub>j</sub>."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>p<sub>t</sub></i>(<i>t</i>|<i>z</i><sub>j</sub>) is the Passage Time Density for <i>x=z</i><sub>j</sub>."
     }
     # APTProbability ----
     else if(infobutton() == "infoAPTProbabilityOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Passage Time Probability"),
-        HTML("The proportion of time an Ornstein-Uhlenbeck Process spends on the far side of a threshold is the Passage Time Probability.  At one extreme is the First Passage Time Probability and at the other is the Visiting Time Probability.  The First Passage Time Probability goes to one because the Ornstein-Uhlenbeck Process will eventually cross the threshold and be trapped on the far side.  In general, a Passage Time Probability does not go to one because the process may return to spend time on the near side.<br><br>
+      tabName <- "Passage Time Probability"
+      bodyText <- "The proportion of time an Ornstein-Uhlenbeck Process spends on the far side of a threshold is the Passage Time Probability.  At one extreme is the First Passage Time Probability and at the other is the Visiting Time Probability.  The First Passage Time Probability goes to one because the Ornstein-Uhlenbeck Process will eventually cross the threshold and be trapped on the far side.  In general, a Passage Time Probability does not go to one because the process may return to spend time on the near side.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;PassageTimeProbability(<i>t,k,s,x,z,omega,rho,mu,sigma</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9413,18 +9371,13 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;<i>P<sub>t</sub></i>(<i>t</i>|<i>x</i>) is the Passage Time Probability at <i>x</i>;<br>
-          &emsp;&emsp;&emsp;<i>P<sub>t</sub></i>(<i>t</i>|<i>z</i><sub>j</sub>) is the Passage Time Probability for <i>x=z</i><sub>j</sub>."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>P<sub>t</sub></i>(<i>t</i>|<i>z</i><sub>j</sub>) is the Passage Time Probability for <i>x=z</i><sub>j</sub>."
     }
     # FDDrift ----
     else if(infobutton() == "infoFDDriftOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Drift"),
-        HTML("Drift is the expected change in the state of a stochastic process over a brief instant.  It is a component of the partial differential equation solved by the Finite Difference Method.<br><br>
+      tabName <- "Drift"
+      bodyText <- "Drift is the expected change in the state of a stochastic process over a brief instant.  It is a component of the partial differential equation solved by the Finite Difference Method.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Drift(<i>x,rho,mu</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9443,18 +9396,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>g</i> is the Drift."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>g</i> is the Drift."
+      seeAlso <- "alsoFDDriftOUP"
     }
     # FDDiffusion ----
     else if(infobutton() == "infoFDDiffusionOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Diffusion"),
-        HTML("An error is the difference between the actual and expected changes in the state of a stochastic process.  Diffusion is the error squared over a brief instant.  It is a component of the partial differential equation solved by the Finite Difference Method.<br><br>
+      tabName <- "Diffusion"
+      bodyText <- "An error is the difference between the actual and expected changes in the state of a stochastic process.  Diffusion is the error squared over a brief instant.  It is a component of the partial differential equation solved by the Finite Difference Method.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Diffusion(<i>sigma</i>)<br>
           &emsp;&emsp;with argument:<br>
@@ -9471,18 +9420,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>h</i><sup>2</sup> is the Diffusion."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>h</i><sup>2</sup> is the Diffusion."
+      seeAlso <- "alsoFDDiffusionOUP"
     }
     # FDTerminal ----
     else if(infobutton() == "infoFDTerminalOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Terminal Values"),
-        HTML("Analytical option pricing has a kinked terminal value, but the Finite Difference Method is more flexible.  Any terminal value can be pre-calculated and entered into the option pricing calculations.  Some likely terminal values are programmed here for convenience.<br><br>
+      tabName <- "Terminal Values"
+      bodyText <- "Analytical option pricing has a kinked terminal value, but the Finite Difference Method is more flexible.  Any terminal value can be pre-calculated and entered into the option pricing calculations.  Some likely terminal values are programmed here for convenience.<br><br>
           &emsp;&emsp;The R6 methods:<br>
           &emsp;&emsp;&emsp;TerminalValue_Linear(<i>x,x</i>o<i>,v</i>s)<br>
           &emsp;&emsp;&emsp;TerminalValue_Degenerate(<i>x,x</i>o<i>,V</i>max<i>,V</i>min)<br>
@@ -9515,18 +9460,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;<i>V</i> is the Terminal Value."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>V</i> is the Terminal Value."
     }
     # FDOption ----
     else if(infobutton() == "infoFDOptionOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Option"),
-        HTML("Options are the value of flexibility&mdash;the value of keeping your options open.  Options with kinked terminal values are a fundamental property of the Ornstein-Uhlenbeck Process and have analytical solutions.  Options with arbitrary terminal values can be calculated using the Finite Difference Method.  However, the Ornstein-Uhlenbeck Process has no boundary conditions, which makes finite difference solutions more difficult.  If possible, the Finite Difference Method should be calibrated with an analytical solution.<br><br>
+      tabName <- "Option"
+      bodyText <- "Options are the value of flexibility&mdash;the value of keeping your options open.  Options with kinked terminal values are a fundamental property of the Ornstein-Uhlenbeck Process and have analytical solutions.  Options with arbitrary terminal values can be calculated using the Finite Difference Method.  However, the Ornstein-Uhlenbeck Process has no boundary conditions, which makes finite difference solutions more difficult.  If possible, the Finite Difference Method should be calibrated with an analytical solution.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Option(<i>s,x,V,rho,mu,sigma,r</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9563,18 +9503,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;&Oopf; is an Option."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;&Oopf; is an Option."
+      seeAlso <- "alsoFDOptionOUP"
     }
     # FDEnvelope ----
     else if(infobutton() == "infoFDEnvelopeOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Option Envelope"),
-        HTML("The Option Envelope is the maximum value of either holding or exercising an option for all possible states of nature.  Using the Finite Difference Method, a matrix of Options is first calculated at discrete nodes.  Then the nodes are searched.  The discrete nodes limit the accuracy of the Option Envelope compared with an analytical solution.<br><br>
+      tabName <- "Option Envelope"
+      bodyText <- "The Option Envelope is the maximum value of either holding or exercising an option for all possible states of nature.  Using the Finite Difference Method, a matrix of Options is first calculated at discrete nodes.  Then the nodes are searched.  The discrete nodes limit the accuracy of the Option Envelope compared with an analytical solution.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;OptionEnvelope(<i>x,V,rho,mu,sigma,r</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9596,18 +9532,14 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;\u00D4 is an Option on the Envelope."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;\u00D4 is an Option on the Envelope."
+      seeAlso <- "alsoFDEnvelopeOUP"
     }
     # FDDecision ----
     else if(infobutton() == "infoFDDecisionOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Decision Threshold"),
-        HTML("The Decision Threshold is the point of indifference between holding and exercising a perpetual option.  The Finite Difference Method calculates Options at discrete nodes, which gives an Option Envelope at discrete nodes.  Choosing a node as the indifference point is inaccurate.  To improve the accuracy, a polynomial interpolation of the Option Envelope is used to approximate the Decision Threshold. For reliability, the Finite Difference Method with a Kinked Terminal Value can be calibrated against an Analytical solution.<br><br>
+      tabName <- "Decision Threshold"
+      bodyText <- "The Decision Threshold is the point of indifference between holding and exercising a perpetual option.  The Finite Difference Method calculates Options at discrete nodes, which gives an Option Envelope at discrete nodes.  Choosing a node as the indifference point is inaccurate.  To improve the accuracy, a polynomial interpolation of the Option Envelope is used to approximate the Decision Threshold. For reliability, the Finite Difference Method with a Kinked Terminal Value can be calibrated against an Analytical solution.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;DecisionThreshold(<i>x,V,rho,mu,sigma,r,phi</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9634,18 +9566,14 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;<i>k</i> is the state at the Decision Threshold;<br>
-          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;\u00D4 is the Option at the Decision Threshold."
+      seeAlso <- "alsoFDDecisionOUP"
     }
     # MLData ----
     else if(infobutton() == "infoMLDataOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Data"),
-        HTML("The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
+      tabName <- "Data"
+      bodyText <- "The rate, location and scale parameters of the Ornstein-Uhlenbeck Process can be plucked out of the air, cogitated by experts, deduced from theory or estimated using data.<br><br>
           Data must be a time-series, with observations of times and states of nature.  Within the time-series, each observation has its own initial time and state, and its own terminal time and state.  Typically, the terminal time and state of one observation will be the initial time and state of the next observation.  Therefore, if measurements are taken at <i>m</i>  times, there will be <i>m</i>-1 observations.<br><br>
           Data is read from 'csv' (comma separated value) files.  Typically the files would be organized as in this table.
           <table style='margin-left: 60px;'>
@@ -9692,18 +9620,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           Names are in the first row.  Numbers start in the second row.  Time is in the first column and states start in the second column.  There can be more than one time column.  There must be <i>m</i>+1 rows in all columns, but there can be blank elements if there is no measurment at that time.  Data is sorted by time and time intervals can be unequal.  Indeed, unequal time intervals seem to improve the estimation.<br><br>
-          How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          How the time intervals are measured affects the estimation of parameters <i>rho</i> and <i>sigma</i>.  For example, if measurements are taken once per year and time is reported in years, time interval <i>t-s</i> will be 1 year for a typical observation.  Parameter <i>rho</i> will likely range from 0.1 to 4.0 and <i>sigma</i> will range from 10 to 50.  If measurements are daily but time is reported in years, time interval <i>t-s</i> will be 1/365 years.  Parameter <i>rho</i> will be about 365 times larger and parameter <i>sigma</i> will be about (2<i>rho</i>)<sup>0.5</sup> times larger."
     }
     # MLLikelihood ----
     else if(infobutton() == "infoMLLikelihoodOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Log Likelihood"),
-        HTML("The Likelihood is the joint probability of observing a time-series as a random sample.  For numerical reasons, the natural logarithm of the Likelihood, or Log Likelihood, is calculated instead.  The Log Likelihood can be maximized to estimate the parameters of the Ornstein-Uhlenbeck Process.  It can be calculated for a restricted set of parameters to test hypotheses.  An example would compare two sets of parameters by calculating their Log Likelihoods and conducting a Likelihood Ratio Test.<br><br>
+      tabName <- "Log Likelihood"
+      bodyText <- "The Likelihood is the joint probability of observing a time-series as a random sample.  For numerical reasons, the natural logarithm of the Likelihood, or Log Likelihood, is calculated instead.  The Log Likelihood can be maximized to estimate the parameters of the Ornstein-Uhlenbeck Process.  It can be calculated for a restricted set of parameters to test hypotheses.  An example would compare two sets of parameters by calculating their Log Likelihoods and conducting a Likelihood Ratio Test.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;LogLikelihood(<i>rho,mu,sigma,tau,z</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9722,18 +9645,13 @@ infotoggle <- reactiveVal(FALSE)
             </tr>
           </table>
           &emsp;&emsp;where:<br>
-          &emsp;&emsp;&emsp;ln<i>L</i> is the Log Likelihood."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;ln<i>L</i> is the Log Likelihood."
     }
     # MLEstimates ----
     else if(infobutton() == "infoMLEstimatesOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Estimates"),
-        HTML("Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood.  Some or all the parameters can be fixed to constants and other parameters re-estimated.  This gives the Restricted Log Likelihood, which must be less than the Unrestricted Log Likelihood.  The probability distribution of a Log Likelihood is identified by parameter <i>&alpha;</i>, where <i>&alpha;</i>=0.5 for a <i>&chi;</i><sup>2</sup> distribution, <i>&alpha;</i>=1 for an Erlang distribution.  These are special cases of 0.5&le;<i>&alpha;</i>&le;1 for a Gamma distribution.<br><br>
+      tabName <- "Estimates"
+      bodyText <- "Maximum Likelihood Estimation finds the rate, location and scale parameters of the Ornstein-Uhlenbeck Process which maximize the Log Likelihood.  Some or all the parameters can be fixed to constants and other parameters re-estimated.  This gives the Restricted Log Likelihood, which must be less than the Unrestricted Log Likelihood.  The probability distribution of a Log Likelihood is identified by parameter <i>&alpha;</i>, where <i>&alpha;</i>=0.5 for a <i>&chi;</i><sup>2</sup> distribution, <i>&alpha;</i>=1 for an Erlang distribution.  These are special cases of 0.5&le;<i>&alpha;</i>&le;1 for a Gamma distribution.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;Estimates(<i>tau,z,rhor,mur,sigmar,rhos,mus,sigmas</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9856,18 +9774,13 @@ infotoggle <- reactiveVal(FALSE)
           &emsp;&emsp;&emsp;ln<i>Lbar</i> is the maximized restricted Log Likelihood;<br>
           &emsp;&emsp;&emsp;<i>kr</i> is the number of estimated parameters after restrictions;<br>
           &emsp;&emsp;&emsp;<i>alphar</i> identifies the distribution of <i>ln</i>Lbar;<br>
-          &emsp;&emsp;&emsp;<i>m</i>-1 is the number of observations."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;<i>m</i>-1 is the number of observations."
     }
     # MLGoodness ----
     else if(infobutton() == "infoMLGoodnessOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Goodness-of-Fit"),
-        HTML("Goodness of Fit compares the Log Likelihood of the estimated parameters to the Invariant Log Likelihood and to the Log Likelihood of Scaled Brownian Motion.  Comparing with the Invariant Likelihood tests the null hypothesis H<sub>0</sub>:  'the Ornstein-Uhlenbeck Process has converged'.  Comparing with the Likelihood of Scaled Brownian Motion tests the null hypothesis H<sub>0</sub>:  'the Ornstein-Uhlenbeck does not converge'.  Goodness of Fit is summarized by two Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistics and two probabilities.  A null hypothesis is rejected if the <i>R</i>&hairsp;<sup>2</sup> is at least 0.5 and the probability is small.<br><br>
+      tabName <- "Goodness-of-Fit"
+      bodyText <- "Goodness of Fit compares the Log Likelihood of the estimated parameters to the Invariant Log Likelihood and to the Log Likelihood of Scaled Brownian Motion.  Comparing with the Invariant Likelihood tests the null hypothesis H<sub>0</sub>:  'the Ornstein-Uhlenbeck Process has converged'.  Comparing with the Likelihood of Scaled Brownian Motion tests the null hypothesis H<sub>0</sub>:  'the Ornstein-Uhlenbeck does not converge'.  Goodness of Fit is summarized by two Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistics and two probabilities.  A null hypothesis is rejected if the <i>R</i>&hairsp;<sup>2</sup> is at least 0.5 and the probability is small.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;GoodnessOfFit(<i>rho,mu,sigma,tau,z</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9900,18 +9813,13 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;<i>R</i>&hairsp;<sup>2</sup><sub>&infin;</sub> and <i>R</i>&hairsp;<sup>2</sup><sub>0</sub> are Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistics;<br>
-          &emsp;&emsp;&emsp;1-<i>P</i><sub>&infin;</sub> and 1-<i>P</i><sub>0</sub> are the right-tails of Gamma probabilities."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;1-<i>P</i><sub>&infin;</sub> and 1-<i>P</i><sub>0</sub> are the right-tails of Gamma probabilities."
     }
     # MLRatio ----
     else if(infobutton() == "infoMLRatioOUP")
     {
-      content <- modalDialog(
-        title=div(img(src="Roar32x32.png"),"Likelihood Ratio Test"),
-        HTML("Hypothesis tests are constrained optimization with restrictions placed on the parameters.  One form of the null hypothesis is H<sub>0</sub>:  'parameters can take their restricted values'. The alternate hypothesis is H<sub>1</sub>:  'parameters cannot take their restricted values'.  A Likelihood Ratio Test rejects the null hypothesis if the restricted Log Likelihood is significantly smaller than the unrestricted Log Likelihood.  A null hypothesis is rejected if the <i>R</i>&hairsp;<sup>2</sup> is at least 0.5 and the probability is small.<br><br>
+      tabName <- "Likelihood Ratio Test"
+      bodyText <- "Hypothesis tests are constrained optimization with restrictions placed on the parameters.  One form of the null hypothesis is H<sub>0</sub>:  'parameters can take their restricted values'. The alternate hypothesis is H<sub>1</sub>:  'parameters cannot take their restricted values'.  A Likelihood Ratio Test rejects the null hypothesis if the restricted Log Likelihood is significantly smaller than the unrestricted Log Likelihood.  A null hypothesis is rejected if the <i>R</i>&hairsp;<sup>2</sup> is at least 0.5 and the probability is small.<br><br>
           &emsp;&emsp;The R6 method:<br>
           &emsp;&emsp;&emsp;LikelihoodRatioTest(ln<i>Lu,</i>ln<i>Lr,alphar,m1</i>)<br>
           &emsp;&emsp;with arguments:<br>
@@ -9940,18 +9848,13 @@ infotoggle <- reactiveVal(FALSE)
           </table>
           &emsp;&emsp;where:<br>
           &emsp;&emsp;&emsp;<i>R</i>&hairsp;<sup>2</sup> is a Pseudo-<i>R</i>&hairsp;<sup>2</sup> statistic;<br>
-          &emsp;&emsp;&emsp;1-<i>P</i> is the right-tail of a Gamma probability."),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &emsp;&emsp;&emsp;1-<i>P</i> is the right-tail of a Gamma probability."
     }
     # About ----
     else if(infobutton() == "tabAboutOUP")
     {
-      content <- modalDialog(
-        title = div(img(src="Roar64x64.png"),"Real Options for Adoption and Resilience"),
-        HTML("Description:  R Shiny implementation of the R6 objects, OUProcess, Analytical, FiniteDifference, MaximumLikelihood and MonteCarlo&mdash;a complete set of functions for maximum likelihood estimation and the calculation of probabilities, option prices, decision thresholds, visiting times, first passage times and more&mdash;everything for a real options analysis.<br><br>
+      tabName <- "Real Options for Adoption and Resilience"
+      bodyText <- "Description:  R Shiny implementation of the R6 objects, OUProcess, Analytical, FiniteDifference, MaximumLikelihood and MonteCarlo&mdash;a complete set of functions for maximum likelihood estimation and the calculation of probabilities, option prices, decision thresholds, visiting times, first passage times and more&mdash;everything for a real options analysis.<br><br>
           Version:  1.3.5.0 (stochastic process.modules.help.bugs)<br>
           License:  GPLv3<br><br>
           Author:  Greg Hertzler<br>
@@ -9963,27 +9866,60 @@ infotoggle <- reactiveVal(FALSE)
           Roles:  contributor<br><br>
           This project was supported by:<br>
           &mdash;resources and expertise provided by CSIRO IMT Scientific Computing;<br>
-          &mdash;resources provided by CSIRO Environment.
-        "),
-        footer = modalButton("Close"),
-        easyClose = TRUE,
-        size = "xl"
-      )
+          &mdash;resources provided by CSIRO Environment.<br><br>
+          Citation:<br>
+          Hertzler, Greg, Capon, Tim. (2026). <i>Real Options for Adoption and Resilience</i> (Version 1.3.5.0) [Computer software]. Publisher. https:<wbr/>//real-options-<wbr/>adoption-<wbr/>resilience.<wbr/>shinyapps.io/<wbr/>GregsOUPShiny/"
     }
     # License ----
     else if(infobutton() == "tabLicenseOUP")
     {
+      tabName <- "GNU General Public Licence version 3 (GPLv3)"
+      bodyText <- "This software is copyright (c) Greg Hertzler<br><br>
+          Except where otherwise indicated, the copyright holder grants you a licence to the Software on the terms of the GNU General Public Licence version 3 (GPLv3), distributed at: http://www.gnu.org/licenses/gpl.html."
+    }
+    # end ----
+    if(tabName != "")
+    {
+      if(seeAlso == "")
+      {
+        content <- modalDialog(
+          title=div(img(src="Roar32x32.png"),tabName),
+          div(
+            style = "max-height: 580px; overflow-y: auto;",
+            HTML(bodyText),
+          ),
+          footer = modalButton("Close"),
+          easyClose = TRUE,
+          size = "xl"
+        )
+      }
+      else
+      {
+        content <- modalDialog(
+          title=div(img(src="Roar32x32.png"),tabName),
+          div(
+            style = "max-height: 580px; overflow-y: auto;",
+            HTML(bodyText),
+          ),
+          footer = tagList(actionButton(seeAlso,"See Also",class="btn-primary",title="other tabs"),modalButton("Close")),
+          easyClose = TRUE,
+          size = "xl"
+        )
+      }
+    }
+    else
+    {
       content <- modalDialog(
-        title = "GNU General Public Licence version 3 (GPLv3)",
-        HTML("This software is copyright (c) Greg Hertzler<br><br>
-          Except where otherwise indicated, the copyright holder grants you a licence to the Software on the terms of the GNU General Public Licence version 3 (GPLv3), distributed at: http://www.gnu.org/licenses/gpl.html.
-        "),
+        title=div(img(src="Roar32x32.png"),"Real Options for Adoption and Resilience"),
+        div(
+          style = "max-height: 580px; overflow-y: auto;",
+          HTML(bodyText),
+        ),
         footer = modalButton("Close"),
         easyClose = TRUE,
         size = "xl"
       )
     }
-    # end ----
     showModal(content,session)
   }) %>% bindEvent(ibutton(),infobutton(),infotoggle())
 })
