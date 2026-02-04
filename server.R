@@ -981,15 +981,13 @@ infotoggle <- reactiveVal(FALSE)
             if(xOK)
             {
               x <- seq(from=xFrom,to=xTo,by=xBy)
-              A$set_x_stoch_args(x=x,y=y,r=r,phi=phi)
+              A$set_x_stoch_args(x=x,y=y,r=r,phi=phi,b=b,c=c)
             }
             else
             {
               A$axes_x_stoch()
-              A$set_x_stoch_args(y=y,r=r,phi=phi)
+              A$set_x_stoch_args(y=y,r=r,phi=phi,b=b,c=c)
             }
-            if(phi > 0) { A$set_x_stoch_args(b=b) }
-            else { A$set_x_stoch_args(c=c) }
           }
           # initialize ----
           FromR6toUI()
