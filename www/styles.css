@@ -1,16 +1,91 @@
+/* modify bslib styles */
 .well { border: thin solid; border-radius: 4px; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-radius: 4px; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a { padding: 5px 5px 5px 10px; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ROPassageTimeOUP"] { border-bottom: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ADiffusionOUP"] { border-bottom: thin solid; }
-.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="AMeanOUP"] { border-top: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ADoubleOUP"] { border-bottom: thin solid; }
-.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="AOptionOUP"] { border-top: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="AObligationOUP"] { border-bottom: thin solid; }
-.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="APTModeMedianMeanOUP"] { border-top: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="APTProbabilityOUP"] { border-bottom: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="FDDecisionOUP"] { border-bottom: thin solid; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MLRatioOUP"] { border-bottom: thin solid; }
+.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCBoundedOUP"] { border-bottom: thin solid; }
+.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCDoubleOUP"] { border-bottom: thin solid; }
+.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCOptionOUP"] { border-bottom: thin solid; }
+.nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCFPTProbabilityOUP"] { border-bottom: thin solid; }
 #shiny-notification-ROundo { position: fixed; top: 360px; left: calc(26%); }
 #shiny-notification-Aundo { position: fixed; top: 360px; left: calc(26%); }
 #shiny-notification-FDundo { position: fixed; top: 360px; left: calc(38%); }
+#shiny-notification-MCundo { position: fixed; top: 360px; left: calc(38%); }
+#shiny-notification-clip { position: fixed; top: calc(40%); right: calc(10%); left: calc(10%) }
+/* shift plotly modebar to the left */
+.modebar {
+      right: 32px !important;
+    }
+/* clipboard button superimposed on plotly and tables */
+.wellPlotOUP .btn-copy-plot {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 20px;
+      right: 16px;
+      width: 22px;
+      height: 22px;
+      background: none;
+      border: none;
+      fill: currentColor;
+      padding: 2px 0;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+.wellPlotOUP:hover .btn-copy-plot {
+      opacity: 1;
+      pointer-events: auto;
+    }
+.btn-copy-plot:hover {
+      border: solid thin;
+    }
+.btn-copy-plot:focus {
+      border: none;
+    }
+.btn-copy-plot.disabled {
+      cursor: not-allowed;
+      color: #777777
+    }
+.wellTableOUP .btn-copy-table {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 10px;
+      left: 16px;
+      width: 22px;
+      height: 22px;
+      background: none;
+      border: none;
+      fill: currentColor;
+      padding: 2px 0;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+.wellTableOUP:hover .btn-copy-table {
+      opacity: 1;
+      pointer-events: auto;
+    }
+.btn-copy-table:hover {
+      border: solid thin;
+    }
+.btn-copy-table:focus {
+      border: none;
+    }
+.btn-copy-table.disabled {
+      cursor: not-allowed;
+      color: #777777
+    }

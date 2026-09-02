@@ -1,3 +1,9 @@
+cliptext = "";
+clipdeny = false;
+Shiny.addCustomMessageHandler('sendToShiny', function(txt) {
+          cliptext=txt;
+        });
+
 $(document).ready(function() {
   lastEvent = "";
 // dark mode
@@ -24,6 +30,11 @@ $(document).ready(function() {
   MLIdOUP="MLDataOUP";
           $("#navMLOUP").on("shown.bs.tab",function(event){
             MLIdOUP = event.target.attributes[3].value;
+          });
+  MCIdOUP="MCForwardOUP";
+          $("#navMCOUP").on("shown.bs.tab",function(event){
+            MCIdOUP = event.target.attributes[3].value;
+  console.log(MCIdOUP)
           });
 // wells fresh and stale
   function wellfresh(){
@@ -59,6 +70,11 @@ $(document).ready(function() {
           {
             plotId="#plot"+MLIdOUP;
             $(plotId).click();
+          }
+          else if(barIdOUP == "tabMCOUP")
+          {
+            plotId="#plot"+MCIdOUP;
+            $(plotId).click();
           };
         }
 // combobox and file input change
@@ -72,13 +88,27 @@ $(document).ready(function() {
             };
           };
         });
-// mouse fresh
+// mouse fresh and copy data and arguments
   $(document).on("click",function(){
           activeEl=document.activeElement;
           if(activeEl.tagName == "BUTTON")
           {
-            btnClass=activeEl.attributes[0].value;
+          btnClass=activeEl.attributes[0].value;
             if(btnClass.includes("btn-success")) { wellfresh(); }
+            else if(btnClass.includes("btn-copy"))
+            {
+              if(clipdeny) {
+                activeEl.classList.toggle('disabled');
+                Shiny.setInputValue("clipboardDeny",window.location.host,{ priority: "event" });
+              }
+              else
+              {
+                navigator.clipboard.writeText(cliptext).catch(function(err) {
+                  Shiny.setInputValue("clipboardDeny",window.location.host,{ priority: "event" });
+                  clipdeny = true;
+                });
+              }
+            }
           }
           else if(activeEl.tagName == "A") { wellfresh(); };
           lastEvent = "click";
