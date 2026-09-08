@@ -47,6 +47,9 @@ initialize <- c(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)
 dname <- c("data","data","data","data","data","data","data")
 tname <- c("tau","tau","tau","tau","tau","tau","tau")
 sname <- c("z","z","z","z","z","z","z")
+# global limits for Monte Carlo tab ----
+maxpaths <- 100000
+maxskip <- 5
 # globals for buttons ----
 RObtns <- matrix(0,5,8) # reset,undn,unup,sync,axes,plot,left(other),rght
 Abtns <- matrix(0,17,7) # undn,unup,sync,axes,plot,left,rght
@@ -57,7 +60,6 @@ MCbtns <- matrix(0,17,8) # reset,undn,unup,sync,axes,plot,left,rght
 ibutton <- ""
 infobutton <- ""
 infotoggle <- reactiveVal(FALSE)
-
 # axis sequence function ----
 axissequence <- function(from,to,by)
 {
@@ -72,8 +74,8 @@ axissequence <- function(from,to,by)
     if(is.numeric(by))
     {
       if(by < 0) { by <- -by }
-      if(by > (to-from)/100) { by <- (to-from)/100 }
-      else if(by < (to-from)/1000) { by <- (to-from)/1000 }
+      if(by > (to-from)) { by <- (to-from) }
+      else if(by < (to-from)/100) { by <- (to-from)/100 }
     }
     else { by <- (to-from)/100 }
     axisseq <- seq(from=from,to=to,by=by)
@@ -105,6 +107,27 @@ axissequence <- function(from,to,by)
   }
   else { axisseq <- NULL }
   return(axisseq)
+}
+# hobble functions ----
+hobblepaths <- function(paths)
+{
+  if(is.numeric(paths))
+  {
+    if(is.null(maxpaths)) { return(paths) }
+    else if(paths > maxpaths) { return(maxpaths) }
+    else { return(paths) }
+  }
+  else { return(100) }
+}
+hobbleskip <- function(skip)
+{
+  if(is.numeric(skip))
+  {
+    if(is.null(maxskip)) { return(skip) }
+    else if(skip > maxskip) { return(maxskip) }
+    else { return(skip) }
+  }
+  else { return(1) }
 }
 # clipboard event ----
   observeEvent(input$clipboardDeny, {
@@ -5572,9 +5595,8 @@ axissequence <- function(from,to,by)
             t <- axissequence(tFrom,tTo,tBy)
             if(!is.numeric(k)) { k <- 0 }
             if(!is.numeric(x)) { x <- 0 }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             if(!is.numeric(first)) { first <- 1 }
             if(!is.numeric(last)) { last <- 10 }
             # Set to OUP ----
@@ -5722,9 +5744,8 @@ axissequence <- function(from,to,by)
             if(!is.numeric(sigma)) { sigma <- 0 }
             s <- axissequence(sFrom,sTo,sBy)
             if(!is.numeric(y)) { y <- 0 }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             if(!is.numeric(first)) { first <- 1 }
             if(!is.numeric(last)) { last <- 10 }
             # Set to OUP ----
@@ -5870,9 +5891,8 @@ axissequence <- function(from,to,by)
             t <- axissequence(tFrom,tTo,tBy)
             if(!is.numeric(k)) { k <- 0 }
             if(!is.numeric(x)) { x <- 0 }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             if(!is.numeric(first)) { first <- 1 }
             if(!is.numeric(last)) { last <- 10 }
             # Set to OUP ----
@@ -6028,9 +6048,8 @@ axissequence <- function(from,to,by)
             y <- axissequence(yFrom,yTo,yBy)
             if(!is.numeric(x)) { x <- 0 }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_y_stoch_args(t=t,y=y,x=x)
@@ -6178,9 +6197,8 @@ axissequence <- function(from,to,by)
             y <- axissequence(yFrom,yTo,yBy)
             if(!is.numeric(x)) { x <- 0 }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_y_stoch_args(t=t,y=y,x=x)
@@ -6324,9 +6342,8 @@ axissequence <- function(from,to,by)
             y <- axissequence(yFrom,yTo,yBy)
             if(!is.numeric(x)) { x <- 0 }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_y_stoch_args(t=t,y=y,x=x)
@@ -6478,9 +6495,8 @@ axissequence <- function(from,to,by)
             else if(psi <= 0) { psi <- -1 }
             else { psi <- 1 }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_y_stoch_args(t=t,y=y,x=x,psi=psi)
@@ -6632,9 +6648,8 @@ axissequence <- function(from,to,by)
             else if(psi <= 0) { psi <- -1 }
             else { psi <- 1 }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_y_stoch_args(t=t,y=y,x=x,psi=psi)
@@ -6789,9 +6804,8 @@ axissequence <- function(from,to,by)
             else if(phi <= 0) { phi <- -1 }
             else { phi <- 1 }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_x_stoch_args(s=s,x=x,y=y,r=r,phi=phi)
@@ -6928,9 +6942,8 @@ axissequence <- function(from,to,by)
             if(!is.numeric(x)) { x <- 0 }
             if(!is.numeric(k)) { k <- 0 }
             if(!is.numeric(ptmax)) { ptmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_t_stoch_args(t=t,k=k,x=x)
@@ -7073,9 +7086,8 @@ axissequence <- function(from,to,by)
             else if(Ppct < 0.01) { Ppct <- 0.01 }
             else if(Ppct > 0.99) { Ppct <- 0.99 }
             if(!is.numeric(ptmax)) { ptmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_t_stoch_args(t=t,k=k,x=x,Ppct=Ppct)
@@ -7232,9 +7244,8 @@ axissequence <- function(from,to,by)
             if(!is.numeric(zend)) { zend <- Inf }
             if(!is.numeric(ptmax)) { ptmax <- NaN }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_t_stoch_args(t=t,k=k,x=x)
@@ -7393,9 +7404,8 @@ axissequence <- function(from,to,by)
             if(!is.numeric(zbeg)) { zbeg <- -Inf }
             if(!is.numeric(zend)) { zend <- Inf }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_t_stoch_args(t=t,k=k,x=x)
@@ -7538,9 +7548,8 @@ axissequence <- function(from,to,by)
             if(!is.numeric(x)) { x <- 0 }
             if(!is.numeric(k)) { k <- 0 }
             if(!is.numeric(ptmax)) { ptmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_t_stoch_args(t=t,k=k,x=x)
@@ -7683,9 +7692,8 @@ axissequence <- function(from,to,by)
             else if(Ppct < 0.01) { Ppct <- 0.01 }
             else if(Ppct > 0.99) { Ppct <- 0.99 }
             if(!is.numeric(ptmax)) { ptmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_t_stoch_args(t=t,k=k,x=x,Ppct=Ppct)
@@ -7842,9 +7850,8 @@ axissequence <- function(from,to,by)
             if(!is.numeric(zend)) { zend <- Inf }
             if(!is.numeric(ptmax)) { ptmax <- NaN }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_t_stoch_args(t=t,k=k,x=x)
@@ -8003,9 +8010,8 @@ axissequence <- function(from,to,by)
             if(!is.numeric(zbeg)) { zbeg <- -Inf }
             if(!is.numeric(zend)) { zend <- Inf }
             if(!is.numeric(pmax)) { pmax <- NaN }
-            if(!is.numeric(paths)) { paths <- 100 }
-            if(!is.numeric(skip)) { skip <- 1 }
-            else if(skip > 5) { skip <- 5 }
+            paths <- hobblepaths(paths)
+            skip <- hobbleskip(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             MC$set_t_stoch_args(t=t,k=k,x=x)
