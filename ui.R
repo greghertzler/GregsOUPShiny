@@ -1931,6 +1931,9 @@ shinyUI(
       nav_item(
         a(href="https://greghertzler.github.io/GregsOUPR6/OUP_Help.html","Reference",target="_blank")
       ),
+      nav_item(
+        a(href="https://greghertzler.github.io/GregsOUPR6/","Calculations",target="_blank")
+      ),
       nav_panel("About",
         add_busy_spinner(spin="fingerprint",color="rgb(180,180,0)",position=c("top-right"),margins=c(450,350),height="128px",width="128px"),
         value="tabAboutOUP"

@@ -8130,8 +8130,9 @@ hobbleskip <- function(skip)
           &emsp;&emsp;Maximum Likelihood: Estimation and hypothesis testing;<br>
           &emsp;&emsp;Monte Carlo: Simulations to explain the formulas.<br><br>
           The Help menu:<br>
-          &emsp;&emsp;Tutorials:  Case Studies for solved problems and Methods for solving problems;<br>
-          &emsp;&emsp;Reference:  Explanations in more detail than you probably want;<br>
+          &emsp;&emsp;Tutorials:  Case Studies and Methods;<br>
+          &emsp;&emsp;Reference:  Math behind the calculations;<br>
+          &emsp;&emsp;Calculations:  Code to calculate the results;<br>
           &emsp;&emsp;About:  Who we are, how to contact us and how to cite us;<br>
           &emsp;&emsp;License:  Your rights and our rights."
     seeAlso <- ""
@@ -10256,12 +10257,13 @@ hobbleskip <- function(skip)
     # About ----
     else if(infobutton == "tabAboutOUP")
     {
-      condcomp <- "Rcpp only"
-      if(RcppParallelInstalled())
-      {
-        if(RcppsitmoInstalled()) { condcomp <- "Rcpp and RcppParallel with sitmo" }
-        else { condcomp <- "Rcpp and RcppParallel without sitmo" }
-      }
+      condcomp <- "Rcpp"
+      if(RcppParallelInstalled()) { condcomp <- paste0(condcomp," with RcppParallel") }
+      else { condcomp <- paste0(condcomp," without RcppParallel") }
+      if(RcppdqrngInstalled()) { condcomp <- paste0(condcomp," with dqrng") }
+      else { condcomp <- paste0(condcomp," without dqrng") }
+      if(RcppsitmoInstalled()) { condcomp <- paste0(condcomp," with sitmo.") }
+      else { condcomp <- paste0(condcomp," without sitmo.") }
       tabName <- "Real Options for Adoption and Resilience"
       bodyText <- paste0("Description:  R Shiny implementation of the R6 objects, OUProcess, Analytical, FiniteDifference, MaximumLikelihood and MonteCarlo&mdash;a complete set of functions for maximum likelihood estimation and the calculation of probabilities, option prices, decision thresholds, visiting times, first passage times and more&mdash;everything for a real options analysis.<br><br>
           Version:  1.4.5.0 (stochastic process.modules.help.build)<br>
