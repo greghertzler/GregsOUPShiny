@@ -10258,7 +10258,7 @@ hobbleskip <- function(skip)
     else if(infobutton == "tabAboutOUP")
     {
       condcomp <- "Rcpp"
-      if(RcppParallelInstalled()) { condcomp <- paste0(condcomp," with RcppParallel") }
+      if(RcppParallelInstalled()) { condcomp <- paste0(condcomp," with RcppParallel (",RcppParallelThreads()," threads)") }
       else { condcomp <- paste0(condcomp," without RcppParallel") }
       if(RcppdqrngInstalled()) { condcomp <- paste0(condcomp," with dqrng") }
       else { condcomp <- paste0(condcomp," without dqrng") }
