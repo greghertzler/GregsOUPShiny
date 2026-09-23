@@ -196,7 +196,7 @@ hobbleskip <- function(skip)
             if(firsttab)
             {
               # message("firsttab")
-              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               dname[1] <<- uploadname
               tname[1] <<- framenames[1]
@@ -271,7 +271,7 @@ hobbleskip <- function(skip)
               dname[1] <<- input$filesRODataOUP
               if(dname[1] == uploadname) { filepath <- uploadpath }
               else { filepath <- paste(sep="",datapath,input$filesRODataOUP,".csv")  }
-              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               tname[1] <<- framenames[1]
               sname[1] <<- framenames[2]
@@ -391,7 +391,7 @@ hobbleskip <- function(skip)
             if(firsttab)
             {
               # message("firsttab")
-              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               dname[2] <<- uploadname
               tname[2] <<- framenames[1]
@@ -487,7 +487,7 @@ hobbleskip <- function(skip)
               dname[2] <<- input$filesROEstimatesOUP
               if(dname[2] == uploadname) { filepath <- uploadpath }
               else { filepath <- paste(sep="",datapath,input$filesROEstimatesOUP,".csv")  }
-              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               tname[2] <<- framenames[1]
               sname[2] <<- framenames[2]
@@ -4354,7 +4354,7 @@ hobbleskip <- function(skip)
             if(firsttab)
             {
               # message("firsttab")
-              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               dname[3] <<- uploadname
               tname[3] <<- framenames[1]
@@ -4452,7 +4452,7 @@ hobbleskip <- function(skip)
               dname[3] <<- input$filesMLDataOUP
               if(dname[3] == uploadname) { filepath <- uploadpath }
               else { filepath <- paste(sep="",datapath,input$filesMLDataOUP,".csv")  }
-              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               tname[3] <<- framenames[1]
               sname[3] <<- framenames[2]
@@ -4567,7 +4567,7 @@ hobbleskip <- function(skip)
             if(firsttab)
             {
               # message("firsttab")
-              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               dname[4] <<- uploadname
               tname[4] <<- framenames[1]
@@ -4674,7 +4674,7 @@ hobbleskip <- function(skip)
               dname[4] <<- input$filesMLLikelihoodOUP
               if(dname[4] == uploadname) { filepath <- uploadpath }
               else { filepath <- paste(sep="",datapath,input$filesMLLikelihoodOUP,".csv")  }
-              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               tname[4] <<- framenames[1]
               sname[4] <<- framenames[2]
@@ -4858,7 +4858,7 @@ hobbleskip <- function(skip)
             if(firsttab)
             {
               # message("firsttab")
-              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               dname[5] <<- uploadname
               tname[5] <<- framenames[1]
@@ -4960,7 +4960,7 @@ hobbleskip <- function(skip)
               dname[5] <<- input$filesMLEstimatesOUP
               if(dname[5] == uploadname) { filepath <- uploadpath }
               else { filepath <- paste(sep="",datapath,input$filesMLEstimatesOUP,".csv")  }
-              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               tname[5] <<- framenames[1]
               sname[5] <<- framenames[2]
@@ -5152,7 +5152,7 @@ hobbleskip <- function(skip)
             if(firsttab)
             {
               # message("firsttab")
-              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               dname[6] <<- uploadname
               tname[6] <<- framenames[1]
@@ -5221,7 +5221,7 @@ hobbleskip <- function(skip)
               dname[6] <<- input$filesMLGoodnessOUP
               if(dname[6] == uploadname) { filepath <- uploadpath }
               else { filepath <- paste(sep="",datapath,input$filesMLGoodnessOUP,".csv")  }
-              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               tname[6] <<- framenames[1]
               sname[6] <<- framenames[2]
@@ -5370,7 +5370,7 @@ hobbleskip <- function(skip)
             if(firsttab)
             {
               # message("firsttab")
-              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(uploadpath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               dname[7] <<- uploadname
               tname[7] <<- framenames[1]
@@ -5439,7 +5439,7 @@ hobbleskip <- function(skip)
               dname[7] <<- input$filesMLRatioOUP
               if(dname[7] == uploadname) { filepath <- uploadpath }
               else { filepath <- paste(sep="",datapath,input$filesMLRatioOUP,".csv")  }
-              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM")
+              df <<- utils::read.csv(filepath,fileEncoding="UTF-8-BOM",check.names=FALSE)
               framenames <<- colnames(df)
               tname[7] <<- framenames[1]
               sname[7] <<- framenames[2]
