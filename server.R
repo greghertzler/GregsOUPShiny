@@ -47,6 +47,7 @@ initialize <- c(TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE)
 dname <- c("data","data","data","data","data","data","data")
 tname <- c("tau","tau","tau","tau","tau","tau","tau")
 sname <- c("z","z","z","z","z","z","z")
+begend <- FALSE
 # global limits for Monte Carlo tab ----
 maxpaths <- 100000
 maxskip <- 5
@@ -154,17 +155,21 @@ hobbleskip <- function(skip)
               updateNumericInput(session,"begRODataOUP",value=beg)
               updateNumericInput(session,"endRODataOUP",value=end)
             })
+            begend <<- FALSE
           }
           FromUItoR6 <- function()
           {
             # message("FromUItoR6")
-            isolate({
-              beg <- input$begRODataOUP
-              end <- input$endRODataOUP
-            })
-            if(!is.numeric(beg)) { beg <- -Inf }
-            if(!is.numeric(end)) { end <- Inf }
-            ML$set_timeseries_info(tbeg=beg,tend=end)
+            if(begend)
+            {
+              isolate({
+                beg <- input$begRODataOUP
+                end <- input$endRODataOUP
+              })
+              if(!is.numeric(beg)) { beg <- -Inf }
+              if(!is.numeric(end)) { end <- Inf }
+              ML$set_timeseries_info(tbeg=beg,tend=end)
+            }
           }
           # define data functions ----
           DataInfo <- function()
@@ -219,6 +224,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begRODataOUP",value=beg)
                 updateNumericInput(session,"endRODataOUP",value=end)
               })
+              begend <<- FALSE
               DataInfo()
               firsttab <<- FALSE
               initialize[6] <<- FALSE
@@ -292,6 +298,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begRODataOUP",value=beg)
                 updateNumericInput(session,"endRODataOUP",value=end)
               })
+              begend <<- FALSE
               ML$set_oup_params(rho=0,mu=0,sigma=0)
               DataInfo()
             }
@@ -314,6 +321,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begRODataOUP",value=beg)
                 updateNumericInput(session,"endRODataOUP",value=end)
               })
+              begend <<- FALSE
               ML$set_oup_params(rho=0,mu=0,sigma=0)
             }
           }) %>% bindEvent(input$timeRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
@@ -335,6 +343,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begRODataOUP",value=beg)
                 updateNumericInput(session,"endRODataOUP",value=end)
               })
+              begend <<- FALSE
               ML$set_oup_params(rho=0,mu=0,sigma=0)
             }
           }) %>% bindEvent(input$stateRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
@@ -346,6 +355,10 @@ hobbleskip <- function(skip)
             firsttab <<- TRUE
             DataRead()
           }) %>% bindEvent(input$filesROUploadOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # user changes begin or end ----
+          observe({
+            begend <<- TRUE
+          }) %>% bindEvent(input$begRODataOUP,input$endRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks reset or plot (or enter key) ----
           output$plotlyRODataOUP <- renderPlotly({
             # message("render")
@@ -384,6 +397,33 @@ hobbleskip <- function(skip)
         # Estimates ----
         if(input$navROOUP == "ROEstimatesOUP")
         {
+          # define set/get functions ----
+          FromR6toUI <- function()
+          {
+            # message("FromR6toUI")
+            timeseries_info <- ML$get_timeseries_info()
+            beg <- timeseries_info[[1]]
+            end <- timeseries_info[[2]]
+            isolate({
+              updateNumericInput(session,"begROEstimatesOUP",value=beg)
+              updateNumericInput(session,"endROEstimatesOUP",value=end)
+            })
+            begend <<- FALSE
+          }
+          FromUItoR6 <- function()
+          {
+            # message("FromUItoR6")
+            if(begend)
+            {
+              isolate({
+                beg <- input$begROEstimatesOUP
+                end <- input$endROEstimatesOUP
+              })
+              if(!is.numeric(beg)) { beg <- -Inf }
+              if(!is.numeric(end)) { end <- Inf }
+              ML$set_timeseries_info(tbeg=beg,tend=end)
+            }
+          }
           # define data function ----
           DataRead <- function()
           {
@@ -414,6 +454,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begROEstimatesOUP",value=beg)
                 updateNumericInput(session,"endROEstimatesOUP",value=end)
               })
+              begend <<- FALSE
               firsttab <<- FALSE
               initialize[7] <<- FALSE
             }
@@ -454,29 +495,6 @@ hobbleskip <- function(skip)
               FromR6toUI()
             }
           }
-          # define set/get functions ----
-          FromR6toUI <- function()
-          {
-            # message("FromR6toUI")
-            timeseries_info <- ML$get_timeseries_info()
-            beg <- timeseries_info[[1]]
-            end <- timeseries_info[[2]]
-            isolate({
-              updateNumericInput(session,"begROEstimatesOUP",value=beg)
-              updateNumericInput(session,"endROEstimatesOUP",value=end)
-            })
-          }
-          FromUItoR6 <- function()
-          {
-            # message("FromUItoR6")
-            isolate({
-              beg <- input$begROEstimatesOUP
-              end <- input$endROEstimatesOUP
-            })
-            if(!is.numeric(beg)) { beg <- -Inf }
-            if(!is.numeric(end)) { end <- Inf }
-            ML$set_timeseries_info(tbeg=beg,tend=end)
-          }
           # initialize ----
           DataRead()
           # select ----
@@ -508,6 +526,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begROEstimatesOUP",value=beg)
                 updateNumericInput(session,"endROEstimatesOUP",value=end)
               })
+              begend <<- FALSE
             }
           }) %>% bindEvent(input$filesROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
@@ -528,6 +547,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begROEstimatesOUP",value=beg)
                 updateNumericInput(session,"endROEstimatesOUP",value=end)
               })
+              begend <<- FALSE
             }
           }) %>% bindEvent(input$timeROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
@@ -548,8 +568,13 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begROEstimatesOUP",value=beg)
                 updateNumericInput(session,"endROEstimatesOUP",value=end)
               })
+              begend <<- FALSE
             }
           }) %>% bindEvent(input$stateROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # user changes begin or end ----
+          observe({
+            begend <<- TRUE
+          }) %>% bindEvent(input$begROEstimatesOUP,input$endROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks reset or plot (or enter key) ----
           observe({
             # message("render")
@@ -4324,6 +4349,33 @@ hobbleskip <- function(skip)
         # Data ----
         if(input$navMLOUP == "MLDataOUP")
         {
+          # define set/get functions ----
+          FromR6toUI <- function()
+          {
+            # message("FromR6toUI")
+            timeseries_info <- ML$get_timeseries_info()
+            beg <- timeseries_info[[1]]
+            end <- timeseries_info[[2]]
+            isolate({
+              updateNumericInput(session,"begMLDataOUP",value=beg)
+              updateNumericInput(session,"endMLDataOUP",value=end)
+            })
+            begend <<- FALSE
+          }
+          FromUItoR6 <- function()
+          {
+            # message("FromUItoR6")
+            if(begend)
+            {
+              isolate({
+                beg <- input$begMLDataOUP
+                end <- input$endMLDataOUP
+              })
+              if(!is.numeric(beg)) { beg <- -Inf }
+              if(!is.numeric(end)) { end <- Inf }
+              ML$set_timeseries_info(tbeg=beg,tend=end)
+            }
+          }
           # define data functions ----
           DataInfo <- function()
           {
@@ -4377,6 +4429,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begMLDataOUP",value=beg)
                 updateNumericInput(session,"endMLDataOUP",value=end)
               })
+              begend <<- FALSE
               DataInfo()
               firsttab <<- FALSE
               initialize[1] <<- FALSE
@@ -4419,29 +4472,6 @@ hobbleskip <- function(skip)
               FromR6toUI()
             }
           }
-          # define set/get functions ----
-          FromR6toUI <- function()
-          {
-            # message("FromR6toUI")
-            timeseries_info <- ML$get_timeseries_info()
-            beg <- timeseries_info[[1]]
-            end <- timeseries_info[[2]]
-            isolate({
-              updateNumericInput(session,"begMLDataOUP",value=beg)
-              updateNumericInput(session,"endMLDataOUP",value=end)
-            })
-          }
-          FromUItoR6 <- function()
-          {
-            # message("FromUItoR6")
-            isolate({
-              beg <- input$begMLDataOUP
-              end <- input$endMLDataOUP
-            })
-            if(!is.numeric(beg)) { beg <- -Inf }
-            if(!is.numeric(end)) { end <- Inf }
-            ML$set_timeseries_info(tbeg=beg,tend=end)
-          }
           # initialize ----
           DataRead()
           # select ----
@@ -4473,6 +4503,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begMLDataOUP",value=beg)
                 updateNumericInput(session,"endMLDataOUP",value=end)
               })
+              begend <<- FALSE
               ML$set_oup_params(rho=0,mu=0,sigma=0)
               DataInfo()
             }
@@ -4495,6 +4526,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begMLDataOUP",value=beg)
                 updateNumericInput(session,"endMLDataOUP",value=end)
               })
+              begend <<- FALSE
               ML$set_oup_params(rho=0,mu=0,sigma=0)
             }
           }) %>% bindEvent(input$timeMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
@@ -4516,6 +4548,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begMLDataOUP",value=beg)
                 updateNumericInput(session,"endMLDataOUP",value=end)
               })
+              begend <<- FALSE
               ML$set_oup_params(rho=0,mu=0,sigma=0)
             }
           }) %>% bindEvent(input$stateMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
@@ -4527,6 +4560,10 @@ hobbleskip <- function(skip)
             firsttab <<- TRUE
             DataRead()
           }) %>% bindEvent(input$filesMLUploadOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # user changes begin or end ----
+          observe({
+            begend <<- TRUE
+          }) %>% bindEvent(input$begMLDataOUP,input$endMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks reset or plot (or enter key) ----
           output$plotlyMLDataOUP <- renderPlotly({
             # message("render")
@@ -4560,6 +4597,50 @@ hobbleskip <- function(skip)
         # Log Likelihood ----
         else if(input$navMLOUP == "MLLikelihoodOUP")
         {
+          # define set/get functions ----
+          FromR6toUI <- function()
+          {
+            # message("FromR6toUI")
+            oup_params <- ML$get_oup_params()
+            timeseries_info <- ML$get_timeseries_info()
+            rho <- oup_params[[1]]
+            mu <- oup_params[[2]]
+            sigma <- oup_params[[3]]
+            beg <- timeseries_info[[1]]
+            end <- timeseries_info[[2]]
+            isolate({
+              updateNumericInput(session,"rhoMLLikelihoodOUP",value=rho)
+              updateNumericInput(session,"muMLLikelihoodOUP",value=mu)
+              updateNumericInput(session,"sigmaMLLikelihoodOUP",value=sigma)
+              updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
+              updateNumericInput(session,"endMLLikelihoodOUP",value=end)
+            })
+            begend <<- FALSE
+          }
+          FromUItoR6 <- function()
+          {
+            # message("FromUItoR6")
+            isolate({
+              rho <- input$rhoMLLikelihoodOUP
+              mu <- input$muMLLikelihoodOUP
+              sigma <- input$sigmaMLLikelihoodOUP
+            })
+            if(!is.numeric(rho)) { rho <- 0 }
+            else if(rho < 0) { rho <- 0 }
+            if(!is.numeric(mu)) { mu <- 0 }
+            if(!is.numeric(sigma)) { sigma <- 0 }
+            ML$set_oup_params(rho=rho,mu=mu,sigma=sigma)
+            if(begend)
+            {
+              isolate({
+                beg <- input$begMLLikelihoodOUP
+                end <- input$endMLLikelihoodOUP
+              })
+              if(!is.numeric(beg)) { beg <- -Inf }
+              if(!is.numeric(end)) { end <- Inf }
+              ML$set_timeseries_info(tbeg=beg,tend=end)
+            }
+          }
           # define data function ----
           DataRead <- function()
           {
@@ -4626,44 +4707,6 @@ hobbleskip <- function(skip)
             }
             FromR6toUI()
           }
-          # define set/get functions ----
-          FromR6toUI <- function()
-          {
-            # message("FromR6toUI")
-            oup_params <- ML$get_oup_params()
-            timeseries_info <- ML$get_timeseries_info()
-            rho <- oup_params[[1]]
-            mu <- oup_params[[2]]
-            sigma <- oup_params[[3]]
-            beg <- timeseries_info[[1]]
-            end <- timeseries_info[[2]]
-            isolate({
-              updateNumericInput(session,"rhoMLLikelihoodOUP",value=rho)
-              updateNumericInput(session,"muMLLikelihoodOUP",value=mu)
-              updateNumericInput(session,"sigmaMLLikelihoodOUP",value=sigma)
-              updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
-              updateNumericInput(session,"endMLLikelihoodOUP",value=end)
-            })
-          }
-          FromUItoR6 <- function()
-          {
-            # message("FromUItoR6")
-            isolate({
-              rho <- input$rhoMLLikelihoodOUP
-              mu <- input$muMLLikelihoodOUP
-              sigma <- input$sigmaMLLikelihoodOUP
-              beg <- input$begMLLikelihoodOUP
-              end <- input$endMLLikelihoodOUP
-            })
-            if(!is.numeric(rho)) { rho <- 0 }
-            else if(rho < 0) { rho <- 0 }
-            if(!is.numeric(mu)) { mu <- 0 }
-            if(!is.numeric(sigma)) { sigma <- 0 }
-            if(!is.numeric(beg)) { beg <- -Inf }
-            if(!is.numeric(end)) { end <- Inf }
-            ML$set_oup_params(rho=rho,mu=mu,sigma=sigma)
-            ML$set_timeseries_info(tbeg=beg,tend=end)
-          }
           # initialize ----
           DataRead()
           # select ----
@@ -4698,6 +4741,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
                 updateNumericInput(session,"endMLLikelihoodOUP",value=end)
               })
+              begend <<- FALSE
             }
           }) %>% bindEvent(input$filesMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
@@ -4721,6 +4765,7 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
                 updateNumericInput(session,"endMLLikelihoodOUP",value=end)
               })
+              begend <<- FALSE
             }
           }) %>% bindEvent(input$timeMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           observe({
@@ -4744,8 +4789,13 @@ hobbleskip <- function(skip)
                 updateNumericInput(session,"begMLLikelihoodOUP",value=beg)
                 updateNumericInput(session,"endMLLikelihoodOUP",value=end)
               })
+              begend <<- FALSE
             }
           }) %>% bindEvent(input$stateMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
+          # user changes begin or end ----
+          observe({
+            begend <<- TRUE
+          }) %>% bindEvent(input$begMLLikelihoodOUP,input$endMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
           # user clicks reset or plot (or enter key) ----
           observe({
             # message("plot")
