@@ -20,7 +20,7 @@
 #shiny-notification-clip { position: fixed; top: calc(40%); right: calc(10%); left: calc(10%) }
 /* shift plotly modebar to the left */
 .modebar {
-      right: 32px !important;
+      right: 32px;
     }
 /* clipboard button superimposed on plotly and tables */
 .wellPlotOUP .btn-copy-plot {
@@ -54,7 +54,7 @@
     }
 .btn-copy-plot.disabled {
       cursor: not-allowed;
-      color: #777777
+      color: #777777;
     }
 .wellTableOUP .btn-copy-table {
       opacity: 0;
@@ -87,5 +87,5 @@
     }
 .btn-copy-table.disabled {
       cursor: not-allowed;
-      color: #777777
+      color: #777777;
     }
