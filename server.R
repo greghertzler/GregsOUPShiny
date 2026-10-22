@@ -8147,10 +8147,6 @@ hobbleskip <- function(skip)
       if(infotoggle()) { infotoggle(FALSE) }
       else { infotoggle(TRUE) }
     }
-    else if(input$navBar == "tabTutorialsOUP")
-    {
-      utils::browseURL(tutorialspath)
-    }
     else if(input$navBar == "tabAboutOUP")
     {
       ibutton <<- ""
