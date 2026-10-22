@@ -133,7 +133,7 @@ hobbleskip <- function(skip)
 # clipboard event ----
   observeEvent(input$clipboardDeny, {
     A$set_flags(copyit=FALSE)
-    showNotification(paste0("Clipboard blocked for ",input$clipboardDeny,".  To allow, close this tab, reset in browser's clipboard settings and open ROAR again."),id="clip",duration=10)
+    showNotification(paste0("Clipboard blocked for ",input$clipboardDeny,".  To allow, close ROAR, check for this site in browser's clipboard settings and open ROAR again."),id="clip",duration=NULL)
   })
 # tab events ----
   observeEvent(input$navBar,{
@@ -5586,19 +5586,19 @@ hobbleskip <- function(skip)
             sigma <- oup_params[[3]]
             if(type < -1.5)
             {
-              t <- y_stoch_args[[1]]
-              x <- y_stoch_args[[3]]
+              t <- t_stoch_args[[1]]
+              x <- t_stoch_args[[3]]
             }
             else
             {
-              t <- t_stoch_args[[1]]
-              x <- t_stoch_args[[3]]
+              t <- y_stoch_args[[1]]
+              x <- y_stoch_args[[3]]
             }
             k <- t_stoch_args[[2]]
             paths <- path_args[[1]]
             skip <- path_args[[2]]
-            first <<- plot_args[[3]]
-            last <<- plot_args[[4]]
+            first <- plot_args[[3]]
+            last <- plot_args[[4]]
             m <- length(t)
             tFrom <- t[1]
             tTo <- t[m]
@@ -5612,8 +5612,8 @@ hobbleskip <- function(skip)
               updateNumericInput(session,"tFromMCForwardOUP",value=tFrom)
               updateNumericInput(session,"tToMCForwardOUP",value=tTo)
               updateNumericInput(session,"tByMCForwardOUP",value=tBy)
-              if(type < -1.5) { updateNumericInput(session,"kMCForwardOUP",label="~",value=k) }
-              else { updateNumericInput(session,"kMCForwardOUP",label="k",value=k) }
+              if(type < -1.5){ updateNumericInput(session,"kMCForwardOUP",label="k",value=k) }
+              else  { updateNumericInput(session,"kMCForwardOUP",label="~",value=k) }
               updateNumericInput(session,"xMCForwardOUP",value=x)
               updateNumericInput(session,"pathsMCForwardOUP",value=paths)
               updateNumericInput(session,"skipMCForwardOUP",value=skip)
@@ -5635,8 +5635,8 @@ hobbleskip <- function(skip)
               x <- input$xMCForwardOUP
               paths <- input$pathsMCForwardOUP
               skip <- input$skipMCForwardOUP
-              first <<- input$firstMCForwardOUP
-              last <<- input$lastMCForwardOUP
+              first <- input$firstMCForwardOUP
+              last <- input$lastMCForwardOUP
             })
             if(!is.numeric(rho)) { rho <- 0 }
             else if(rho < 0) { rho <- 0 }
@@ -5652,8 +5652,8 @@ hobbleskip <- function(skip)
             # Set to OUP ----
             MC$set_oup_params(rho=rho,mu=mu,sigma=sigma)
             type <- MC$get_plot_types()[[1]][1]
-            if(type < -1.5) { MC$set_y_stoch_args(t=t,x=x) }
-            else { MC$set_t_stoch_args(t=t,x=x) }
+            if(type < -1.5) { MC$set_t_stoch_args(t=t,x=x) }
+            else { MC$set_y_stoch_args(t=t,x=x) }
             MC$set_t_stoch_args(k=k)
             MC$set_path_args(paths=paths,skip=skip)
             MC$set_plot_args(first=first,last=last)
@@ -5700,8 +5700,8 @@ hobbleskip <- function(skip)
               MCbtns[1,5] <<- input$axesMCForwardOUP
               FromUItoR6()
               type <- MC$get_plot_types()[[1]][1]
-              if(type < -1.5) { MC$axes_y_stoch() }
-              else { MC$axes_t_stoch() }
+              if(type < -1.5) { MC$axes_t_stoch() }
+              else { MC$axes_y_stoch() }
             }
             else if(input$plotMCForwardOUP > MCbtns[1,6])
             {
@@ -5750,8 +5750,8 @@ hobbleskip <- function(skip)
             y <- x_stoch_args[[3]]
             paths <- path_args[[1]]
             skip <- path_args[[2]]
-            first <<- plot_args[[3]]
-            last <<- plot_args[[4]]
+            first <- plot_args[[3]]
+            last <- plot_args[[4]]
             m <- length(s)
             sFrom <- s[m]
             sTo <- s[1]
@@ -5785,8 +5785,8 @@ hobbleskip <- function(skip)
               y <- input$yMCBackwardOUP
               paths <- input$pathsMCBackwardOUP
               skip <- input$skipMCBackwardOUP
-              first <<- input$firstMCBackwardOUP
-              last <<- input$lastMCBackwardOUP
+              first <- input$firstMCBackwardOUP
+              last <- input$lastMCBackwardOUP
             })
             if(!is.numeric(rho)) { rho <- 0 }
             else if(rho < 0) { rho <- 0 }
@@ -5815,7 +5815,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCBackwardOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key), left or rght ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
           output$plotlyMCBackwardOUP <- renderPlotly({
             if(input$resetMCBackwardOUP > MCbtns[2,1])
             {
@@ -5852,21 +5852,15 @@ hobbleskip <- function(skip)
               MCbtns[2,6] <<- input$plotMCBackwardOUP
               FromUItoR6()
             }
-            else if(input$leftMCBackwardOUP > MCbtns[2,7])
+            else if(input$otherMCBackwardOUP > MCbtns[2,7])
             {
-              MCbtns[2,7] <<- input$leftMCBackwardOUP
+              MCbtns[2,7] <<- input$otherMCBackwardOUP
               FromUItoR6()
               MC$set_plot_type("p",1)
             }
-            else if(input$rghtMCBackwardOUP > MCbtns[2,8])
-            {
-              MCbtns[2,8] <<- input$rghtMCBackwardOUP
-              FromUItoR6()
-              MC$set_plot_type("n",1)
-            }
             FromR6toUI()
             MC$PlotBackwardPaths()
-          }) %>% bindEvent(input$resetMCBackwardOUP,input$undnMCBackwardOUP,input$unupMCBackwardOUP,input$syncMCBackwardOUP,input$axesMCBackwardOUP,input$plotMCBackwardOUP,input$leftMCBackwardOUP,input$rghtMCBackwardOUP)
+          }) %>% bindEvent(input$resetMCBackwardOUP,input$undnMCBackwardOUP,input$unupMCBackwardOUP,input$syncMCBackwardOUP,input$axesMCBackwardOUP,input$plotMCBackwardOUP,input$otherMCBackwardOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -5894,8 +5888,8 @@ hobbleskip <- function(skip)
             x <- t_stoch_args[[3]]
             paths <- path_args[[1]]
             skip <- path_args[[2]]
-            first <<- plot_args[[3]]
-            last <<- plot_args[[4]]
+            first <- plot_args[[3]]
+            last <- plot_args[[4]]
             m <- length(t)
             tFrom <- t[1]
             tTo <- t[m]
@@ -5931,8 +5925,8 @@ hobbleskip <- function(skip)
               x <- input$xMCBoundedOUP
               paths <- input$pathsMCBoundedOUP
               skip <- input$skipMCBoundedOUP
-              first <<- input$firstMCBoundedOUP
-              last <<- input$lastMCBoundedOUP
+              first <- input$firstMCBoundedOUP
+              last <- input$lastMCBoundedOUP
             })
             if(!is.numeric(rho)) { rho <- 0 }
             else if(rho < 0) { rho <- 0 }
@@ -5962,7 +5956,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCBoundedOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key), left or rght ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
           output$plotlyMCBoundedOUP <- renderPlotly({
             if(input$resetMCBoundedOUP > MCbtns[3,1])
             {
@@ -5999,21 +5993,15 @@ hobbleskip <- function(skip)
               MCbtns[3,6] <<- input$plotMCBoundedOUP
               FromUItoR6()
             }
-            else if(input$leftMCBoundedOUP > MCbtns[3,7])
+            else if(input$otherMCBoundedOUP > MCbtns[3,7])
             {
-              MCbtns[3,7] <<- input$leftMCBoundedOUP
+              MCbtns[3,7] <<- input$otherMCBoundedOUP
               FromUItoR6()
               MC$set_plot_type("p",1)
             }
-            else if(input$rghtMCBoundedOUP > MCbtns[3,8])
-            {
-              MCbtns[3,8] <<- input$rghtMCBoundedOUP
-              FromUItoR6()
-              MC$set_plot_type("n",1)
-            }
             FromR6toUI()
             MC$PlotBoundedPaths()
-          }) %>% bindEvent(input$resetMCBoundedOUP,input$undnMCBoundedOUP,input$unupMCBoundedOUP,input$syncMCBoundedOUP,input$axesMCBoundedOUP,input$plotMCBoundedOUP,input$leftMCBoundedOUP,input$rghtMCBoundedOUP)
+          }) %>% bindEvent(input$resetMCBoundedOUP,input$undnMCBoundedOUP,input$unupMCBoundedOUP,input$syncMCBoundedOUP,input$axesMCBoundedOUP,input$plotMCBoundedOUP,input$otherMCBoundedOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -6117,7 +6105,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), left or rght ----
           output$plotlyMCMeanOUP <- renderPlotly({
             if(input$undnMCMeanOUP > MCbtns[4,2])
             {
@@ -6148,15 +6136,21 @@ hobbleskip <- function(skip)
               MCbtns[4,6] <<- input$plotMCMeanOUP
               FromUItoR6()
             }
-            else if(input$otherMCMeanOUP > MCbtns[4,7])
+            else if(input$leftMCMeanOUP > MCbtns[4,7])
             {
-              MCbtns[4,7] <<- input$otherMCMeanOUP
+              MCbtns[4,7] <<- input$leftMCMeanOUP
               FromUItoR6()
               MC$set_plot_type("p",2)
+           }
+            else if(input$rghtMCMeanOUP > MCbtns[4,8])
+            {
+              MCbtns[4,8] <<- input$rghtMCMeanOUP
+              FromUItoR6()
+              MC$set_plot_type("n",2)
             }
             FromR6toUI()
             MC$PlotMean()
-          }) %>% bindEvent(input$undnMCMeanOUP,input$unupMCMeanOUP,input$syncMCMeanOUP,input$axesMCMeanOUP,input$plotMCMeanOUP,input$otherMCMeanOUP)
+          }) %>% bindEvent(input$undnMCMeanOUP,input$unupMCMeanOUP,input$syncMCMeanOUP,input$axesMCMeanOUP,input$plotMCMeanOUP,input$leftMCMeanOUP,input$rghtMCMeanOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -6266,7 +6260,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), lefft or rght ----
           output$plotlyMCVarianceOUP <- renderPlotly({
             if(input$undnMCVarianceOUP > MCbtns[5,2])
             {
@@ -6297,15 +6291,21 @@ hobbleskip <- function(skip)
               MCbtns[5,6] <<- input$plotMCVarianceOUP
               FromUItoR6()
             }
-            else if(input$otherMCVarianceOUP > MCbtns[5,7])
+             else if(input$leftMCVarianceOUP > MCbtns[5,7])
             {
-              MCbtns[5,7] <<- input$otherMCVarianceOUP
+              MCbtns[5,7] <<- input$leftMCVarianceOUP
               FromUItoR6()
               MC$set_plot_type("p",2)
+           }
+            else if(input$rghtMCVarianceOUP > MCbtns[5,8])
+            {
+              MCbtns[5,8] <<- input$rghtMCVarianceOUP
+              FromUItoR6()
+              MC$set_plot_type("n",2)
             }
             FromR6toUI()
             MC$PlotVariance()
-          }) %>% bindEvent(input$undnMCVarianceOUP,input$unupMCVarianceOUP,input$syncMCVarianceOUP,input$axesMCVarianceOUP,input$plotMCVarianceOUP,input$otherMCVarianceOUP)
+          }) %>% bindEvent(input$undnMCVarianceOUP,input$unupMCVarianceOUP,input$syncMCVarianceOUP,input$axesMCVarianceOUP,input$plotMCVarianceOUP,input$leftMCVarianceOUP,input$rghtMCVarianceOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -7276,8 +7276,8 @@ hobbleskip <- function(skip)
               tBy <- input$tByMCVTDensityOUP
               x <- input$xMCVTDensityOUP
               k <- input$kMCVTDensityOUP
-              zbeg <<- input$begMCVTDensityOUP
-              zend <<- input$endMCVTDensityOUP
+              zbeg <- input$begMCVTDensityOUP
+              zend <- input$endMCVTDensityOUP
               pmax <- input$pmaxMCVTDensityOUP
               ptmax <- input$ptmaxMCVTDensityOUP
               paths <- input$pathsMCVTDensityOUP
@@ -7438,8 +7438,8 @@ hobbleskip <- function(skip)
               tBy <- input$tByMCVTProbabilityOUP
               x <- input$xMCVTProbabilityOUP
               k <- input$kMCVTProbabilityOUP
-              zbeg <<- input$begMCVTProbabilityOUP
-              zend <<- input$endMCVTProbabilityOUP
+              zbeg <- input$begMCVTProbabilityOUP
+              zend <- input$endMCVTProbabilityOUP
               pmax <- input$pmaxMCVTProbabilityOUP
               paths <- input$pathsMCVTProbabilityOUP
               skip <- input$skipMCVTProbabilityOUP
@@ -7882,8 +7882,8 @@ hobbleskip <- function(skip)
               tBy <- input$tByMCFPTDensityOUP
               x <- input$xMCFPTDensityOUP
               k <- input$kMCFPTDensityOUP
-              zbeg <<- input$begMCFPTDensityOUP
-              zend <<- input$endMCFPTDensityOUP
+              zbeg <- input$begMCFPTDensityOUP
+              zend <- input$endMCFPTDensityOUP
               pmax <- input$pmaxMCFPTDensityOUP
               ptmax <- input$ptmaxMCFPTDensityOUP
               paths <- input$pathsMCFPTDensityOUP
@@ -8044,8 +8044,8 @@ hobbleskip <- function(skip)
               tBy <- input$tByMCFPTProbabilityOUP
               x <- input$xMCFPTProbabilityOUP
               k <- input$kMCFPTProbabilityOUP
-              zbeg <<- input$begMCFPTProbabilityOUP
-              zend <<- input$endMCFPTProbabilityOUP
+              zbeg <- input$begMCFPTProbabilityOUP
+              zend <- input$endMCFPTProbabilityOUP
               pmax <- input$pmaxMCFPTProbabilityOUP
               paths <- input$pathsMCFPTProbabilityOUP
               skip <- input$skipMCFPTProbabilityOUP
@@ -8147,6 +8147,10 @@ hobbleskip <- function(skip)
       if(infotoggle()) { infotoggle(FALSE) }
       else { infotoggle(TRUE) }
     }
+    else if(input$navBar == "tabTutorialsOUP")
+    {
+      utils::browseURL(tutorialspath)
+    }
     else if(input$navBar == "tabAboutOUP")
     {
       ibutton <<- ""
@@ -8165,7 +8169,7 @@ hobbleskip <- function(skip)
   })
   # dark mode switch ----
   observeEvent(input$darkmodeswitch, {
-    if (input$darkmodeswitch == "light") { A$set_plot_info(theme="light") }
+    if(input$darkmodeswitch == "light") { A$set_plot_info(theme="light") }
     else { A$set_plot_info(theme="dark") }
   })
   # modal dialog ----

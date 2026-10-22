@@ -1,5 +1,6 @@
 cliptext = "";
 clipdeny = false;
+
 Shiny.addCustomMessageHandler('sendToShiny', function(txt) {
           cliptext=txt;
         });
@@ -35,18 +36,18 @@ $(document).ready(function() {
           $("#navMCOUP").on("shown.bs.tab",function(event){
             MCIdOUP = event.target.attributes[3].value;
           });
-// wells fresh and stale
-  function wellfresh(){
-          wells = document.getElementsByClassName("well wellPlotOUP");
-          for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor=fresh; }
-          wells = document.getElementsByClassName("well wellTableOUP");
-          for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor=fresh; }
+// cards fresh and stale
+  function cardfresh(){
+          cards = document.getElementsByClassName("card cardPlotOUP");
+          for(i=0; i<cards.length; i++) { cards[i].style.backgroundColor=fresh; }
+          cards = document.getElementsByClassName("card cardTableOUP");
+          for(i=0; i<cards.length; i++) { cards[i].style.backgroundColor=fresh; }
         }
-  function wellstale(){
-          wells = document.getElementsByClassName("well wellPlotOUP");
-          for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor=stale; }
-          wells = document.getElementsByClassName("well wellTableOUP");
-          for(i=0; i<wells.length; i++) { wells[i].style.backgroundColor=stale; }
+  function cardstale(){
+          cards = document.getElementsByClassName("card cardPlotOUP");
+          for(i=0; i<cards.length; i++) { cards[i].style.backgroundColor=stale; }
+          cards = document.getElementsByClassName("card cardTableOUP");
+          for(i=0; i<cards.length; i++) { cards[i].style.backgroundColor=stale; }
         }
 // send plot click
   function plotit(){
@@ -83,7 +84,7 @@ $(document).ready(function() {
             activeEl=document.activeElement;
             if(activeEl.tagName == "INPUT")
             {
-              if(activeEl.attributes[5].value == "combobox" | activeEl.attributes[3].value == "file") { wellstale(); }
+              if(activeEl.attributes[5].value == "combobox" | activeEl.attributes[3].value == "file") { cardstale(); }
             }
           }
         });
@@ -92,8 +93,8 @@ $(document).ready(function() {
           activeEl=document.activeElement;
           if(activeEl.tagName == "BUTTON")
           {
-          btnClass=activeEl.attributes[0].value;
-            if(btnClass.includes("btn-success")) { wellfresh(); }
+            btnClass=activeEl.attributes[0].value;
+            if(btnClass.includes("btn-success")) { cardfresh(); }
             else if(btnClass.includes("btn-copy"))
             {
               if(clipdeny) {
@@ -109,7 +110,7 @@ $(document).ready(function() {
               }
             }
           }
-          else if(activeEl.tagName == "A") { wellfresh(); }
+          else if(activeEl.tagName == "A") { cardfresh(); }
           lastEvent = "click";
         });
 // keyboard fresh or stale
@@ -117,12 +118,12 @@ $(document).ready(function() {
           if(e.key == "Enter")
           {
             plotit();
-            wellfresh();
+            cardfresh();
           }
           else if(e.key == "1" | e.key == "2" | e.key == "3" | e.key == "4" | e.key == "5" | e.key == "6" | e.key == "7" | e.key == "8" | e.key == "9" | e.key == "0" | e.key == "-" | e.key == "+" | e.key == "." | e.key == "Delete" | e.key == "Backspace")
           {
             activeEl=document.activeElement;
-            if(activeEl.tagName == "INPUT") { wellstale(); }
+            if(activeEl.tagName == "INPUT") { cardstale(); }
           }
           lastEvent = "keyup";
         });
@@ -146,12 +147,12 @@ $(document).ready(function() {
                 dm = "dark";
               }
               plotit();
-              wellfresh();
+              cardfresh();
             }
           }
         });
 // alert for server disconnection
   $(document).on('shiny:disconnected', function() {
-          alert('Connection lost!\n  Causes may be: idle timeout, network dropout or exceeding the server limits.\n\n  If your problem exceeds the server limits, you may wish to install GregsOUPR6 on your personal computer.  See the Calculations document on the Help menu for details.');
+          alert('Connection lost!\n\n  Causes may be: idle timeout, network dropout or exceeding the server limits.\n\n  If your problem exceeds the server limits, you may wish to install GregsOUPR6 on your computer.  See the Calculations document on the Help menu for details.');
         });
 });
