@@ -39,7 +39,7 @@
       z-index: 10;
     }
 .cardPlotOUP:hover .btn-copy-plot {
-      opacity: 0.7;
+      opacity: 0.5;
       pointer-events: auto;
     }
 .btn-copy-plot:hover {
@@ -72,7 +72,7 @@
       z-index: 10;
     }
 .cardTableOUP:hover .btn-copy-table {
-      opacity: 0.7;
+      opacity: 0.5;
       pointer-events: auto;
     }
 .btn-copy-table:hover {
@@ -84,4 +84,33 @@
 .btn-copy-table.disabled {
       cursor: not-allowed;
       color: #777777;
+    }
+.cardPlotOUP .btn-toggle-title {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      bottom: 20px;
+      left: 16px;
+      width: 22px;
+      height: 22px;
+      background: none;
+      border: none;
+      fill: currentColor;
+      padding: 2px 0;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+.cardPlotOUP:hover .btn-toggle-title {
+      opacity: 0.5;
+      pointer-events: auto;
+    }
+.btn-toggle-title:hover {
+      border: outset;
+    }
+.btn-toggle-title:active {
+      border: inset;
     }

@@ -1,5 +1,6 @@
 cliptext = "";
 clipdeny = false;
+togglecnt = 0;
 
 Shiny.addCustomMessageHandler('sendToShiny', function(txt) {
           cliptext=txt;
@@ -51,31 +52,23 @@ $(document).ready(function() {
         }
 // send plot click
   function plotit(){
-          if(barIdOUP == "tabROOUP")
-          {
-            plotId="#plot"+ROIdOUP;
-            $(plotId).click();
-          }
-          else if(barIdOUP == "tabAOUP")
-          {
-            plotId="#plot"+AIdOUP;
-            $(plotId).click();
-          }
-          else if(barIdOUP == "tabFDOUP")
-          {
-            plotId="#plot"+FDIdOUP;
-            $(plotId).click();
-          }
-          else if(barIdOUP == "tabMLOUP")
-          {
-            plotId="#plot"+MLIdOUP;
-            $(plotId).click();
-          }
-          else if(barIdOUP == "tabMCOUP")
-          {
-            plotId="#plot"+MCIdOUP;
-            $(plotId).click();
-          }
+          if(barIdOUP == "tabROOUP") { plotId="#plot"+ROIdOUP; }
+          else if(barIdOUP == "tabAOUP") { plotId="#plot"+AIdOUP; }
+          else if(barIdOUP == "tabFDOUP") { plotId="#plot"+FDIdOUP; }
+          else if(barIdOUP == "tabMLOUP") { plotId="#plot"+MLIdOUP; }
+          else { plotId="#plot"+MCIdOUP; }
+          $(plotId).click();
+        }
+// send invisible toggle btn
+  function toggleit(){
+          if(barIdOUP == "tabROOUP") { toggleId="toggle"+ROIdOUP; }
+          else if(barIdOUP == "tabAOUP") { toggleId="toggle"+AIdOUP; }
+          else if(barIdOUP == "tabFDOUP") { toggleId="toggle"+FDIdOUP; }
+          else if(barIdOUP == "tabMLOUP") { toggleId="toggle"+MLIdOUP; }
+          else { toggleId="toggle"+MCIdOUP; }
+          togglecnt = togglecnt+1;
+          Shiny.setInputValue("toggleId",true);
+          alert(toggleId+","+togglecnt);
         }
 // combobox and file input change
   $(document).on("change",function(){
@@ -108,6 +101,16 @@ $(document).ready(function() {
                   clipdeny = true;
                 });
               }
+            }
+            else if(btnClass == "btn-toggle-title")
+            {
+              if(barIdOUP == "tabROOUP") { toggleId="tggl"+ROIdOUP; }
+              else if(barIdOUP == "tabAOUP") { toggleId="tggl"+AIdOUP; }
+              else if(barIdOUP == "tabFDOUP") { toggleId="tggl"+FDIdOUP; }
+              else if(barIdOUP == "tabMLOUP") { toggleId="tggl"+MLIdOUP; }
+              else { toggleId="tggl"+MCIdOUP; }
+              togglecnt = togglecnt+1;
+              Shiny.setInputValue(toggleId,togglecnt);
             }
           }
           else if(activeEl.tagName == "A") { cardfresh(); }

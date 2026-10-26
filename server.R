@@ -52,11 +52,12 @@ begend <- FALSE
 maxpaths <- 100000
 maxskip <- 5
 # globals for buttons ----
-RObtns <- matrix(0,5,8) # reset,undn,unup,sync,axes,plot,left(other),rght
+RObtns <- matrix(0,5,8) # reset,undn,unup,sync,axes,plot,left(othr),rght
 Abtns <- matrix(0,17,7) # undn,unup,sync,axes,plot,left,rght
 FDbtns <- matrix(0,6,6) # undn,unup,axes,plot,left,rght
 MLbtns <- matrix(0,2,2) # reset,plot
 MCbtns <- matrix(0,17,8) # reset,undn,unup,sync,axes,plot,left,rght
+tgglbtn <- 0
 # globals and reactive for modal dialogs ----
 ibutton <- ""
 infobutton <- ""
@@ -359,7 +360,7 @@ hobbleskip <- function(skip)
           observe({
             begend <<- TRUE
           }) %>% bindEvent(input$begRODataOUP,input$endRODataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset or plot (or enter key) ----
+          # user clicks reset, plot (or enter key) or tggl ----
           output$plotlyRODataOUP <- renderPlotly({
             # message("render")
             if(input$resetRODataOUP > RObtns[1,1])
@@ -372,9 +373,18 @@ hobbleskip <- function(skip)
               RObtns[1,2] <<- input$plotRODataOUP
               FromUItoR6()
             }
+            else if(length(input$tgglRODataOUP) > 0)
+            {
+              if(tgglbtn < input$tgglRODataOUP)
+              {
+                tgglbtn <<- input$tgglRODataOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             ML$PlotTimeSeries()
-          }) %>% bindEvent(input$resetRODataOUP,input$plotRODataOUP)
+          }) %>% bindEvent(input$resetRODataOUP,input$plotRODataOUP,input$tgglRODataOUP)
           # observe i and info ----
           observe({
             ibutton <<- input$filesRODataOUP
@@ -575,7 +585,7 @@ hobbleskip <- function(skip)
           observe({
             begend <<- TRUE
           }) %>% bindEvent(input$begROEstimatesOUP,input$endROEstimatesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset or plot (or enter key) ----
+          # user clicks reset, plot (or enter key) or tggl ----
           observe({
             # message("render")
             if(input$resetROEstimatesOUP > RObtns[2,1])
@@ -587,6 +597,15 @@ hobbleskip <- function(skip)
             {
               RObtns[2,2] <<- input$plotROEstimatesOUP
               FromUItoR6()
+            }
+            else if(length(input$tgglROEstimatesOUP) > 0)
+            {
+              if(tgglbtn < input$tgglROEstimatesOUP)
+              {
+                tgglbtn <<- input$tgglROEstimatesOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
             }
             FromR6toUI()
             est_u <- ML$Estimates()
@@ -612,7 +631,7 @@ hobbleskip <- function(skip)
               ))
             })
             output$plotlyROEstimatesOUP <- renderPlotly({ ML$PlotEstimates() })
-          }) %>% bindEvent(input$resetROEstimatesOUP,input$plotROEstimatesOUP)
+          }) %>% bindEvent(input$resetROEstimatesOUP,input$plotROEstimatesOUP,input$tgglROEstimatesOUP)
           # observe i and info ----
           observe({
             ibutton <<- input$filesROEstimatesOUP
@@ -731,7 +750,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="ROundo",duration=2)
           }) %>% bindEvent(input$saveRORegimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyRORegimeOUP <- renderPlotly({
             if(input$undnRORegimeOUP > RObtns[3,2])
             {
@@ -762,26 +781,26 @@ hobbleskip <- function(skip)
               RObtns[3,6] <<- input$plotRORegimeOUP
               FromUItoR6()
             }
-            else if(input$otherRORegimeOUP > RObtns[3,7])
+            else if(input$othrRORegimeOUP > RObtns[3,7])
             {
               regime <<- regime-1
               if(regime < 0) regime <<- 1
-              RObtns[3,7] <<- input$otherRORegimeOUP
+              RObtns[3,7] <<- input$othrRORegimeOUP
               FromUItoR6()
             }
+            else if(length(input$tgglRORegimeOUP) > 0)
+            {
+              if(tgglbtn < input$tgglRORegimeOUP)
+              {
+                tgglbtn <<- input$tgglRORegimeOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
-            phi <- A$get_x_stoch_args()[[6]]
-            if(regime > 0)
-            {
-              if(phi > 0) { A$PlotOption(title="Entry Option",type=0) }
-              else { A$PlotOption(title="Exit Option",type=0) }
-            }
-            else
-            {
-              if(phi > 0) { A$PlotObligation(title="Prohibition",type=0) }
-              else { A$PlotObligation(title="Obligation",type=0) }
-            }
-          }) %>% bindEvent(input$undnRORegimeOUP,input$unupRORegimeOUP,input$syncRORegimeOUP,input$axesRORegimeOUP,input$plotRORegimeOUP,input$otherRORegimeOUP)
+            if(regime > 0) { A$PlotOption(type=0) }
+            else { A$PlotObligation(type=0) }
+          }) %>% bindEvent(input$undnRORegimeOUP,input$unupRORegimeOUP,input$syncRORegimeOUP,input$axesRORegimeOUP,input$plotRORegimeOUP,input$othrRORegimeOUP,input$tgglRORegimeOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -904,7 +923,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="ROundo",duration=2)
           }) %>% bindEvent(input$saveRODecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) ----
+          # user clicks undn, unup, sync, axes, plot (or enter key) or tggl ----
           output$plotlyRODecisionOUP <- renderPlotly({
             if(input$undnRODecisionOUP > RObtns[4,2])
             {
@@ -935,11 +954,18 @@ hobbleskip <- function(skip)
               RObtns[4,6] <<- input$plotRODecisionOUP
               FromUItoR6()
             }
+            else if(length(input$tgglRODecisionOUP) > 0)
+            {
+              if(tgglbtn < input$tgglRODecisionOUP)
+              {
+                tgglbtn <<- input$tgglRODecisionOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
-            phi <- A$get_x_stoch_args()[[6]]
-            if(phi > 0) { A$PlotDecisionThreshold(title="Entry") }
-            else {A$PlotDecisionThreshold(title="Exit") }
-          }) %>% bindEvent(input$undnRODecisionOUP,input$unupRODecisionOUP,input$syncRODecisionOUP,input$axesRODecisionOUP,input$plotRODecisionOUP)
+            A$PlotDecisionThreshold()
+          }) %>% bindEvent(input$undnRODecisionOUP,input$unupRODecisionOUP,input$syncRODecisionOUP,input$axesRODecisionOUP,input$plotRODecisionOUP,input$tgglRODecisionOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -1043,7 +1069,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="ROundo",duration=2)
           }) %>% bindEvent(input$saveROPassageTimeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, axes, plot (or enter key), left or rght ----
+          # user clicks undn, unup, axes, plot (or enter key), left, rght or tggl ----
           output$plotlyROPassageTimeOUP <- renderPlotly({
             if(input$undnROPassageTimeOUP > RObtns[5,2])
             {
@@ -1086,9 +1112,18 @@ hobbleskip <- function(skip)
               FromUItoR6()
               A$set_plot_type("n",5)
             }
+            else if(length(input$tgglROPassageTimeOUP) > 0)
+            {
+              if(tgglbtn < input$tgglROPassageTimeOUP)
+              {
+                tgglbtn <<- input$tgglROPassageTimeOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotPassageTimePercentiles()
-          }) %>% bindEvent(input$undnROPassageTimeOUP,input$unupROPassageTimeOUP,input$syncROPassageTimeOUP,input$axesROPassageTimeOUP,input$plotROPassageTimeOUP,input$leftROPassageTimeOUP,input$rghtROPassageTimeOUP)
+          }) %>% bindEvent(input$undnROPassageTimeOUP,input$unupROPassageTimeOUP,input$syncROPassageTimeOUP,input$axesROPassageTimeOUP,input$plotROPassageTimeOUP,input$leftROPassageTimeOUP,input$rghtROPassageTimeOUP,input$tgglROPassageTimeOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -1162,7 +1197,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes or plot (or enter key) ----
+          # user clicks undn, unup, sync, axes, plot (or enter key) or tggl ----
           output$plotlyADriftOUP <- renderPlotly({
             if(input$undnADriftOUP > Abtns[1,1])
             {
@@ -1193,9 +1228,18 @@ hobbleskip <- function(skip)
               Abtns[1,5] <<- input$plotADriftOUP
               FromUItoR6()
             }
+            else if(length(input$tgglADriftOUP) > 0)
+            {
+              if(tgglbtn < input$tgglADriftOUP)
+              {
+                tgglbtn <<- input$tgglADriftOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotDrift()
-          }) %>% bindEvent(input$undnADriftOUP,input$unupADriftOUP,input$syncADriftOUP,input$axesADriftOUP,input$plotADriftOUP)
+          }) %>% bindEvent(input$undnADriftOUP,input$unupADriftOUP,input$syncADriftOUP,input$axesADriftOUP,input$plotADriftOUP,input$tgglADriftOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -1277,7 +1321,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyADiffusionOUP <- renderPlotly({
             if(input$undnADiffusionOUP > Abtns[2,1])
             {
@@ -1308,15 +1352,24 @@ hobbleskip <- function(skip)
               Abtns[2,5] <<- input$plotADiffusionOUP
               FromUItoR6()
             }
-            else if(input$otherADiffusionOUP > Abtns[2,6])
+            else if(input$othrADiffusionOUP > Abtns[2,6])
             {
-              Abtns[2,6] <<- input$otherADiffusionOUP
+              Abtns[2,6] <<- input$othrADiffusionOUP
               FromUItoR6()
               A$set_plot_type("p",2)
             }
+            else if(length(input$tgglADiffusionOUP) > 0)
+            {
+              if(tgglbtn < input$tgglADiffusionOUP)
+              {
+                tgglbtn <<- input$tgglADiffusionOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotDiffusion()
-          }) %>% bindEvent(input$undnADiffusionOUP,input$unupADiffusionOUP,input$syncADiffusionOUP,input$axesADiffusionOUP,input$plotADiffusionOUP,input$otherADiffusionOUP)
+          }) %>% bindEvent(input$undnADiffusionOUP,input$unupADiffusionOUP,input$syncADiffusionOUP,input$axesADiffusionOUP,input$plotADiffusionOUP,input$othrADiffusionOUP,input$tgglADiffusionOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -1434,7 +1487,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), left, rght or tggl ----
           output$plotlyAMeanOUP <- renderPlotly({
             if(input$undnAMeanOUP > Abtns[3,1])
             {
@@ -1477,9 +1530,18 @@ hobbleskip <- function(skip)
               FromUItoR6()
               A$set_plot_type("n",3)
             }
+            else if(length(input$tgglAMeanOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAMeanOUP)
+              {
+                tgglbtn <<- input$tgglAMeanOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotMean()
-          }) %>% bindEvent(input$undnAMeanOUP,input$unupAMeanOUP,input$syncAMeanOUP,input$axesAMeanOUP,input$plotAMeanOUP,input$leftAMeanOUP,input$rghtAMeanOUP)
+          }) %>% bindEvent(input$undnAMeanOUP,input$unupAMeanOUP,input$syncAMeanOUP,input$axesAMeanOUP,input$plotAMeanOUP,input$leftAMeanOUP,input$rghtAMeanOUP,input$tgglAMeanOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -1597,7 +1659,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), left, rght or tggl ----
           output$plotlyAVarianceOUP <- renderPlotly({
             if(input$undnAVarianceOUP > Abtns[5,1])
             {
@@ -1640,9 +1702,18 @@ hobbleskip <- function(skip)
               FromUItoR6()
               A$set_plot_type("n",3)
             }
+            else if(length(input$tgglAVarianceOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAVarianceOUP)
+              {
+                tgglbtn <<- input$tgglAVarianceOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotVariance()
-          }) %>% bindEvent(input$undnAVarianceOUP,input$unupAVarianceOUP,input$syncAVarianceOUP,input$axesAVarianceOUP,input$plotAVarianceOUP,input$leftAVarianceOUP,input$rghtAVarianceOUP)
+          }) %>% bindEvent(input$undnAVarianceOUP,input$unupAVarianceOUP,input$syncAVarianceOUP,input$axesAVarianceOUP,input$plotAVarianceOUP,input$leftAVarianceOUP,input$rghtAVarianceOUP,input$tgglAVarianceOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -1743,7 +1814,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyADensityOUP <- renderPlotly({
             if(input$undnADensityOUP > Abtns[7,1])
             {
@@ -1774,15 +1845,24 @@ hobbleskip <- function(skip)
               Abtns[7,5] <<- input$plotADensityOUP
               FromUItoR6()
             }
-            else if(input$otherADensityOUP > Abtns[7,6])
+            else if(input$othrADensityOUP > Abtns[7,6])
             {
-              Abtns[7,6] <<- input$otherADensityOUP
+              Abtns[7,6] <<- input$othrADensityOUP
               FromUItoR6()
               A$set_plot_type("p",4)
             }
+            else if(length(input$tgglADensityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglADensityOUP)
+              {
+                tgglbtn <<- input$tgglADensityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotDensity()
-          }) %>% bindEvent(input$undnADensityOUP,input$unupADensityOUP,input$syncADensityOUP,input$axesADensityOUP,input$plotADensityOUP,input$otherADensityOUP)
+          }) %>% bindEvent(input$undnADensityOUP,input$unupADensityOUP,input$syncADensityOUP,input$axesADensityOUP,input$plotADensityOUP,input$othrADensityOUP,input$tgglADensityOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -1883,7 +1963,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyAProbabilityOUP <- renderPlotly({
             if(input$undnAProbabilityOUP > Abtns[8,1])
             {
@@ -1914,15 +1994,24 @@ hobbleskip <- function(skip)
               Abtns[8,5] <<- input$plotAProbabilityOUP
               FromUItoR6()
             }
-            else if(input$otherAProbabilityOUP > Abtns[8,6])
+            else if(input$othrAProbabilityOUP > Abtns[8,6])
             {
-              Abtns[8,6] <<- input$otherAProbabilityOUP
+              Abtns[8,6] <<- input$othrAProbabilityOUP
               FromUItoR6()
               A$set_plot_type("p",4)
             }
+            else if(length(input$tgglAProbabilityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAProbabilityOUP)
+              {
+                tgglbtn <<- input$tgglAProbabilityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotProbability()
-          }) %>% bindEvent(input$undnAProbabilityOUP,input$unupAProbabilityOUP,input$syncAProbabilityOUP,input$axesAProbabilityOUP,input$plotAProbabilityOUP,input$otherAProbabilityOUP)
+          }) %>% bindEvent(input$undnAProbabilityOUP,input$unupAProbabilityOUP,input$syncAProbabilityOUP,input$axesAProbabilityOUP,input$plotAProbabilityOUP,input$othrAProbabilityOUP,input$tgglAProbabilityOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -2023,7 +2112,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADoubleOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyADoubleOUP <- renderPlotly({
             if(input$undnADoubleOUP > Abtns[9,1])
             {
@@ -2054,15 +2143,24 @@ hobbleskip <- function(skip)
               Abtns[9,5] <<- input$plotADoubleOUP
               FromUItoR6()
             }
-            else if(input$otherADoubleOUP > Abtns[9,6])
+            else if(input$othrADoubleOUP > Abtns[9,6])
             {
-              Abtns[9,6] <<- input$otherADoubleOUP
+              Abtns[9,6] <<- input$othrADoubleOUP
               FromUItoR6()
               A$set_plot_type("p",4)
             }
+            else if(length(input$tgglADoubleOUP) > 0)
+            {
+              if(tgglbtn < input$tgglADoubleOUP)
+              {
+                tgglbtn <<- input$tgglADoubleOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotDoubleIntegral()
-          }) %>% bindEvent(input$undnADoubleOUP,input$unupADoubleOUP,input$syncADoubleOUP,input$axesADoubleOUP,input$plotADoubleOUP,input$otherADoubleOUP)
+          }) %>% bindEvent(input$undnADoubleOUP,input$unupADoubleOUP,input$syncADoubleOUP,input$axesADoubleOUP,input$plotADoubleOUP,input$othrADoubleOUP,input$tgglADoubleOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -2203,7 +2301,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyAOptionOUP <- renderPlotly({
             if(input$undnAOptionOUP > Abtns[10,1])
             {
@@ -2234,15 +2332,24 @@ hobbleskip <- function(skip)
               Abtns[10,5] <<- input$plotAOptionOUP
               FromUItoR6()
             }
-            else if(input$otherAOptionOUP > Abtns[10,6])
+            else if(input$othrAOptionOUP > Abtns[10,6])
             {
-              Abtns[10,6] <<- input$otherAOptionOUP
+              Abtns[10,6] <<- input$othrAOptionOUP
               FromUItoR6()
               A$set_plot_type("p",4)
             }
+            else if(length(input$tgglAOptionOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAOptionOUP)
+              {
+                tgglbtn <<- input$tgglAOptionOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotOption()
-          }) %>% bindEvent(input$undnAOptionOUP,input$unupAOptionOUP,input$syncAOptionOUP,input$axesAOptionOUP,input$plotAOptionOUP,input$otherAOptionOUP)
+          }) %>% bindEvent(input$undnAOptionOUP,input$unupAOptionOUP,input$syncAOptionOUP,input$axesAOptionOUP,input$plotAOptionOUP,input$othrAOptionOUP,input$tgglAOptionOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -2383,7 +2490,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyAEnvelopeOUP <- renderPlotly({
             if(input$undnAEnvelopeOUP > Abtns[11,1])
             {
@@ -2414,15 +2521,24 @@ hobbleskip <- function(skip)
               Abtns[11,5] <<- input$plotAEnvelopeOUP
               FromUItoR6()
             }
-            else if(input$otherAEnvelopeOUP > Abtns[11,6])
+            else if(input$othrAEnvelopeOUP > Abtns[11,6])
             {
-              Abtns[11,6] <<- input$otherAEnvelopeOUP
+              Abtns[11,6] <<- input$othrAEnvelopeOUP
               FromUItoR6()
               A$set_plot_type("p",4)
             }
+            else if(length(input$tgglAEnvelopeOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAEnvelopeOUP)
+              {
+                tgglbtn <<- input$tgglAEnvelopeOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotOptionEnvelope()
-          }) %>% bindEvent(input$undnAEnvelopeOUP,input$unupAEnvelopeOUP,input$syncAEnvelopeOUP,input$axesAEnvelopeOUP,input$plotAEnvelopeOUP,input$otherAEnvelopeOUP)
+          }) %>% bindEvent(input$undnAEnvelopeOUP,input$unupAEnvelopeOUP,input$syncAEnvelopeOUP,input$axesAEnvelopeOUP,input$plotAEnvelopeOUP,input$othrAEnvelopeOUP,input$tgglAEnvelopeOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -2545,7 +2661,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveADecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes or plot (or enter key) ----
+          # user clicks undn, unup, sync, axes, plot (or enter key) or tggl ----
           output$plotlyADecisionOUP <- renderPlotly({
             if(input$undnADecisionOUP > Abtns[12,1])
             {
@@ -2576,9 +2692,18 @@ hobbleskip <- function(skip)
               Abtns[12,5] <<- input$plotADecisionOUP
               FromUItoR6()
             }
+            else if(length(input$tgglADecisionOUP) > 0)
+            {
+              if(tgglbtn < input$tgglADecisionOUP)
+              {
+                tgglbtn <<- input$tgglADecisionOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotDecisionThreshold()
-          }) %>% bindEvent(input$undnADecisionOUP,input$unupADecisionOUP,input$syncADecisionOUP,input$axesADecisionOUP,input$plotADecisionOUP)
+          }) %>% bindEvent(input$undnADecisionOUP,input$unupADecisionOUP,input$syncADecisionOUP,input$axesADecisionOUP,input$plotADecisionOUP,input$tgglADecisionOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -2707,7 +2832,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAObligationOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyAObligationOUP <- renderPlotly({
             if(input$undnAObligationOUP > Abtns[13,1])
             {
@@ -2738,15 +2863,24 @@ hobbleskip <- function(skip)
               Abtns[13,5] <<- input$plotAObligationOUP
               FromUItoR6()
             }
-            else if(input$otherAObligationOUP > Abtns[13,6])
+            else if(input$othrAObligationOUP > Abtns[13,6])
             {
-              Abtns[13,6] <<- input$otherAObligationOUP
+              Abtns[13,6] <<- input$othrAObligationOUP
               FromUItoR6()
               A$set_plot_type("p",4)
             }
+            else if(length(input$tgglAObligationOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAObligationOUP)
+              {
+                tgglbtn <<- input$tgglAObligationOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotObligation()
-          }) %>% bindEvent(input$undnAObligationOUP,input$unupAObligationOUP,input$syncAObligationOUP,input$axesAObligationOUP,input$plotAObligationOUP,input$otherAObligationOUP)
+          }) %>% bindEvent(input$undnAObligationOUP,input$unupAObligationOUP,input$syncAObligationOUP,input$axesAObligationOUP,input$plotAObligationOUP,input$othrAObligationOUP,input$tgglAObligationOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -2852,7 +2986,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), left, rght or tggl ----
           output$plotlyAPTModeMedianMeanOUP <- renderPlotly({
             if(input$undnAPTModeMedianMeanOUP > Abtns[14,1])
             {
@@ -2895,9 +3029,18 @@ hobbleskip <- function(skip)
               FromUItoR6()
               A$set_plot_type("n",5)
             }
+            else if(length(input$tgglAPTModeMedianMeanOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAPTModeMedianMeanOUP)
+              {
+                tgglbtn <<- input$tgglAPTModeMedianMeanOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotPassageTimeModeMedianMean()
-          }) %>% bindEvent(input$undnAPTModeMedianMeanOUP,input$unupAPTModeMedianMeanOUP,input$syncAPTModeMedianMeanOUP,input$axesAPTModeMedianMeanOUP,input$plotAPTModeMedianMeanOUP,input$leftAPTModeMedianMeanOUP,input$rghtAPTModeMedianMeanOUP)
+          }) %>% bindEvent(input$undnAPTModeMedianMeanOUP,input$unupAPTModeMedianMeanOUP,input$syncAPTModeMedianMeanOUP,input$axesAPTModeMedianMeanOUP,input$plotAPTModeMedianMeanOUP,input$leftAPTModeMedianMeanOUP,input$rghtAPTModeMedianMeanOUP,input$tgglAPTModeMedianMeanOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -3016,7 +3159,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), left, rght or tggl ----
           output$plotlyAPTPercentilesOUP <- renderPlotly({
             if(input$undnAPTPercentilesOUP > Abtns[15,1])
             {
@@ -3059,9 +3202,18 @@ hobbleskip <- function(skip)
               FromUItoR6()
               A$set_plot_type("n",5)
             }
+            else if(length(input$tgglAPTPercentilesOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAPTPercentilesOUP)
+              {
+                tgglbtn <<- input$tgglAPTPercentilesOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotPassageTimePercentiles()
-          }) %>% bindEvent(input$undnAPTPercentilesOUP,input$unupAPTPercentilesOUP,input$syncAPTPercentilesOUP,input$axesAPTPercentilesOUP,input$plotAPTPercentilesOUP,input$leftAPTPercentilesOUP,input$rghtAPTPercentilesOUP)
+          }) %>% bindEvent(input$undnAPTPercentilesOUP,input$unupAPTPercentilesOUP,input$syncAPTPercentilesOUP,input$axesAPTPercentilesOUP,input$plotAPTPercentilesOUP,input$leftAPTPercentilesOUP,input$rghtAPTPercentilesOUP,input$tgglAPTPercentilesOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -3172,7 +3324,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr tggl ----
           output$plotlyAPTDensityOUP <- renderPlotly({
             if(input$undnAPTDensityOUP > Abtns[16,1])
             {
@@ -3203,15 +3355,24 @@ hobbleskip <- function(skip)
               Abtns[16,5] <<- input$plotAPTDensityOUP
               FromUItoR6()
             }
-            else if(input$otherAPTDensityOUP > Abtns[16,6])
+            else if(input$othrAPTDensityOUP > Abtns[16,6])
             {
-              Abtns[16,6] <<- input$otherAPTDensityOUP
+              Abtns[16,6] <<- input$othrAPTDensityOUP
               FromUItoR6()
               A$set_plot_type("p",6)
             }
-            FromR6toUI()
+            else if(length(input$tgglAPTDensityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAPTDensityOUP)
+              {
+                tgglbtn <<- input$tgglAPTDensityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
+           FromR6toUI()
             A$PlotPassageTimeDensity()
-          }) %>% bindEvent(input$undnAPTDensityOUP,input$unupAPTDensityOUP,input$syncAPTDensityOUP,input$axesAPTDensityOUP,input$plotAPTDensityOUP,input$otherAPTDensityOUP)
+          }) %>% bindEvent(input$undnAPTDensityOUP,input$unupAPTDensityOUP,input$syncAPTDensityOUP,input$axesAPTDensityOUP,input$plotAPTDensityOUP,input$othrAPTDensityOUP,input$tgglAPTDensityOUP)
           # user clicks info ----
           observe({
             ibutton <<- ""
@@ -3316,7 +3477,7 @@ hobbleskip <- function(skip)
             n <- A$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="Aundo",duration=2)
           }) %>% bindEvent(input$saveAPTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyAPTProbabilityOUP <- renderPlotly({
             if(input$undnAPTProbabilityOUP > Abtns[17,1])
             {
@@ -3347,15 +3508,24 @@ hobbleskip <- function(skip)
               Abtns[17,5] <<- input$plotAPTProbabilityOUP
               FromUItoR6()
             }
-            else if(input$otherAPTProbabilityOUP > Abtns[17,6])
+            else if(input$othrAPTProbabilityOUP > Abtns[17,6])
             {
-              Abtns[17,6] <<- input$otherAPTProbabilityOUP
+              Abtns[17,6] <<- input$othrAPTProbabilityOUP
               FromUItoR6()
               A$set_plot_type("p",6)
             }
+            else if(length(input$tgglAPTProbabilityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglAPTProbabilityOUP)
+              {
+                tgglbtn <<- input$tgglAPTProbabilityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             A$PlotPassageTimeProbability()
-          }) %>% bindEvent(input$undnAPTProbabilityOUP,input$unupAPTProbabilityOUP,input$syncAPTProbabilityOUP,input$axesAPTProbabilityOUP,input$plotAPTProbabilityOUP,input$otherAPTProbabilityOUP)
+          }) %>% bindEvent(input$undnAPTProbabilityOUP,input$unupAPTProbabilityOUP,input$syncAPTProbabilityOUP,input$axesAPTProbabilityOUP,input$plotAPTProbabilityOUP,input$othrAPTProbabilityOUP,input$tgglAPTProbabilityOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -3431,7 +3601,7 @@ hobbleskip <- function(skip)
             n <- FD$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDDriftOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, axes or plot (or enter key) ----
+          # user clicks undn, unup, axes, plot (or enter key) or tggl ----
           output$plotlyFDDriftOUP <- renderPlotly({
             if(input$undnFDDriftOUP > FDbtns[1,1])
             {
@@ -3456,9 +3626,18 @@ hobbleskip <- function(skip)
               FDbtns[1,4] <<- input$plotFDDriftOUP
               FromUItoR6()
             }
+            else if(length(input$tgglFDDriftOUP) > 0)
+            {
+              if(tgglbtn < input$tgglFDDriftOUP)
+              {
+                tgglbtn <<- input$tgglFDDriftOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             FD$PlotDrift()
-          }) %>% bindEvent(input$undnFDDriftOUP,input$unupFDDriftOUP,input$axesFDDriftOUP,input$plotFDDriftOUP)
+          }) %>% bindEvent(input$undnFDDriftOUP,input$unupFDDriftOUP,input$axesFDDriftOUP,input$plotFDDriftOUP,input$tgglFDDriftOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -3540,7 +3719,7 @@ hobbleskip <- function(skip)
             n <- FD$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDDiffusionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, axes, plot (or enter key), othr or tggl ----
           output$plotlyFDDiffusionOUP <- renderPlotly({
             if(input$undnFDDiffusionOUP > FDbtns[2,1])
             {
@@ -3565,15 +3744,24 @@ hobbleskip <- function(skip)
               FDbtns[2,4] <<- input$plotFDDiffusionOUP
               FromUItoR6()
             }
-            else if(input$otherFDDiffusionOUP > FDbtns[2,5])
+            else if(input$othrFDDiffusionOUP > FDbtns[2,5])
             {
-              FDbtns[2,5] <<- input$otherFDDiffusionOUP
+              FDbtns[2,5] <<- input$othrFDDiffusionOUP
               FromUItoR6()
               FD$set_plot_type("p",2)
             }
+            else if(length(input$tgglFDDiffusionOUP) > 0)
+            {
+              if(tgglbtn < input$tgglFDDiffusionOUP)
+              {
+                tgglbtn <<- input$tgglFDDiffusionOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             FD$PlotDiffusion()
-          }) %>% bindEvent(input$undnFDDiffusionOUP,input$unupFDDiffusionOUP,input$axesFDDiffusionOUP,input$plotFDDiffusionOUP,input$otherFDDiffusionOUP)
+          }) %>% bindEvent(input$undnFDDiffusionOUP,input$unupFDDiffusionOUP,input$axesFDDiffusionOUP,input$plotFDDiffusionOUP,input$othrFDDiffusionOUP,input$tgglFDDiffusionOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -3696,7 +3884,7 @@ hobbleskip <- function(skip)
             n <- FD$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDTerminalOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, axes or plot (or enter key) ----
+          # user clicks undn, unup, axes, plot (or enter key) or tggl ----
           output$plotlyFDTerminalOUP <- renderPlotly({
             if(input$undnFDTerminalOUP > FDbtns[3,1])
             {
@@ -3721,9 +3909,18 @@ hobbleskip <- function(skip)
               FDbtns[3,4] <<- input$plotFDTerminalOUP
               FromUItoR6()
             }
+            else if(length(input$tgglFDTerminalOUP) > 0)
+            {
+              if(tgglbtn < input$tgglFDTerminalOUP)
+              {
+                tgglbtn <<- input$tgglFDTerminalOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             FD$PlotTerminalValue()
-          }) %>% bindEvent(input$undnFDTerminalOUP,input$unupFDTerminalOUP,input$axesFDTerminalOUP,input$plotFDTerminalOUP)
+          }) %>% bindEvent(input$undnFDTerminalOUP,input$unupFDTerminalOUP,input$axesFDTerminalOUP,input$plotFDTerminalOUP,input$tgglFDTerminalOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -3898,7 +4095,7 @@ hobbleskip <- function(skip)
             n <- FD$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, axes, plot (or enter key), othr or tggl ----
           output$plotlyFDOptionOUP <- renderPlotly({
             if(input$undnFDOptionOUP > FDbtns[4,1])
             {
@@ -3923,15 +4120,24 @@ hobbleskip <- function(skip)
               FDbtns[4,4] <<- input$plotFDOptionOUP
               FromUItoR6()
             }
-            else if(input$otherFDOptionOUP > FDbtns[4,5])
+            else if(input$othrFDOptionOUP > FDbtns[4,5])
             {
-              FDbtns[4,5] <<- input$otherFDOptionOUP
+              FDbtns[4,5] <<- input$othrFDOptionOUP
               FromUItoR6()
               FD$set_plot_type("p",3)
             }
+            else if(length(input$tgglFDOptionOUP) > 0)
+            {
+              if(tgglbtn < input$tgglFDOptionOUP)
+              {
+                tgglbtn <<- input$tgglFDOptionOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             FD$PlotOption()
-          }) %>% bindEvent(input$undnFDOptionOUP,input$unupFDOptionOUP,input$axesFDOptionOUP,input$plotFDOptionOUP,input$otherFDOptionOUP)
+          }) %>% bindEvent(input$undnFDOptionOUP,input$unupFDOptionOUP,input$axesFDOptionOUP,input$plotFDOptionOUP,input$othrFDOptionOUP,input$tgglFDOptionOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -4110,7 +4316,7 @@ hobbleskip <- function(skip)
             n <- FD$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDEnvelopeOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, axes, plot (or enter key), othr or tggl ----
           output$plotlyFDEnvelopeOUP <- renderPlotly({
             if(input$undnFDEnvelopeOUP > FDbtns[5,1])
             {
@@ -4135,15 +4341,24 @@ hobbleskip <- function(skip)
               FDbtns[5,4] <<- input$plotFDEnvelopeOUP
               FromUItoR6()
             }
-            else if(input$otherFDEnvelopeOUP > FDbtns[5,5])
+            else if(input$othrFDEnvelopeOUP > FDbtns[5,5])
             {
-              FDbtns[5,5] <<- input$otherFDEnvelopeOUP
+              FDbtns[5,5] <<- input$othrFDEnvelopeOUP
               FromUItoR6()
               FD$set_plot_type("p",3)
             }
+            else if(length(input$tgglFDEnvelopeOUP) > 0)
+            {
+              if(tgglbtn < input$tgglFDEnvelopeOUP)
+              {
+                tgglbtn <<- input$tgglFDEnvelopeOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             FD$PlotOptionEnvelope()
-          }) %>% bindEvent(input$undnFDEnvelopeOUP,input$unupFDEnvelopeOUP,input$axesFDEnvelopeOUP,input$plotFDEnvelopeOUP,input$otherFDEnvelopeOUP)
+          }) %>% bindEvent(input$undnFDEnvelopeOUP,input$unupFDEnvelopeOUP,input$axesFDEnvelopeOUP,input$plotFDEnvelopeOUP,input$othrFDEnvelopeOUP,input$tgglFDEnvelopeOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -4300,7 +4515,7 @@ hobbleskip <- function(skip)
             n <- FD$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="FDundo",duration=2)
           }) %>% bindEvent(input$saveFDDecisionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, axes or plot (or enter key) ----
+          # user clicks undn, unup, axes, plot (or enter key) or tggl ----
           output$plotlyFDDecisionOUP <- renderPlotly({
             if(input$undnFDDecisionOUP > FDbtns[6,1])
             {
@@ -4325,9 +4540,18 @@ hobbleskip <- function(skip)
               FDbtns[6,4] <<- input$plotFDDecisionOUP
               FromUItoR6()
             }
+            else if(length(input$tgglFDDecisionOUP) > 0)
+            {
+              if(tgglbtn < input$tgglFDDecisionOUP)
+              {
+                tgglbtn <<- input$tgglFDDecisionOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             FD$PlotDecisionThreshold()
-          }) %>% bindEvent(input$undnFDDecisionOUP,input$unupFDDecisionOUP,input$axesFDDecisionOUP,input$plotFDDecisionOUP)
+          }) %>% bindEvent(input$undnFDDecisionOUP,input$unupFDDecisionOUP,input$axesFDDecisionOUP,input$plotFDDecisionOUP,input$tgglFDDecisionOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -4564,7 +4788,7 @@ hobbleskip <- function(skip)
           observe({
             begend <<- TRUE
           }) %>% bindEvent(input$begMLDataOUP,input$endMLDataOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset or plot (or enter key) ----
+          # user clicks reset, plot (or enter key) or tggl ----
           output$plotlyMLDataOUP <- renderPlotly({
             # message("render")
             if(input$resetMLDataOUP > MLbtns[1,1])
@@ -4577,9 +4801,18 @@ hobbleskip <- function(skip)
               MLbtns[1,2] <<- input$plotMLDataOUP
               FromUItoR6()
             }
+            else if(length(input$tgglMLDataOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMLDataOUP)
+              {
+                tgglbtn <<- input$tgglMLDataOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             ML$PlotTimeSeries()
-          }) %>% bindEvent(input$resetMLDataOUP,input$plotMLDataOUP)
+          }) %>% bindEvent(input$resetMLDataOUP,input$plotMLDataOUP,input$tgglMLDataOUP)
           # observe i and info ----
           observe({
             ibutton <<- input$filesMLDataOUP
@@ -4796,7 +5029,7 @@ hobbleskip <- function(skip)
           observe({
             begend <<- TRUE
           }) %>% bindEvent(input$begMLLikelihoodOUP,input$endMLLikelihoodOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset or plot (or enter key) ----
+          # user clicks reset, plot (or enter key) or tggl ----
           observe({
             # message("plot")
             if(input$resetMLLikelihoodOUP > MLbtns[2,1])
@@ -4809,6 +5042,15 @@ hobbleskip <- function(skip)
             {
               MLbtns[2,2] <<- input$plotMLLikelihoodOUP
               FromUItoR6()
+            }
+            else if(length(input$tgglMLLikelihoodOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMLLikelihoodOUP)
+              {
+                tgglbtn <<- input$tgglMLLikelihoodOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
             }
             FromR6toUI()
             output$plotlyMLLikelihoodOUP <- renderPlotly({ ML$PlotEstimates() })
@@ -4834,7 +5076,7 @@ hobbleskip <- function(skip)
                 </table>"
               ))
             })
-          }) %>% bindEvent(input$resetMLLikelihoodOUP,input$plotMLLikelihoodOUP)
+          }) %>% bindEvent(input$resetMLLikelihoodOUP,input$plotMLLikelihoodOUP,input$tgglMLLikelihoodOUP)
           # observe i and info ----
           observe({
             ibutton <<- input$filesMLLikelihoodOUP
@@ -5669,7 +5911,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCForwardOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key), left or rght ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), left, rght or tggl ----
           output$plotlyMCForwardOUP <- renderPlotly({
             if(input$resetMCForwardOUP > MCbtns[1,1])
             {
@@ -5720,9 +5962,18 @@ hobbleskip <- function(skip)
               FromUItoR6()
               MC$set_plot_type("n",1)
             }
+            else if(length(input$tgglMCForwardOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCForwardOUP)
+              {
+                tgglbtn <<- input$tgglMCForwardOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotForwardPaths()
-          }) %>% bindEvent(input$resetMCForwardOUP,input$undnMCForwardOUP,input$unupMCForwardOUP,input$syncMCForwardOUP,input$axesMCForwardOUP,input$plotMCForwardOUP,input$leftMCForwardOUP,input$rghtMCForwardOUP)
+          }) %>% bindEvent(input$resetMCForwardOUP,input$undnMCForwardOUP,input$unupMCForwardOUP,input$syncMCForwardOUP,input$axesMCForwardOUP,input$plotMCForwardOUP,input$leftMCForwardOUP,input$rghtMCForwardOUP,input$tgglMCForwardOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -5815,7 +6066,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCBackwardOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCBackwardOUP <- renderPlotly({
             if(input$resetMCBackwardOUP > MCbtns[2,1])
             {
@@ -5852,15 +6103,24 @@ hobbleskip <- function(skip)
               MCbtns[2,6] <<- input$plotMCBackwardOUP
               FromUItoR6()
             }
-            else if(input$otherMCBackwardOUP > MCbtns[2,7])
+            else if(input$othrMCBackwardOUP > MCbtns[2,7])
             {
-              MCbtns[2,7] <<- input$otherMCBackwardOUP
+              MCbtns[2,7] <<- input$othrMCBackwardOUP
               FromUItoR6()
               MC$set_plot_type("p",1)
             }
+            else if(length(input$tgglMCBackwardOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCBackwardOUP)
+              {
+                tgglbtn <<- input$tgglMCBackwardOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotBackwardPaths()
-          }) %>% bindEvent(input$resetMCBackwardOUP,input$undnMCBackwardOUP,input$unupMCBackwardOUP,input$syncMCBackwardOUP,input$axesMCBackwardOUP,input$plotMCBackwardOUP,input$otherMCBackwardOUP)
+          }) %>% bindEvent(input$resetMCBackwardOUP,input$undnMCBackwardOUP,input$unupMCBackwardOUP,input$syncMCBackwardOUP,input$axesMCBackwardOUP,input$plotMCBackwardOUP,input$othrMCBackwardOUP,input$tgglMCBackwardOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -5956,7 +6216,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCBoundedOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCBoundedOUP <- renderPlotly({
             if(input$resetMCBoundedOUP > MCbtns[3,1])
             {
@@ -5993,15 +6253,24 @@ hobbleskip <- function(skip)
               MCbtns[3,6] <<- input$plotMCBoundedOUP
               FromUItoR6()
             }
-            else if(input$otherMCBoundedOUP > MCbtns[3,7])
+            else if(input$othrMCBoundedOUP > MCbtns[3,7])
             {
-              MCbtns[3,7] <<- input$otherMCBoundedOUP
+              MCbtns[3,7] <<- input$othrMCBoundedOUP
               FromUItoR6()
               MC$set_plot_type("p",1)
             }
+            else if(length(input$tgglMCBoundedOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCBoundedOUP)
+              {
+                tgglbtn <<- input$tgglMCBoundedOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotBoundedPaths()
-          }) %>% bindEvent(input$resetMCBoundedOUP,input$undnMCBoundedOUP,input$unupMCBoundedOUP,input$syncMCBoundedOUP,input$axesMCBoundedOUP,input$plotMCBoundedOUP,input$otherMCBoundedOUP)
+          }) %>% bindEvent(input$resetMCBoundedOUP,input$undnMCBoundedOUP,input$unupMCBoundedOUP,input$syncMCBoundedOUP,input$axesMCBoundedOUP,input$plotMCBoundedOUP,input$othrMCBoundedOUP,input$tgglMCBoundedOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -6105,7 +6374,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key), left or rght ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), left, rght or tggl ----
           output$plotlyMCMeanOUP <- renderPlotly({
             if(input$undnMCMeanOUP > MCbtns[4,2])
             {
@@ -6148,9 +6417,18 @@ hobbleskip <- function(skip)
               FromUItoR6()
               MC$set_plot_type("n",2)
             }
+            else if(length(input$tgglMCMeanOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCMeanOUP)
+              {
+                tgglbtn <<- input$tgglMCMeanOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotMean()
-          }) %>% bindEvent(input$undnMCMeanOUP,input$unupMCMeanOUP,input$syncMCMeanOUP,input$axesMCMeanOUP,input$plotMCMeanOUP,input$leftMCMeanOUP,input$rghtMCMeanOUP)
+          }) %>% bindEvent(input$undnMCMeanOUP,input$unupMCMeanOUP,input$syncMCMeanOUP,input$axesMCMeanOUP,input$plotMCMeanOUP,input$leftMCMeanOUP,input$rghtMCMeanOUP,input$tgglMCMeanOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -6260,7 +6538,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCVarianceOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key), lefft or rght ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), lefft, rght or tggl ----
           output$plotlyMCVarianceOUP <- renderPlotly({
             if(input$undnMCVarianceOUP > MCbtns[5,2])
             {
@@ -6303,9 +6581,18 @@ hobbleskip <- function(skip)
               FromUItoR6()
               MC$set_plot_type("n",2)
             }
+            else if(length(input$tgglMCVarianceOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCVarianceOUP)
+              {
+                tgglbtn <<- input$tgglMCVarianceOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotVariance()
-          }) %>% bindEvent(input$undnMCVarianceOUP,input$unupMCVarianceOUP,input$syncMCVarianceOUP,input$axesMCVarianceOUP,input$plotMCVarianceOUP,input$leftMCVarianceOUP,input$rghtMCVarianceOUP)
+          }) %>% bindEvent(input$undnMCVarianceOUP,input$unupMCVarianceOUP,input$syncMCVarianceOUP,input$axesMCVarianceOUP,input$plotMCVarianceOUP,input$leftMCVarianceOUP,input$rghtMCVarianceOUP,input$tgglMCVarianceOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -6411,7 +6698,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCDensityOUP <- renderPlotly({
             if(input$undnMCDensityOUP > MCbtns[6,2])
             {
@@ -6442,15 +6729,24 @@ hobbleskip <- function(skip)
               MCbtns[6,6] <<- input$plotMCDensityOUP
               FromUItoR6()
             }
-            else if(input$otherMCDensityOUP > MCbtns[6,7])
+            else if(input$othrMCDensityOUP > MCbtns[6,7])
             {
-              MCbtns[6,7] <<- input$otherMCDensityOUP
+              MCbtns[6,7] <<- input$othrMCDensityOUP
               FromUItoR6()
               MC$set_plot_type("p",3)
             }
+            else if(length(input$tgglMCDensityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCDensityOUP)
+              {
+                tgglbtn <<- input$tgglMCDensityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotDensity()
-          }) %>% bindEvent(input$undnMCDensityOUP,input$unupMCDensityOUP,input$syncMCDensityOUP,input$axesMCDensityOUP,input$plotMCDensityOUP,input$otherMCDensityOUP)
+          }) %>% bindEvent(input$undnMCDensityOUP,input$unupMCDensityOUP,input$syncMCDensityOUP,input$axesMCDensityOUP,input$plotMCDensityOUP,input$othrMCDensityOUP,input$tgglMCDensityOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -6564,7 +6860,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCProbabilityOUP <- renderPlotly({
             if(input$undnMCProbabilityOUP > MCbtns[7,2])
             {
@@ -6595,15 +6891,24 @@ hobbleskip <- function(skip)
               MCbtns[7,6] <<- input$plotMCProbabilityOUP
               FromUItoR6()
             }
-            else if(input$otherMCProbabilityOUP > MCbtns[7,7])
+            else if(input$othrMCProbabilityOUP > MCbtns[7,7])
             {
-              MCbtns[7,7] <<- input$otherMCProbabilityOUP
+              MCbtns[7,7] <<- input$othrMCProbabilityOUP
               FromUItoR6()
               MC$set_plot_type("p",3)
             }
+            else if(length(input$tgglMCProbabilityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCProbabilityOUP)
+              {
+                tgglbtn <<- input$tgglMCProbabilityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotProbability()
-          }) %>% bindEvent(input$undnMCProbabilityOUP,input$unupMCProbabilityOUP,input$syncMCProbabilityOUP,input$axesMCProbabilityOUP,input$plotMCProbabilityOUP,input$otherMCProbabilityOUP)
+          }) %>% bindEvent(input$undnMCProbabilityOUP,input$unupMCProbabilityOUP,input$syncMCProbabilityOUP,input$axesMCProbabilityOUP,input$plotMCProbabilityOUP,input$othrMCProbabilityOUP,input$tgglMCProbabilityOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -6717,7 +7022,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCDoubleOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr tggl ----
           output$plotlyMCDoubleOUP <- renderPlotly({
             if(input$undnMCDoubleOUP > MCbtns[8,2])
             {
@@ -6748,15 +7053,24 @@ hobbleskip <- function(skip)
               MCbtns[8,6] <<- input$plotMCDoubleOUP
               FromUItoR6()
             }
-            else if(input$otherMCDoubleOUP > MCbtns[8,7])
+            else if(input$othrMCDoubleOUP > MCbtns[8,7])
             {
-              MCbtns[8,7] <<- input$otherMCDoubleOUP
+              MCbtns[8,7] <<- input$othrMCDoubleOUP
               FromUItoR6()
               MC$set_plot_type("p",3)
             }
+            else if(length(input$tgglMCDoubleOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCDoubleOUP)
+              {
+                tgglbtn <<- input$tgglMCDoubleOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotDoubleIntegral()
-          }) %>% bindEvent(input$undnMCDoubleOUP,input$unupMCDoubleOUP,input$syncMCDoubleOUP,input$axesMCDoubleOUP,input$plotMCDoubleOUP,input$otherMCDoubleOUP)
+          }) %>% bindEvent(input$undnMCDoubleOUP,input$unupMCDoubleOUP,input$syncMCDoubleOUP,input$axesMCDoubleOUP,input$plotMCDoubleOUP,input$othrMCDoubleOUP,input$tgglMCDoubleOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -6873,7 +7187,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCOptionOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCOptionOUP <- renderPlotly({
             if(input$undnMCOptionOUP > MCbtns[9,2])
             {
@@ -6904,15 +7218,24 @@ hobbleskip <- function(skip)
               MCbtns[9,6] <<- input$plotMCOptionOUP
               FromUItoR6()
             }
-            else if(input$otherMCOptionOUP > MCbtns[9,7])
+            else if(input$othrMCOptionOUP > MCbtns[9,7])
             {
-              MCbtns[9,7] <<- input$otherMCOptionOUP
+              MCbtns[9,7] <<- input$othrMCOptionOUP
               FromUItoR6()
               MC$set_plot_type("p",3)
             }
+            else if(length(input$tgglMCOptionOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCOptionOUP)
+              {
+                tgglbtn <<- input$tgglMCOptionOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotOption()
-          }) %>% bindEvent(input$undnMCOptionOUP,input$unupMCOptionOUP,input$syncMCOptionOUP,input$axesMCOptionOUP,input$plotMCOptionOUP,input$otherMCOptionOUP)
+          }) %>% bindEvent(input$undnMCOptionOUP,input$unupMCOptionOUP,input$syncMCOptionOUP,input$axesMCOptionOUP,input$plotMCOptionOUP,input$othrMCOptionOUP,input$tgglMCOptionOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -7011,7 +7334,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCVTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCVTModeMedianMeanOUP <- renderPlotly({
             if(input$undnMCVTModeMedianMeanOUP > MCbtns[10,2])
             {
@@ -7042,15 +7365,24 @@ hobbleskip <- function(skip)
               MCbtns[10,6] <<- input$plotMCVTModeMedianMeanOUP
               FromUItoR6()
             }
-            else if(input$otherMCVTModeMedianMeanOUP > MCbtns[10,7])
+            else if(input$othrMCVTModeMedianMeanOUP > MCbtns[10,7])
             {
-              MCbtns[10,7] <<- input$otherMCVTModeMedianMeanOUP
+              MCbtns[10,7] <<- input$othrMCVTModeMedianMeanOUP
               FromUItoR6()
               MC$set_plot_type("p",4)
             }
+            else if(length(input$tgglMCVTModeMedianMeanOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCVTModeMedianMeanOUP)
+              {
+                tgglbtn <<- input$tgglMCVTModeMedianMeanOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotVisitingTimeModeMedianMean()
-          }) %>% bindEvent(input$undnMCVTModeMedianMeanOUP,input$unupMCVTModeMedianMeanOUP,input$syncMCVTModeMedianMeanOUP,input$axesMCVTModeMedianMeanOUP,input$plotMCVTModeMedianMeanOUP,input$otherMCVTModeMedianMeanOUP)
+          }) %>% bindEvent(input$undnMCVTModeMedianMeanOUP,input$unupMCVTModeMedianMeanOUP,input$syncMCVTModeMedianMeanOUP,input$axesMCVTModeMedianMeanOUP,input$plotMCVTModeMedianMeanOUP,input$othrMCVTModeMedianMeanOUP,input$tgglMCVTModeMedianMeanOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -7155,7 +7487,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCVTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCVTPercentilesOUP <- renderPlotly({
             if(input$undnMCVTPercentilesOUP > MCbtns[11,2])
             {
@@ -7186,15 +7518,24 @@ hobbleskip <- function(skip)
               MCbtns[11,6] <<- input$plotMCVTPercentilesOUP
               FromUItoR6()
             }
-            else if(input$otherMCVTPercentilesOUP > MCbtns[11,7])
+            else if(input$othrMCVTPercentilesOUP > MCbtns[11,7])
             {
-              MCbtns[11,7] <<- input$otherMCVTPercentilesOUP
+              MCbtns[11,7] <<- input$othrMCVTPercentilesOUP
               FromUItoR6()
               MC$set_plot_type("p",4)
             }
+            else if(length(input$tgglMCVTPercentilesOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCVTPercentilesOUP)
+              {
+                tgglbtn <<- input$tgglMCVTPercentilesOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotVisitingTimePercentiles()
-          }) %>% bindEvent(input$undnMCVTPercentilesOUP,input$unupMCVTPercentilesOUP,input$syncMCVTPercentilesOUP,input$axesMCVTPercentilesOUP,input$plotMCVTPercentilesOUP,input$otherMCVTPercentilesOUP)
+          }) %>% bindEvent(input$undnMCVTPercentilesOUP,input$unupMCVTPercentilesOUP,input$syncMCVTPercentilesOUP,input$axesMCVTPercentilesOUP,input$plotMCVTPercentilesOUP,input$othrMCVTPercentilesOUP,input$tgglMCVTPercentilesOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -7313,7 +7654,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCVTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCVTDensityOUP <- renderPlotly({
             if(input$resetMCVTDensityOUP > MCbtns[12,1])
             {
@@ -7350,15 +7691,24 @@ hobbleskip <- function(skip)
               MCbtns[12,6] <<- input$plotMCVTDensityOUP
               FromUItoR6()
             }
-            else if(input$otherMCVTDensityOUP > MCbtns[12,7])
+            else if(input$othrMCVTDensityOUP > MCbtns[12,7])
             {
-              MCbtns[12,7] <<- input$otherMCVTDensityOUP
+              MCbtns[12,7] <<- input$othrMCVTDensityOUP
               FromUItoR6()
               MC$set_plot_type("p",5)
             }
+            else if(length(input$tgglMCVTDensityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCVTDensityOUP)
+              {
+                tgglbtn <<- input$tgglMCVTDensityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotVisitingTimeDensity()
-          }) %>% bindEvent(input$resetMCVTDensityOUP,input$undnMCVTDensityOUP,input$unupMCVTDensityOUP,input$syncMCVTDensityOUP,input$axesMCVTDensityOUP,input$plotMCVTDensityOUP,input$otherMCVTDensityOUP)
+          }) %>% bindEvent(input$resetMCVTDensityOUP,input$undnMCVTDensityOUP,input$unupMCVTDensityOUP,input$syncMCVTDensityOUP,input$axesMCVTDensityOUP,input$plotMCVTDensityOUP,input$othrMCVTDensityOUP,input$tgglMCVTDensityOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -7473,7 +7823,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCVTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCVTProbabilityOUP <- renderPlotly({
             if(input$resetMCVTProbabilityOUP > MCbtns[13,1])
             {
@@ -7510,15 +7860,24 @@ hobbleskip <- function(skip)
               MCbtns[13,6] <<- input$plotMCVTProbabilityOUP
               FromUItoR6()
             }
-            else if(input$otherMCVTProbabilityOUP > MCbtns[13,7])
+            else if(input$othrMCVTProbabilityOUP > MCbtns[13,7])
             {
-              MCbtns[13,7] <<- input$otherMCVTProbabilityOUP
+              MCbtns[13,7] <<- input$othrMCVTProbabilityOUP
               FromUItoR6()
               MC$set_plot_type("p",5)
             }
+            else if(length(input$tgglMCVTProbabilityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCVTProbabilityOUP)
+              {
+                tgglbtn <<- input$tgglMCVTProbabilityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotVisitingTimeProbability()
-          }) %>% bindEvent(input$resetMCVTProbabilityOUP,input$undnMCVTProbabilityOUP,input$unupMCVTProbabilityOUP,input$syncMCVTProbabilityOUP,input$axesMCVTProbabilityOUP,input$plotMCVTProbabilityOUP,input$otherMCVTProbabilityOUP)
+          }) %>% bindEvent(input$resetMCVTProbabilityOUP,input$undnMCVTProbabilityOUP,input$unupMCVTProbabilityOUP,input$syncMCVTProbabilityOUP,input$axesMCVTProbabilityOUP,input$plotMCVTProbabilityOUP,input$othrMCVTProbabilityOUP,input$tgglMCVTProbabilityOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -7617,7 +7976,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCFPTModeMedianMeanOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCFPTModeMedianMeanOUP <- renderPlotly({
             if(input$undnMCFPTModeMedianMeanOUP > MCbtns[14,2])
             {
@@ -7648,15 +8007,24 @@ hobbleskip <- function(skip)
               MCbtns[14,6] <<- input$plotMCFPTModeMedianMeanOUP
               FromUItoR6()
             }
-            else if(input$otherMCFPTModeMedianMeanOUP > MCbtns[14,7])
+            else if(input$othrMCFPTModeMedianMeanOUP > MCbtns[14,7])
             {
-              MCbtns[14,7] <<- input$otherMCFPTModeMedianMeanOUP
+              MCbtns[14,7] <<- input$othrMCFPTModeMedianMeanOUP
               FromUItoR6()
               MC$set_plot_type("p",4)
             }
+            else if(length(input$tgglMCFPTModeMedianMeanOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCFPTModeMedianMeanOUP)
+              {
+                tgglbtn <<- input$tgglMCFPTModeMedianMeanOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotFirstPassageTimeModeMedianMean()
-          }) %>% bindEvent(input$undnMCFPTModeMedianMeanOUP,input$unupMCFPTModeMedianMeanOUP,input$syncMCFPTModeMedianMeanOUP,input$axesMCFPTModeMedianMeanOUP,input$plotMCFPTModeMedianMeanOUP,input$otherMCFPTModeMedianMeanOUP)
+          }) %>% bindEvent(input$undnMCFPTModeMedianMeanOUP,input$unupMCFPTModeMedianMeanOUP,input$syncMCFPTModeMedianMeanOUP,input$axesMCFPTModeMedianMeanOUP,input$plotMCFPTModeMedianMeanOUP,input$othrMCFPTModeMedianMeanOUP,input$tgglMCFPTModeMedianMeanOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -7761,7 +8129,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCFPTPercentilesOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCFPTPercentilesOUP <- renderPlotly({
             if(input$undnMCFPTPercentilesOUP > MCbtns[15,2])
             {
@@ -7792,15 +8160,24 @@ hobbleskip <- function(skip)
               MCbtns[15,6] <<- input$plotMCFPTPercentilesOUP
               FromUItoR6()
             }
-            else if(input$otherMCFPTPercentilesOUP > MCbtns[15,7])
+            else if(input$othrMCFPTPercentilesOUP > MCbtns[15,7])
             {
-              MCbtns[15,7] <<- input$otherMCFPTPercentilesOUP
+              MCbtns[15,7] <<- input$othrMCFPTPercentilesOUP
               FromUItoR6()
               MC$set_plot_type("p",4)
             }
+            else if(length(input$tgglMCFPTPercentilesOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCFPTPercentilesOUP)
+              {
+                tgglbtn <<- input$tgglMCFPTPercentilesOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotFirstPassageTimePercentiles()
-          }) %>% bindEvent(input$undnMCFPTPercentilesOUP,input$unupMCFPTPercentilesOUP,input$syncMCFPTPercentilesOUP,input$axesMCFPTPercentilesOUP,input$plotMCFPTPercentilesOUP,input$otherMCFPTPercentilesOUP)
+          }) %>% bindEvent(input$undnMCFPTPercentilesOUP,input$unupMCFPTPercentilesOUP,input$syncMCFPTPercentilesOUP,input$axesMCFPTPercentilesOUP,input$plotMCFPTPercentilesOUP,input$othrMCFPTPercentilesOUP,input$tgglMCFPTPercentilesOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -7919,7 +8296,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCFPTDensityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCFPTDensityOUP <- renderPlotly({
             if(input$resetMCFPTDensityOUP > MCbtns[16,1])
             {
@@ -7956,15 +8333,24 @@ hobbleskip <- function(skip)
               MCbtns[16,6] <<- input$plotMCFPTDensityOUP
               FromUItoR6()
             }
-            else if(input$otherMCFPTDensityOUP > MCbtns[16,7])
+            else if(input$othrMCFPTDensityOUP > MCbtns[16,7])
             {
-              MCbtns[16,7] <<- input$otherMCFPTDensityOUP
+              MCbtns[16,7] <<- input$othrMCFPTDensityOUP
               FromUItoR6()
               MC$set_plot_type("p",5)
             }
+            else if(length(input$tgglMCFPTDensityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCFPTDensityOUP)
+              {
+                tgglbtn <<- input$tgglMCFPTDensityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotFirstPassageTimeDensity()
-          }) %>% bindEvent(input$resetMCFPTDensityOUP,input$undnMCFPTDensityOUP,input$unupMCFPTDensityOUP,input$syncMCFPTDensityOUP,input$axesMCFPTDensityOUP,input$plotMCFPTDensityOUP,input$otherMCFPTDensityOUP)
+          }) %>% bindEvent(input$resetMCFPTDensityOUP,input$undnMCFPTDensityOUP,input$unupMCFPTDensityOUP,input$syncMCFPTDensityOUP,input$axesMCFPTDensityOUP,input$plotMCFPTDensityOUP,input$othrMCFPTDensityOUP,input$tgglMCFPTDensityOUP)
           # observe info ----
           observe({
             ibutton <<- ""
@@ -8079,7 +8465,7 @@ hobbleskip <- function(skip)
             n <- MC$undo_save()
             showNotification(paste("argument set ",n," out of ",n,"."),id="MCundo",duration=2)
           }) %>% bindEvent(input$saveMCFPTProbabilityOUP,ignoreNULL=TRUE,ignoreInit=TRUE)
-          # user clicks reset, undn, unup, sync, axes, plot (or enter key) or other ----
+          # user clicks reset, undn, unup, sync, axes, plot (or enter key), othr or tggl ----
           output$plotlyMCFPTProbabilityOUP <- renderPlotly({
             if(input$resetMCFPTProbabilityOUP > MCbtns[17,1])
             {
@@ -8116,15 +8502,24 @@ hobbleskip <- function(skip)
               MCbtns[17,6] <<- input$plotMCFPTProbabilityOUP
               FromUItoR6()
             }
-            else if(input$otherMCFPTProbabilityOUP > MCbtns[17,7])
+            else if(input$othrMCFPTProbabilityOUP > MCbtns[17,7])
             {
-              MCbtns[17,7] <<- input$otherMCFPTProbabilityOUP
+              MCbtns[17,7] <<- input$othrMCFPTProbabilityOUP
               FromUItoR6()
               MC$set_plot_type("p",5)
             }
+            else if(length(input$tgglMCFPTProbabilityOUP) > 0)
+            {
+              if(tgglbtn < input$tgglMCFPTProbabilityOUP)
+              {
+                tgglbtn <<- input$tgglMCFPTProbabilityOUP
+                if(tgglbtn %% 2 == 0) { ML$set_plot_info(labels=FALSE) }
+                else { ML$set_plot_info(labels=TRUE) }
+              }
+            }
             FromR6toUI()
             MC$PlotFirstPassageTimeProbability()
-          }) %>% bindEvent(input$resetMCFPTProbabilityOUP,input$undnMCFPTProbabilityOUP,input$unupMCFPTProbabilityOUP,input$syncMCFPTProbabilityOUP,input$axesMCFPTProbabilityOUP,input$plotMCFPTProbabilityOUP,input$otherMCFPTProbabilityOUP)
+          }) %>% bindEvent(input$resetMCFPTProbabilityOUP,input$undnMCFPTProbabilityOUP,input$unupMCFPTProbabilityOUP,input$syncMCFPTProbabilityOUP,input$axesMCFPTProbabilityOUP,input$plotMCFPTProbabilityOUP,input$othrMCFPTProbabilityOUP,input$tgglMCFPTProbabilityOUP)
           # observe info ----
           observe({
             ibutton <<- ""

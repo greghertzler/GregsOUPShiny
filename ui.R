@@ -26,6 +26,17 @@ copyTable <- function() {
     )
   )
 }
+toggleTitle <- function() {
+  tags$button(
+    class = "btn-toggle-title",
+    title="Toggle title and label on plot",
+    tags$svg(xmlns = "http://www.w3.org/2000/svg",
+      width = "16", height = "16",
+      viewBox = "0 0 16 16",
+      tags$path(d = "M 2 0 L 2 2 L 14 2 L 14 0 L 2 0 z M 14.003906 4.296875 L 8.0019531 10.291016 L 4.9980469 7.2929688 L -0.35351562 12.644531 L 0.35351562 13.353516 L 4.9980469 8.7109375 L 8.0019531 11.707031 L 14.003906 5.7070312 L 15.650391 7.3515625 L 16.351562 6.6445312 L 14.003906 4.296875 z M 3 15 L 3 16 L 13 16 L 13 15 L 3 15 z ")
+    )
+  )
+}
 
 # ui ----
 shinyUI(
@@ -63,7 +74,7 @@ shinyUI(
               column(actionButton("infoRODataOUP","Info",width="100%",class="btn-primary"),title="information about Data",style="padding-top: 32px;",width=2)
             ),
             # plot
-            card(class="cardPlotOUP",style="height: 402px;",plotlyOutput("plotlyRODataOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="height: 402px;",plotlyOutput("plotlyRODataOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="RODataOUP"
           ),
           # Estimates ----
@@ -89,7 +100,7 @@ shinyUI(
               column(actionButton("infoROEstimatesOUP","Info",width="100%",class="btn-primary"),title="information about Estimates",style="padding-top: 32px;",width=2)
             ),
             # plot
-            card(class="cardPlotOUP",style="height: 402px;",plotlyOutput("plotlyROEstimatesOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="height: 402px;",plotlyOutput("plotlyROEstimatesOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="ROEstimatesOUP"
           ),
           # Regime ----
@@ -124,10 +135,10 @@ shinyUI(
               column(actionButton("syncRORegimeOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesRORegimeOUP","Axes",width="100%",class="btn-success"),title="for x",width=2),
               column(actionButton("plotRORegimeOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherRORegimeOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrRORegimeOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyRORegimeOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyRORegimeOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="RORegimeOUP"
           ),
           # Decision Threshold ----
@@ -164,7 +175,7 @@ shinyUI(
               column(actionButton("plotRODecisionOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyRODecisionOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyRODecisionOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="RODecisionOUP"
           ),
           # Passage Time ----
@@ -204,7 +215,7 @@ shinyUI(
               column(actionButton("rghtROPassageTimeOUP",">",width="100%",class="btn-success"),title="next plot",style="padding-left: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyROPassageTimeOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyROPassageTimeOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="ROPassageTimeOUP"
           ),
           id="navROOUP",widths=c(3,9)
@@ -242,7 +253,7 @@ shinyUI(
               column(actionButton("plotADriftOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADriftOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADriftOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="ADriftOUP"
           ),
           # Diffusion ----
@@ -269,10 +280,10 @@ shinyUI(
               column(actionButton("syncADiffusionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesADiffusionOUP","Axes",width="100%",class="btn-success"),title="for z",width=2),
               column(actionButton("plotADiffusionOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherADiffusionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrADiffusionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADiffusionOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADiffusionOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="ADiffusionOUP"
           ),
           # Mean ----
@@ -315,7 +326,7 @@ shinyUI(
               column(actionButton("rghtAMeanOUP",">",width="100%",class="btn-success"),title="next plot",style="padding-left: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAMeanOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAMeanOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="AMeanOUP"
           ),
           # Variance ----
@@ -358,7 +369,7 @@ shinyUI(
               column(actionButton("rghtAVarianceOUP",">",width="100%",class="btn-success"),title="next plot",style="padding-left: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAVarianceOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAVarianceOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="AVarianceOUP"
           ),
           # Transition Density ----
@@ -397,10 +408,10 @@ shinyUI(
               column(actionButton("syncADensityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesADensityOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotADensityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherADensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrADensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADensityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADensityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="ADensityOUP"
           ),
           # Transition Probability ----
@@ -439,10 +450,10 @@ shinyUI(
               column(actionButton("syncAProbabilityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAProbabilityOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotAProbabilityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherAProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrAProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAProbabilityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAProbabilityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="AProbabilityOUP"
           ),
           # Double Integral ----
@@ -481,10 +492,10 @@ shinyUI(
               column(actionButton("syncADoubleOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesADoubleOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotADoubleOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherADoubleOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrADoubleOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADoubleOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADoubleOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="ADoubleOUP"
           ),
           # Option ----
@@ -523,10 +534,10 @@ shinyUI(
               column(actionButton("syncAOptionOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAOptionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotAOptionOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherAOptionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrAOptionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAOptionOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAOptionOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="AOptionOUP"
           ),
           # Option Envelope ----
@@ -565,10 +576,10 @@ shinyUI(
               column(actionButton("syncAEnvelopeOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAEnvelopeOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotAEnvelopeOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherAEnvelopeOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrAEnvelopeOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAEnvelopeOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAEnvelopeOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="AEnvelopeOUP"
           ),
           # Decision Threshold ----
@@ -605,7 +616,7 @@ shinyUI(
               column(actionButton("plotADecisionOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADecisionOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyADecisionOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="ADecisionOUP"
           ),
           # Obligation ----
@@ -644,10 +655,10 @@ shinyUI(
               column(actionButton("syncAObligationOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAObligationOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotAObligationOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherAObligationOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrAObligationOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAObligationOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAObligationOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="AObligationOUP"
           ),
           # Passage Time Mode, Median and Mean ----
@@ -691,7 +702,7 @@ shinyUI(
               column(actionButton("rghtAPTModeMedianMeanOUP",">",width="100%",class="btn-success"),title="next plot",style="padding-left: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTModeMedianMeanOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTModeMedianMeanOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="APTModeMedianMeanOUP"
           ),
           # Passage Time Percentiles ----
@@ -734,7 +745,7 @@ shinyUI(
               column(actionButton("rghtAPTPercentilesOUP",">",width="100%",class="btn-success"),title="next plot",style="padding-left: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTPercentilesOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTPercentilesOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="APTPercentilesOUP"
           ),
           # Passage Time Density ----
@@ -773,10 +784,10 @@ shinyUI(
               column(actionButton("syncAPTDensityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAPTDensityOUP","Axes",width="100%",class="btn-success"),title="for t, z and pt",width=2),
               column(actionButton("plotAPTDensityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherAPTDensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrAPTDensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTDensityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTDensityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="APTDensityOUP"
           ),
           # Passage Time Probability ----
@@ -815,10 +826,10 @@ shinyUI(
               column(actionButton("syncAPTProbabilityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesAPTProbabilityOUP","Axes",width="100%",class="btn-success"),title="for t, z and pt",width=2),
               column(actionButton("plotAPTProbabilityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherAPTProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrAPTProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTProbabilityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyAPTProbabilityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="APTProbabilityOUP"
           ),
           id="navAOUP",widths=c(3,9)
@@ -856,7 +867,7 @@ shinyUI(
               column(actionButton("plotFDDriftOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDriftOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDriftOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="FDDriftOUP"
           ),
           # Diffusion ----
@@ -883,10 +894,10 @@ shinyUI(
               column(actionButton("unupFDDiffusionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next arguments",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDDiffusionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDDiffusionOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherFDDiffusionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrFDDiffusionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDiffusionOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDiffusionOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="FDDiffusionOUP"
           ),
           # Terminal Values ----
@@ -916,7 +927,7 @@ shinyUI(
               column(actionButton("plotFDTerminalOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDTerminalOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDTerminalOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="FDTerminalOUP"
           ),
           # Option ----
@@ -954,10 +965,10 @@ shinyUI(
               column(actionButton("unupFDOptionOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next arguments",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDOptionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDOptionOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherFDOptionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrFDOptionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDOptionOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDOptionOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="FDOptionOUP"
           ),
           # Option Envelope ----
@@ -995,10 +1006,10 @@ shinyUI(
               column(actionButton("unupFDEnvelopeOUP",HTML("&Wedge;"),width="100%",class="btn-success"),title="next arguments",style="padding-left: 2px;",width=1),
               column(actionButton("axesFDEnvelopeOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotFDEnvelopeOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherFDEnvelopeOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrFDEnvelopeOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDEnvelopeOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDEnvelopeOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="FDEnvelopeOUP"
           ),
           # Decision Threshold ----
@@ -1035,7 +1046,7 @@ shinyUI(
               column(actionButton("plotFDDecisionOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDecisionOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyFDDecisionOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="FDDecisionOUP"
           ),
           id="navFDOUP",widths=c(3,9)
@@ -1073,7 +1084,7 @@ shinyUI(
               column(actionButton("infoMLDataOUP","Info",width="100%",class="btn-primary"),title="information about Data",style="padding-top: 32px;",width=2)
             ),
             # plot
-            card(class="cardPlotOUP",style="height: 402px;",plotlyOutput("plotlyMLDataOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="height: 402px;",plotlyOutput("plotlyMLDataOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MLDataOUP"
           ),
           # Log Likelihood ----
@@ -1102,7 +1113,7 @@ shinyUI(
               column(actionButton("infoMLLikelihoodOUP","Info",width="100%",class="btn-primary"),title="information about Log Likelihood",style="padding-top: 32px;",width=2)
             ),
             # plot
-            card(class="cardPlotOUP",style="height: 402px;",plotlyOutput("plotlyMLLikelihoodOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="height: 402px;",plotlyOutput("plotlyMLLikelihoodOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MLLikelihoodOUP"
           ),
           # Estimates ----
@@ -1237,7 +1248,7 @@ shinyUI(
               column(actionButton("rghtMCForwardOUP",">",width="100%",class="btn-success"),title="next plot",style="padding-left: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCForwardOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCForwardOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCForwardOUP"
           ),
           # Backward Paths ----
@@ -1276,10 +1287,10 @@ shinyUI(
               column(actionButton("syncMCBackwardOUP","Sync",width="100%",class="btn-success"),title="states and times",width=2),
               column(actionButton("axesMCBackwardOUP","Axes",width="100%",class="btn-success"),title="for x and s",width=2),
               column(actionButton("plotMCBackwardOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCBackwardOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCBackwardOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCBackwardOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCBackwardOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCBackwardOUP"
           ),
           # Bounded Paths ----
@@ -1318,10 +1329,10 @@ shinyUI(
               column(actionButton("syncMCBoundedOUP","Sync",width="100%",class="btn-success"),title="states and times",width=2),
               column(actionButton("axesMCBoundedOUP","Axes",width="100%",class="btn-success"),title="for t",width=2),
               column(actionButton("plotMCBoundedOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCBoundedOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCBoundedOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCBoundedOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCBoundedOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCBoundedOUP"
           ),
           # Mean ----
@@ -1364,7 +1375,7 @@ shinyUI(
               column(actionButton("rghtMCMeanOUP",">",width="100%",class="btn-success"),title="next plot",style="padding-left: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCMeanOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCMeanOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCMeanOUP"
           ),
           # Variance ----
@@ -1407,7 +1418,7 @@ shinyUI(
               column(actionButton("rghtMCVarianceOUP",">",width="100%",class="btn-success"),title="next plot",style="padding-left: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVarianceOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVarianceOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCVarianceOUP"
           ),
           # Transition Density ----
@@ -1446,10 +1457,10 @@ shinyUI(
               column(actionButton("syncMCDensityOUP","Sync",width="100%",class="btn-success"),title="states and times",width=2),
               column(actionButton("axesMCDensityOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotMCDensityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCDensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCDensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCDensityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCDensityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCDensityOUP"
           ),
           # Transition Probability ----
@@ -1488,10 +1499,10 @@ shinyUI(
               column(actionButton("syncMCProbabilityOUP","Sync",width="100%",class="btn-success"),title="states and times",width=2),
               column(actionButton("axesMCProbabilityOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotMCProbabilityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCProbabilityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCProbabilityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCProbabilityOUP"
           ),
           # Double Integral ----
@@ -1530,10 +1541,10 @@ shinyUI(
               column(actionButton("syncMCDoubleOUP","Sync",width="100%",class="btn-success"),title="states and times",width=2),
               column(actionButton("axesMCDoubleOUP","Axes",width="100%",class="btn-success"),title="for t, y and p",width=2),
               column(actionButton("plotMCDoubleOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCDoubleOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCDoubleOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCDoubleOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCDoubleOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCDoubleOUP"
           ),
           # Option ----
@@ -1572,10 +1583,10 @@ shinyUI(
               column(actionButton("syncMCOptionOUP","Sync",width="100%",class="btn-success"),title="states and times",width=2),
               column(actionButton("axesMCOptionOUP","Axes",width="100%",class="btn-success"),title="for s and x",width=2),
               column(actionButton("plotMCOptionOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCOptionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCOptionOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCOptionOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCOptionOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCOptionOUP"
           ),
           # Visiting Time Mode Median Mean ----
@@ -1615,10 +1626,10 @@ shinyUI(
               column(actionButton("syncMCVTModeMedianMeanOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesMCVTModeMedianMeanOUP","Axes",width="100%",class="btn-success"),title="for t, x and pv",width=2),
               column(actionButton("plotMCVTModeMedianMeanOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCVTModeMedianMeanOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCVTModeMedianMeanOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVTModeMedianMeanOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVTModeMedianMeanOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCVTModeMedianMeanOUP"
           ),
           # Visiting Time Percentiles ----
@@ -1657,10 +1668,10 @@ shinyUI(
               column(actionButton("syncMCVTPercentilesOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesMCVTPercentilesOUP","Axes",width="100%",class="btn-success"),title="for t, x and pv",width=2),
               column(actionButton("plotMCVTPercentilesOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCVTPercentilesOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCVTPercentilesOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVTPercentilesOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVTPercentilesOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCVTPercentilesOUP"
           ),
           # Visiting Time Density ----
@@ -1699,10 +1710,10 @@ shinyUI(
               column(actionButton("syncMCVTDensityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesMCVTDensityOUP","Axes",width="100%",class="btn-success"),title="for t, x and pv",width=2),
               column(actionButton("plotMCVTDensityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCVTDensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCVTDensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVTDensityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVTDensityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCVTDensityOUP"
           ),
           # Visiting Time Probability ----
@@ -1741,10 +1752,10 @@ shinyUI(
               column(actionButton("syncMCVTProbabilityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesMCVTProbabilityOUP","Axes",width="100%",class="btn-success"),title="for t, x and pv",width=2),
               column(actionButton("plotMCVTProbabilityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCVTProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCVTProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVTProbabilityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCVTProbabilityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCVTProbabilityOUP"
           ),
           # First Passage Time Mode Median Mean ----
@@ -1784,10 +1795,10 @@ shinyUI(
               column(actionButton("syncMCFPTModeMedianMeanOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesMCFPTModeMedianMeanOUP","Axes",width="100%",class="btn-success"),title="for t, x and pv",width=2),
               column(actionButton("plotMCFPTModeMedianMeanOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCFPTModeMedianMeanOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCFPTModeMedianMeanOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCFPTModeMedianMeanOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCFPTModeMedianMeanOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCFPTModeMedianMeanOUP"
           ),
           # First Passage Time Percentiles ----
@@ -1826,10 +1837,10 @@ shinyUI(
               column(actionButton("syncMCFPTPercentilesOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesMCFPTPercentilesOUP","Axes",width="100%",class="btn-success"),title="for t, x and pv",width=2),
               column(actionButton("plotMCFPTPercentilesOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCFPTPercentilesOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCFPTPercentilesOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCFPTPercentilesOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCFPTPercentilesOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCFPTPercentilesOUP"
           ),
           # First Passage Time Density ----
@@ -1868,10 +1879,10 @@ shinyUI(
               column(actionButton("syncMCFPTDensityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesMCFPTDensityOUP","Axes",width="100%",class="btn-success"),title="for t, x and pv",width=2),
               column(actionButton("plotMCFPTDensityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCFPTDensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCFPTDensityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCFPTDensityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCFPTDensityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCFPTDensityOUP"
           ),
           # First Passage Time Probability ----
@@ -1910,10 +1921,10 @@ shinyUI(
               column(actionButton("syncMCFPTProbabilityOUP","Sync",width="100%",class="btn-success"),title="states and thresholds",width=2),
               column(actionButton("axesMCFPTProbabilityOUP","Axes",width="100%",class="btn-success"),title="for t, x and pv",width=2),
               column(actionButton("plotMCFPTProbabilityOUP","Plot",width="100%",class="btn-success"),title="refresh plot",width=2),
-              column(actionButton("otherMCFPTProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
+              column(actionButton("othrMCFPTProbabilityOUP",HTML("&lessgtr;"),width="100%",class="btn-success"),title="other plot",style="padding-right: 2px;",width=1)
             ),
             # Plot
-            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCFPTProbabilityOUP"),copyPlot(),full_screen=TRUE),
+            card(class="cardPlotOUP",style="margin: 0 auto; height: 402px; width: 580px;",plotlyOutput("plotlyMCFPTProbabilityOUP"),copyPlot(),toggleTitle(),full_screen=TRUE),
             value="MCFPTProbabilityOUP"
           ),
           id="navMCOUP",widths=c(3,9)
