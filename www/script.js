@@ -1,6 +1,6 @@
 cliptext = "";
 clipdeny = false;
-togglecnt = 0;
+tgglcnt = 0;
 
 Shiny.addCustomMessageHandler('sendToShiny', function(txt) {
           cliptext=txt;
@@ -59,17 +59,6 @@ $(document).ready(function() {
           else { plotId="#plot"+MCIdOUP; }
           $(plotId).click();
         }
-// send invisible toggle btn
-  function toggleit(){
-          if(barIdOUP == "tabROOUP") { toggleId="toggle"+ROIdOUP; }
-          else if(barIdOUP == "tabAOUP") { toggleId="toggle"+AIdOUP; }
-          else if(barIdOUP == "tabFDOUP") { toggleId="toggle"+FDIdOUP; }
-          else if(barIdOUP == "tabMLOUP") { toggleId="toggle"+MLIdOUP; }
-          else { toggleId="toggle"+MCIdOUP; }
-          togglecnt = togglecnt+1;
-          Shiny.setInputValue("toggleId",true);
-          alert(toggleId+","+togglecnt);
-        }
 // combobox and file input change
   $(document).on("change",function(){
           if(lastEvent == "click")
@@ -109,8 +98,53 @@ $(document).ready(function() {
               else if(barIdOUP == "tabFDOUP") { toggleId="tggl"+FDIdOUP; }
               else if(barIdOUP == "tabMLOUP") { toggleId="tggl"+MLIdOUP; }
               else { toggleId="tggl"+MCIdOUP; }
-              togglecnt = togglecnt+1;
-              Shiny.setInputValue(toggleId,togglecnt);
+              tgglcnt = tgglcnt+1;
+              Shiny.setInputValue(toggleId,tgglcnt);
+            }
+            else if(btnClass == "btn-undn-args")
+            {
+              if(barIdOUP == "tabROOUP") { undnId="#undn"+ROIdOUP; }
+              else if(barIdOUP == "tabAOUP") { undnId="#undn"+AIdOUP; }
+              else if(barIdOUP == "tabFDOUP") {undnId="#undn"+FDIdOUP; }
+              else if(barIdOUP == "tabMLOUP") { undnId="#undn"+MLIdOUP; }
+              else { undnId="#undn"+MCIdOUP; }
+              $(undnId).click();
+            }
+            else if(btnClass == "btn-unup-args")
+            {
+              if(barIdOUP == "tabROOUP") { unupId="#unup"+ROIdOUP; }
+              else if(barIdOUP == "tabAOUP") { unupId="#unup"+AIdOUP; }
+              else if(barIdOUP == "tabFDOUP") { unupId="#unup"+FDIdOUP; }
+              else if(barIdOUP == "tabMLOUP") { unupId="#unup"+MLIdOUP; }
+              else { unupId="#unup"+MCIdOUP; }
+              $(unupId).click();
+            }
+            else if(btnClass == "btn-left-plot")
+            {
+              if(barIdOUP == "tabROOUP") { prevId="#left"+ROIdOUP; }
+              else if(barIdOUP == "tabAOUP") { prevId="#left"+AIdOUP; }
+              else if(barIdOUP == "tabFDOUP") {prevId="#left"+FDIdOUP; }
+              else if(barIdOUP == "tabMLOUP") { prevId="#left"+MLIdOUP; }
+              else { prevId="#left"+MCIdOUP; }
+              $(prevId).click();
+            }
+            else if(btnClass == "btn-rght-plot")
+            {
+              if(barIdOUP == "tabROOUP") { nextId="#rght"+ROIdOUP; }
+              else if(barIdOUP == "tabAOUP") { nextId="#rght"+AIdOUP; }
+              else if(barIdOUP == "tabFDOUP") { nextId="#rght"+FDIdOUP; }
+              else if(barIdOUP == "tabMLOUP") { nextId="#rght"+MLIdOUP; }
+              else { nextId="#rght"+MCIdOUP; }
+              $(nextId).click();
+            }
+            else if(btnClass == "btn-othr-plot")
+            {
+              if(barIdOUP == "tabROOUP") { othrId="#othr"+ROIdOUP; }
+              else if(barIdOUP == "tabAOUP") { othrId="#othr"+AIdOUP; }
+              else if(barIdOUP == "tabFDOUP") { othrId="#othr"+FDIdOUP; }
+              else if(barIdOUP == "tabMLOUP") { othrId="#othr"+MLIdOUP; }
+              else { othrId="#othr"+MCIdOUP; }
+              $(othrId).click();
             }
           }
           else if(activeEl.tagName == "A") { cardfresh(); }

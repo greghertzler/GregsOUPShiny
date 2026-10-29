@@ -1,5 +1,4 @@
 /* modify bslib styles */
-.card { border: thin solid; border-radius: 4px; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input { border: thin solid; border-radius: 4px; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a { padding: 5px 5px 5px 10px; }
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="ROPassageTimeOUP"] { border-bottom: thin solid; }
@@ -15,10 +14,11 @@
 .nav.nav-pills.nav-stacked.shiny-tab-input.shiny-bound-input>li>a[data-value="MCFPTProbabilityOUP"] { border-bottom: thin solid; }
 #shiny-notification-ROundo { position: fixed; top: 360px; left: calc(26%); }
 #shiny-notification-Aundo { position: fixed; top: 360px; left: calc(26%); }
-#shiny-notification-FDundo { position: fixed; top: 360px; left: calc(38%); }
-#shiny-notification-MCundo { position: fixed; top: 360px; left: calc(38%); }
+#shiny-notification-FDundo { position: fixed; top: 360px; left: calc(26%); }
+#shiny-notification-MCundo { position: fixed; top: 360px; left: calc(26%); }
 #shiny-notification-clip { position: fixed; top: calc(40%); right: calc(10%); left: calc(10%) }
-/* clipboard and browser buttons superimposed on plotly and tables */
+/* cards */
+.card { border: thin solid; border-radius: 4px; }
 .cardPlotOUP .btn-copy-plot {
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -90,8 +90,8 @@
       transition: opacity 0.3s ease;
       pointer-events: none;
       position: absolute;
-      bottom: 20px;
-      left: 16px;
+      top: 20px;
+      left: 42px;
       width: 22px;
       height: 22px;
       background: none;
@@ -112,5 +112,164 @@
       border: outset;
     }
 .btn-toggle-title:active {
+      border: inset;
+    }
+.cardPlotOUP .btn-undn-args {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 20px;
+      left: 68px;
+      width: 22px;
+      height: 22px;
+      background: none;
+      border: none;
+      fill: currentColor;
+      padding: 2px 0;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+.cardPlotOUP:hover .btn-undn-args {
+      opacity: 0.5;
+      pointer-events: auto;
+    }
+.btn-undn-args:hover {
+      border: outset;
+    }
+.btn-undn-args:active {
+      border: inset;
+    }
+.cardPlotOUP .btn-unup-args {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 20px;
+      left: 94px;
+      width: 22px;
+      height: 22px;
+      background: none;
+      border: none;
+      fill: currentColor;
+      padding: 2px 0;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+.cardPlotOUP:hover .btn-unup-args {
+      opacity: 0.5;
+      pointer-events: auto;
+    }
+.btn-unup-args:hover {
+      border: outset;
+    }
+.btn-unup-args:active {
+      border: inset;
+    }
+.cardPlotOUP .btn-left-plot {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 20px;
+      left: 120px;
+      width: 22px;
+      height: 22px;
+      background: none;
+      border: none;
+      fill: currentColor;
+      padding: 2px 0;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+.cardPlotOUP:hover .btn-left-plot {
+      opacity: 0.5;
+      pointer-events: auto;
+    }
+.btn-left-plot:hover {
+      border: outset;
+    }
+.btn-left-plot:active {
+      border: inset;
+    }
+.cardPlotOUP .btn-rght-plot {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 20px;
+      left: 146px;
+      width: 22px;
+      height: 22px;
+      background: none;
+      border: none;
+      fill: currentColor;
+      padding: 2px 0;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+.cardPlotOUP:hover .btn-rght-plot {
+      opacity: 0.5;
+      pointer-events: auto;
+    }
+.btn-rght-plot:hover {
+      border: outset;
+    }
+.btn-rght-plot:active {
+      border: inset;
+    }
+.cardPlotOUP .btn-othr-plot {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 20px;
+      left: 120px;
+      width: 22px;
+      height: 22px;
+      background: none;
+      border: none;
+      fill: currentColor;
+      padding: 2px 0;
+      margin: 0 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+.cardPlotOUP:hover .btn-othr-plot {
+      opacity: 0.5;
+      pointer-events: auto;
+    }
+.btn-othr-plot:hover {
+      border: outset;
+    }
+.btn-othr-plot:active {
+      border: inset;
+    }
+.cardPlotOUP .bslib-full-screen-enter {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 44px;
+      height: 44px;
+    }
+.bslib-full-screen-enter:hover {
+      border: outset;
+    }
+.bslib-full-screen-enter:active {
       border: inset;
     }
