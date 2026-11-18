@@ -7215,7 +7215,7 @@ hobbleskip <- function(skip)
             {
               MCbtns[9,5] <<- input$axesMCOptionOUP
               FromUItoR6()
-              MC$axes_y_stoch()
+              MC$axes_x_stoch()
             }
             else if(input$plotMCOptionOUP > MCbtns[9,6])
             {
