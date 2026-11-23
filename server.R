@@ -618,6 +618,7 @@ hobbleskip <- function(skip)
                     <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>rho</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>mu</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>sigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>vsigma</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
                   </tr>
                   <tr>
@@ -625,7 +626,8 @@ hobbleskip <- function(skip)
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta_u[[1]],"</td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta_u[[2]],"</td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta_u[[3]],"</td>
-                    <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta_u[[6]],"</td>
+                    <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta_u[[4]],"</td>
+                    <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta_u[[5]],"</td>
                   </tr>
                 </table>"
               ))
@@ -5061,9 +5063,10 @@ hobbleskip <- function(skip)
                 "<table align='center'>
                   <tr>
                     <th></th>
-                    <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>LnL</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>k</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>vsigma</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>LnL</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>k</th>
                     <th style='text-align: right; padding: 2px 8px 2px 6px; border-bottom: 1px solid grey;'>m-1</th>
                   </tr>
                   <tr>
@@ -5071,7 +5074,8 @@ hobbleskip <- function(skip)
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta[[4]],"</td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta[[5]],"</td>
                     <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta[[6]],"</td>
-                    <td style='text-align: right; padding: 8px 8px 8px 6px;'>",theta[[7]],"</td>
+                    <td style='text-align: right; padding: 8px 6px 8px 6px;'>",theta[[7]],"</td>
+                    <td style='text-align: right; padding: 8px 8px 8px 6px;'>",theta[[8]],"</td>
                   </tr>
                 </table>"
               ))
@@ -5115,9 +5119,10 @@ hobbleskip <- function(skip)
                     <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>rho</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>mu</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>sigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>vsigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>LnL</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>k</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
                     <th style='text-align: right; padding: 2px 8px 2px 6px; border-bottom: 1px solid grey;'>m-1</th>
                   </tr>
                   <tr>
@@ -5128,7 +5133,8 @@ hobbleskip <- function(skip)
                     <td style='text-align: right; padding: 8px 6px 2px 6px;'>",theta_u[[4]],"</td>
                     <td style='text-align: right; padding: 8px 6px 2px 6px;'>",theta_u[[5]],"</td>
                     <td style='text-align: right; padding: 8px 6px 2px 6px;'>",theta_u[[6]],"</td>
-                    <td style='text-align: right; padding: 8px 8px 2px 6px;'>",theta_u[[7]],"</td>
+                    <td style='text-align: right; padding: 8px 6px 2px 6px;'>",theta_u[[7]],"</td>
+                    <td style='text-align: right; padding: 8px 8px 2px 6px;'>",theta_u[[8]],"</td>
                   </tr>
                   <tr>
                     <td style='text-align: right; padding: 2px 6px 8px 8px;'><b>",estimation,"</b></td>
@@ -5138,7 +5144,8 @@ hobbleskip <- function(skip)
                     <td style='text-align: right; padding: 2px 6px 8px 6px;'>",theta_r[[4]],"</td>
                     <td style='text-align: right; padding: 2px 6px 8px 6px;'>",theta_r[[5]],"</td>
                     <td style='text-align: right; padding: 2px 6px 8px 6px;'>",theta_r[[6]],"</td>
-                    <td style='text-align: right; padding: 2px 8px 8px 6px;'>",theta_r[[7]],"</td>
+                    <td style='text-align: right; padding: 2px 6px 8px 6px;'>",theta_r[[7]],"</td>
+                    <td style='text-align: right; padding: 2px 8px 8px 6px;'>",theta_r[[8]],"</td>
                 </table>"
               ))
             })
@@ -5377,10 +5384,10 @@ hobbleskip <- function(skip)
                     <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>rho</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>mu</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>sigma</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>varsigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>vsigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>LnL</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>k</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
                     <th style='text-align: right; padding: 2px 8px 2px 6px; border-bottom: 1px solid grey;'>m-1</th>
                   </tr>
                   <tr>
@@ -5612,9 +5619,10 @@ hobbleskip <- function(skip)
                     <th style='text-align: right; padding: 2px 6px 2px 8px; border-bottom: 1px solid grey;'>rho</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>mu</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>sigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>vsigma</th>
+                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>LnL</th>
                     <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>k</th>
-                    <th style='text-align: right; padding: 2px 6px 2px 6px; border-bottom: 1px solid grey;'>alpha</th>
                     <th style='text-align: right; padding: 2px 8px 2px 6px; border-bottom: 1px solid grey;'>m-1</th>
                   </tr>
                   <tr>
@@ -5625,7 +5633,8 @@ hobbleskip <- function(skip)
                     <td style='text-align: right; padding: 2px 6px 2px 6px;'>",theta_u[[4]],"</td>
                     <td style='text-align: right; padding: 2px 6px 2px 6px;'>",theta_u[[5]],"</td>
                     <td style='text-align: right; padding: 2px 6px 2px 6px;'>",theta_u[[6]],"</td>
-                    <td style='text-align: right; padding: 2px 8px 2px 6px;'>",theta_u[[7]],"</td>
+                    <td style='text-align: right; padding: 2px 6px 2px 6px;'>",theta_u[[7]],"</td>
+                    <td style='text-align: right; padding: 2px 8px 2px 6px;'>",theta_u[[8]],"</td>
                   </tr>
                   <tr>
                     <td style='text-align: right; padding: 2px 6px 8px 8px;'><b>",estimation,"</b></td>
@@ -5635,7 +5644,8 @@ hobbleskip <- function(skip)
                     <td style='text-align: right; padding: 2px 6px 8px 6px;'>",theta[[4]],"</td>
                     <td style='text-align: right; padding: 2px 6px 8px 6px;'>",theta[[5]],"</td>
                     <td style='text-align: right; padding: 2px 6px 8px 6px;'>",theta[[6]],"</td>
-                    <td style='text-align: right; padding: 2px 8px 8px 6px;'>",theta[[7]],"</td>
+                    <td style='text-align: right; padding: 2px 6px 8px 6px;'>",theta[[7]],"</td>
+                    <td style='text-align: right; padding: 2px 8px 8px 6px;'>",theta[[8]],"</td>
                   </tr>
                 </table>"
               ))
